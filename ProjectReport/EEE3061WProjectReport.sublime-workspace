@@ -1,0 +1,1083 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"hm",
+				"hmwkDepartment"
+			],
+			[
+				"tex",
+				"texlive"
+			],
+			[
+				"if",
+				"ifmain	if __name__ == '__main__'"
+			],
+			[
+				"ini",
+				"initTIM3"
+			],
+			[
+				"init",
+				"initTIM2"
+			],
+			[
+				"TIM",
+				"TIM2"
+			],
+			[
+				"li",
+				"lightState"
+			],
+			[
+				"NO",
+				"NOCHANGE"
+			],
+			[
+				"FA",
+				"FALSE"
+			],
+			[
+				"prog",
+				"progState"
+			],
+			[
+				"min",
+				"mainScreen"
+			],
+			[
+				"pro",
+				"progState"
+			],
+			[
+				"POST",
+				"POSITION"
+			],
+			[
+				"pos",
+				"positions"
+			],
+			[
+				"FOR",
+				"FORWARD"
+			],
+			[
+				"uint",
+				"uint16_t"
+			],
+			[
+				"pb",
+				"pbPosChange"
+			],
+			[
+				"POT",
+				"POTSELECT"
+			],
+			[
+				"lcd",
+				"lcd_two_line_write"
+			],
+			[
+				"pot",
+				"pot1Control"
+			],
+			[
+				"toggle",
+				"toggleState"
+			],
+			[
+				"main",
+				"mainScreen"
+			],
+			[
+				"get",
+				"getPB"
+			],
+			[
+				"pr",
+				"progState"
+			],
+			[
+				"LCD",
+				"LCD_DISPLAY_ON"
+			],
+			[
+				"toggl",
+				"togglePotControl"
+			],
+			[
+				"com",
+				"compareValPass"
+			],
+			[
+				"print",
+				"printPos"
+			],
+			[
+				"serv",
+				"servoMin"
+			],
+			[
+				"tim",
+				"tim2Init"
+			],
+			[
+				"begineq",
+				"begin{equation}	latex-document"
+			],
+			[
+				"eq",
+				"equation"
+			],
+			[
+				"EXT",
+				"EXTI_RTSR_TR0"
+			],
+			[
+				"user",
+				"userPSC"
+			],
+			[
+				"int",
+				"int16_t"
+			],
+			[
+				"COM",
+				"COMP_FLAGS"
+			],
+			[
+				"COMP",
+				"COMP_INCLUDES"
+			],
+			[
+				"ADC",
+				"ADC_CFGR1_RES_1"
+			],
+			[
+				"GPIO",
+				"GPIO_MODER_MODER6"
+			],
+			[
+				"hsp",
+				"hspace{length}	latex-document"
+			],
+			[
+				"e",
+				"eeprom_lib"
+			],
+			[
+				"GP",
+				"GPIOB"
+			],
+			[
+				"PO",
+				"POT"
+			],
+			[
+				"GPO",
+				"GPIO_MODER_MODER0_0"
+			],
+			[
+				"inc",
+				"incrementLEDs"
+			],
+			[
+				"in",
+				"incrementLEDs"
+			],
+			[
+				"caption",
+				"captionbelow{text}	class-scrartcl,scrreprt,scrbook"
+			],
+			[
+				"theta",
+				"Theta	latex-mathsymbols"
+			],
+			[
+				"met",
+				"metah1"
+			],
+			[
+				"text",
+				"textbf{text}	latex-document"
+			],
+			[
+				"epil",
+				"varepsilon	latex-mathsymbols"
+			],
+			[
+				"center",
+				"centerline{text}	latex-l2tabu"
+			],
+			[
+				"beginquot",
+				"begin{quote}	latex-document"
+			],
+			[
+				"home",
+				"homeworkProblem"
+			],
+			[
+				"spice",
+				"spiceplot3"
+			],
+			[
+				"max",
+				"max"
+			],
+			[
+				"hom",
+				"homeworkProblem"
+			],
+			[
+				"fn",
+				"find_min_max"
+			],
+			[
+				"stm32f",
+				"stm32f051_startup"
+			],
+			[
+				"0x",
+				"0x40000"
+			],
+			[
+				"RCC",
+				"RCC_AHBENR_IOPBEN"
+			],
+			[
+				"startup",
+				"stm32f051_startup"
+			],
+			[
+				"ASS",
+				"ASSEMBLER_FLAGS"
+			],
+			[
+				"LINKER",
+				"LINKER_FLAGS"
+			],
+			[
+				"AS",
+				"ASSEMBLER_FLAGS"
+			],
+			[
+				"COMPILER",
+				"COMPILER_FLAGS"
+			],
+			[
+				"amp",
+				"amp2a"
+			],
+			[
+				"vol",
+				"voltagediv1"
+			],
+			[
+				"volt",
+				"voltagediv"
+			],
+			[
+				"label",
+				"label{key}	latex-document"
+			],
+			[
+				"begintabu",
+				"begin{tabular}{cols}	latex-document"
+			],
+			[
+				"op",
+				"opampgain"
+			],
+			[
+				"cop",
+				"copyright	tex"
+			],
+			[
+				"DC",
+				"DSPIC1"
+			],
+			[
+				"ap",
+				"approx	latex-mathsymbols"
+			],
+			[
+				"PORTB_",
+				"PORTB_MODEROUT"
+			],
+			[
+				"TIM6",
+				"TIM6_DELAY_CONST"
+			],
+			[
+				"test",
+				"test_init"
+			],
+			[
+				"Po",
+				"PORTB_START"
+			],
+			[
+				"TIM6_",
+				"TIM6_ADC_IRQHandler_init"
+			],
+			[
+				"tabel",
+				"tableofcontents	latex-document"
+			],
+			[
+				"list",
+				"listoftables	latex-document"
+			],
+			[
+				"PORT",
+				"PORTA_PUPDR"
+			],
+			[
+				"Port",
+				"PORTA_START"
+			],
+			[
+				"R",
+				"RAM_START"
+			],
+			[
+				"T",
+				"TIM6_START"
+			],
+			[
+				"Pot",
+				"pot_get"
+			],
+			[
+				"De",
+				"Default_Handler"
+			],
+			[
+				"TI",
+				"TIM6_init"
+			],
+			[
+				"I",
+				"ISER_TIM6_EN"
+			],
+			[
+				"por",
+				"PORTB_START"
+			],
+			[
+				"var",
+				"var_delay_routine_initB"
+			],
+			[
+				"pot_get",
+				"pot_get_wait"
+			],
+			[
+				"AD",
+				"ADC_ISR_ADRDY"
+			],
+			[
+				"pot_",
+				"pot_poll_init_wait"
+			],
+			[
+				"G",
+				"GPIOA_MODER_MODER6"
+			],
+			[
+				"P",
+				"PORTA_START"
+			],
+			[
+				"delay_routine",
+				"delay_routine_init"
+			],
+			[
+				"delay_",
+				"delay_routine_init"
+			],
+			[
+				"delay",
+				"delay_routine_init"
+			],
+			[
+				"dela",
+				"delay_routine_init"
+			],
+			[
+				"stack",
+				"stack"
+			],
+			[
+				"fib",
+				"fib_test"
+			],
+			[
+				"del",
+				"delay_routine"
+			],
+			[
+				"0x2",
+				"0x20000000"
+			],
+			[
+				"POR",
+				"PORTB_START"
+			],
+			[
+				"D",
+				"DELAY_1"
+			],
+			[
+				"Por",
+				"PORTA_START"
+			],
+			[
+				"L",
+				"LEDInit"
+			],
+			[
+				"Ha",
+				"Default_Handler"
+			],
+			[
+				"wa",
+				"waveform8"
+			],
+			[
+				"cit",
+				"cite{keylist}	latex-document"
+			],
+			[
+				"bib",
+				"bibitem{citekey}	latex-document"
+			],
+			[
+				"beginbib",
+				"begin{thebibliography}{widestlabel}	latex-document"
+			],
+			[
+				"beginhome",
+				"begin{homeworkSection}{arg1}	Assignment 2 - WDXSEA003.tex"
+			],
+			[
+				"vspace",
+				"vspace{length}	latex-document"
+			],
+			[
+				"slab",
+				"slave_Clockout_B2"
+			],
+			[
+				"slave",
+				"slave_Clockout_B1"
+			],
+			[
+				"slave_Clockout_",
+				"slave_Clockout_A"
+			],
+			[
+				"sla",
+				"slave_Clockout_B1"
+			],
+			[
+				"GPOIO",
+				"GPIO_MODER_MODER6_0"
+			],
+			[
+				"i",
+				"iic_Init_A"
+			],
+			[
+				"display_",
+				"display_Temp2"
+			],
+			[
+				"dis",
+				"display_Temp"
+			],
+			[
+				"I2C_CR2_ST",
+				"I2C_CR2_STOP"
+			],
+			[
+				"I2",
+				"I2C_ISR_RXNE"
+			],
+			[
+				"I2C",
+				"I2C_CR2_START"
+			],
+			[
+				"I2C2",
+				"I2C2_START"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "EEE3061WProjectReport.tex",
+			"settings":
+			{
+				"buffer_size": 7185,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "woodamble.tex",
+			"settings":
+			{
+				"buffer_size": 5384,
+				"line_ending": "Windows"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 370.0,
+		"selected_items":
+		[
+			[
+				"p",
+				"Package Control: Disable Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"Lat",
+				"LaTeXTools: Reconfigure and migrate settings"
+			],
+			[
+				"i",
+				"Package Control: Install Package"
+			],
+			[
+				"pr",
+				"Package Control: Remove Package"
+			],
+			[
+				"pi",
+				"Package Control: Install Package"
+			],
+			[
+				"git",
+				"GitGutter: Compare Against Branch"
+			],
+			[
+				"lat",
+				"LaTeX-Plus: Choose Build System"
+			],
+			[
+				"packi",
+				"Package Control: Install Package"
+			],
+			[
+				"enable",
+				"Package Control: Enable Package"
+			],
+			[
+				"list",
+				"Package Control: List Packages"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control:",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 432.0
+	},
+	"console":
+	{
+		"height": 170.0,
+		"history":
+		[
+			"import subprocess; subprocess.check_output([\"tasklist\"])",
+			"print(a)",
+			"kpsewhich --expand-path='$TEXMFHOME'",
+			"import urllib.request,os,hashlib; h = '7183a2d3e96f11eeadd761d777e62404' + 'e330c659d4bb41d3bdf022e94cab3cd0'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://sublime.wbond.net/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/C/_ITDev/Projects/EEE3061WDesignProject/ProjectReport"
+	],
+	"file_history":
+	[
+		"/C/_ITDev/Projects/EEE3061WDesignProject/ProjectReport/EEE3061WProjectReport.sublime-project",
+		"/C/_ITDev/Documents/ReportTemplate/AssignmentTemplate V01.02.01.tex",
+		"/C/_ITDev/Documents/ReportTemplate/AssignmentTemplate V01.02.00.tex",
+		"/C/_ITDev/Documents/EEE3069WHeliProjectReport/EEE3069WHeliProjectReport.sublime-project",
+		"/C/_ITDev/Documents/.gitignore",
+		"/C/_AndroidDev/.gitignore",
+		"/C/_ITDev/Documents/EEE2039E Project Report/EEE2039E Project Report.tex",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/User/bh_core.sublime-settings",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/User/LaTeXTools.sublime-settings",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/C/_ITDev/Projects/EEE3061WPracs/prac/src/main.c",
+		"/C/_ITDev/Projects/EEE3061WPracs/Prac 1/src/main.c",
+		"/C/_ITDev/Projects/EEE3061WPracs/Prac 1/.gitignore",
+		"/C/_ITDev/Projects/EEE3061WPracs/.gitignore",
+		"/C/_ITDev/Workspace/Eclipse/TestEclipseProject/src/main.c",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/Anaconda/README.md",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/Anaconda/Anaconda.sublime-settings",
+		"/C/_ITDev/Projects/test.py",
+		"/C/_ITDev/Documents/Latex-Documents/AssignmentTemplate V01.02.00.tex",
+		"/C/_ITDev/Documents/Latex-Documents/woodamble.tex",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/LaTeX-Plus/LaTeX-Plus.sublime-settings",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/User/GitGutter.sublime-settings",
+		"/C/_ITDev/Documents/Latex-Documents/EEE2039E Project Report/EEE2039E Project Report.tex",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/GitGutter/GitGutter.sublime-settings",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/GitGutter/Default (Windows).sublime-keymap",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/User/LaTeX-Plus.sublime-settings",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/LaTeX-Plus/README.md",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/BracketHighlighter/bh_core.sublime-settings",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/SublimeGDB/Default.sublime-keymap",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/Default/Default (Windows).sublime-keymap",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/User/Default (Windows).sublime-keymap",
+		"/C/_ITDev/Projects/LEDControl/Libraries/woodboxstm32f051C6.h",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/Themr/Default (Windows).sublime-keymap",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/Schemr/Default (Windows).sublime-keymap",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/User/ThemrFavorites.sublime-settings",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/SublimeGDB/SublimeGDB.sublime-settings",
+		"/D/ITDev/Projects/Servo Control/main.c",
+		"/D/Sean/Images/WD Designs/Common/Android/Material Design Icons 1.0.1/material-design-icons-1.0.1/sprites/css-sprite/sprite-av-grey600.css",
+		"/C/Users/Sean/Google Drive/Stuff/General/Android/Mood (Private)/Mood App Flow",
+		"/D/ITDev/Projects/LEDControl/Libraries/stm32f0xx.h",
+		"/D/ITDev/Projects/LEDControl/woodboxstm32f051C6.c",
+		"/D/ITDev/Projects/Temp2000/src/main.c",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 10/main.c",
+		"/D/ITDev/Projects/Test Stuff/main.c",
+		"/D/ITDev/Projects/Servo Control/Makefile",
+		"/D/ITDev/Projects/LEDControl/Makefile",
+		"/D/ITDev/Projects/LEDControl/Documentation/Procedures.txt",
+		"/D/ITDev/Projects/Servo Control/lcd_stm32f0.c",
+		"/D/ITDev/Devices/STM32F051C6/Project-Templates/Sublime-Text/STM32F051C6-C-Makefile-Project/lcd_stm32f0.c",
+		"/D/ITDev/Projects/Servo Control/woodboxstm32f051C6.c",
+		"/D/ITDev/Devices/STM32F051C6/Project-Templates/Sublime-Text/STM32F051C6-C-Makefile-Project/woodboxstm32f051C6.c",
+		"/C/Users/Sean/Downloads/GPSExperimental/src/gps_engine.c",
+		"/C/Users/Sean/Downloads/GPS_Plot/GPS_Plot/Form1.cs",
+		"/D/Sean/Images/WD Designs/Dad/eQPR - Sync/README.txt",
+		"/D/ITDev/Projects/Servo Control/lcd_stm32f0.s",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/User/Flatland Monokai (SL).tmTheme",
+		"/d/itdev/projects/servo control/stm32f051_startup.s",
+		"/D/ITDev/Projects/Test Stuff/Samples/stm32f0_devel/jgowans-sample-projects/pwm/main.c",
+		"/D/ITDev/Projects/Servo Control/Libraries/stm32f0xx.h",
+		"/D/ITDev/Projects/Servo Control/stm32f051_linker_script.ld",
+		"/D/ITDev/Projects/Servo Control/Servo Control.sublime-project",
+		"/D/ITDev/Devices/STM32F051C6/Project-Templates/Sublime-Text/STM32F051C6-C-Makefile-Project/main.c",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+		"/D/ITDev/Devices/.gitignore",
+		"/D/ITDev/Projects/Servo Control/Servo Control.sublime-workspace",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/User/SublimeGDB.sublime-settings",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/User/Package Control.sublime-settings",
+		"/D/ITDev/Test Stuff/Utils/Procedures.txt",
+		"/D/ITDev/Projects/TS Test Project/src/main.c",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 5/prac-5-sean.s",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 1/practical-1-sean.s",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 4/main.s",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 4/main.lst",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 4/main.o",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 10/Makefile",
+		"/D/Sean/UCT/2nd Year/MEC2022S/Assignments/Lab 3/MEC2022S Lab 3 Report.tex",
+		"/D/Sean/UCT/2nd Year/EEE2039 E/Assignments/Assignment 5/WDXSEA003 - Assignment 5.tex",
+		"/C/Users/Sean/Downloads/cache (1).pac",
+		"/C/Users/Sean/Downloads/cacheold.pac",
+		"/D/Sean/UCT/2nd Year/EEE2039 E/Assignments/Assignment 5/AssignmentTemplate V01.02.00.tex",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 9/main.c",
+		"/D/ITDev/Test Stuff/main.c",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 10 copy/main.c",
+		"/H/Thursday Test/WDXSEA003 - With BONUS/main.c",
+		"/D/ITDev/Test Stuff/lcd_stm32f0.c",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/User/SublimeLinter.sublime-settings",
+		"/D/ITDev/Test Stuff/Other/Procedures.txt",
+		"/D/ITDev/Test Stuff/stm32f051_startup.s",
+		"/D/ITDev/Test Stuff/Makefile",
+		"/D/ITDev/Test Stuff/Libraries/woodboxstm32f051C6.h",
+		"/D/ITDev/Test Stuff/woodboxstm32f051C6.c",
+		"/C/Users/Sean/Downloads/eeprom.h",
+		"/C/Users/Sean/Downloads/Makefile.txt",
+		"/D/ITDev/Test Stuff/TestProject.sublime-project",
+		"/D/ITDev/Test Stuff/Libraries/lcd_stm32f0.h",
+		"/D/Sean/UCT/2nd Year/EEE2039 D/Software/stm32f0_devel/jgowans-sample-projects/demonstration/main.c",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 8/main.c",
+		"/D/ITDev/Test Stuff/Libraries/temp_sensor_lib.h",
+		"/D/ITDev/Test Stuff/temp_sensor_lib.c",
+		"/D/Sean/UCT/2nd Year/EEE2039 D/Software/stm32f0_devel/jgowans-sample-projects/demonstration/Makefile",
+		"/D/ITDev/Test Stuff/Libraries/eeprom_lib.h",
+		"/D/ITDev/Test Stuff/Libraries/stm32f0xx.h",
+		"/D/Sean/UCT/2nd Year/EEE2039 D/Labs/Lab 1/procedure.txt",
+		"/D/Sean/UCT/2nd Year/EEE2039 E/Assignments/Assignment 4/EEE2039E Assignment 4.tex",
+		"/D/ITDev/Test Stuff/eeprom_lib.c",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 9/woodboxstm32f051C6.c",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 9/Libraries/woodboxstm32f051C6.h",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 9/Makefile",
+		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/User/GCC ARM ASM - Makefile.sublime-build",
+		"/D/Sean/UCT/2nd Year/EEE2039 E/Assignments/Assignment 4/AssignmentTemplate V01.02.00.tex",
+		"/D/ITDev/Documents/Latex-Documents/EEE2039E Project Report/EEE2039E Project Report.tex",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 9/eeprom_lib.c",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 9/Libraries/eeprom_lib.h",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 8/Makefile",
+		"/D/Sean/UCT/2nd Year/MEC2022S/Assignments/Lab 3/woodamble.tex",
+		"/D/Sean/UCT/2nd Year/MEC2022S/Assignments/Lab 2/MEC2022S Lab 2 Report.tex",
+		"/D/Sean/UCT/2nd Year/EEE2039 E/Assignments/Assignment 3/EEE2039E Assignment 3 Report.tex",
+		"/D/Sean/UCT/2nd Year/EEE2039 E/Assignments/Assignment 3/woodamble.tex",
+		"/D/Sean/UCT/2nd Year/EEE2039 G/Assignments/Assignment 2/Assignment 2/Assignment 2/main.cpp",
+		"/D/Sean/UCT/2nd Year/EEE2039 G/Assignments/Assignment 2/Assignment 2/Assignment 2/data.txt",
+		"/C/Users/Sean/Downloads/PongPP/PongPP/main.cpp",
+		"/D/ITDev/Documents/Latex-Documents/EEE2039E Project Report/woodamble.tex",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 7/main.c",
+		"/D/ITDev/Documents/Latex-Documents/woodamble.tex",
+		"/D/ITDev/Documents/Latex-Documents/AssignmentTemplate V01.02.00.tex",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 8/prac8_template.c",
+		"/D/ITDev/Projects/EEE2039DPracs/Prac 8/system_stm32f0xx.c",
+		"/D/Sean/UCT/2nd Year/EEE2039 D/Software/stm32f0_devel/jgowans-sample-projects/led-pattern/Makefile"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"TRACE",
+			"eng_gps_nmeaHandler",
+			"posDisp",
+			"C",
+			"eeprom",
+			"RCC",
+			"amp",
+			"opampgain",
+			"TIM6_ADC_IRQHandler_A",
+			"9",
+			"I2C2_START",
+			"\\enterProblemHeader",
+			"firstxmark",
+			"7e",
+			"Kg/m\\(^{-2}\\)",
+			"ff",
+			"tableofcontents",
+			"headrulewidth",
+			"headheight",
+			"hmwkDueDate",
+			"%----------------------------------------------------------------------------------------",
+			"maketitle",
+			"pdf",
+			"}.",
+			"Key=\"*\""
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"TIM6_ADC_IRQHandler_B",
+			"kg/m\\(^{-3}\\)"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "EEE3061WProjectReport.tex",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7185,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3061,
+								3061
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"syntax": "Packages/LaTeX-Plus/syntax/LaTeX Extended.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "woodamble.tex",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5384,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3325,
+								3325
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"bh_regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"syntax": "Packages/LaTeX/LaTeX.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 315.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 30.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 172.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"project": "EEE3061WProjectReport.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"",
+				"getPot"
+			]
+		],
+		"width": 392.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 240.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
