@@ -80,7 +80,34 @@ This report covers the design procedure and results for an active noise cancelli
 % INTRODUCTION
 %----------------------------------------------------------------------------------------
 \begin{homeworkProblem}[{Introduction}]
-Intro
+% Graph:
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      xlabel=Known Weight (Psi),
+      ylabel=Reading (Psi),
+      grid=major]
+    \addplot[color=red, smooth] coordinates {
+      (22,9.43)
+      (23, 2)
+      (27,13.78)
+      (29,17)
+    };
+    \addlegendentry{Gauge}
+    
+    \addplot[color=blue, dashed, smooth] coordinates {
+      (22,22)
+      (27,27)
+    };
+    \addlegendentry{Known weight}
+    
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Dead weight tester and gauge measurements}
+  \label{gaugePlot}
+\end{figure}
+
 \end{homeworkProblem}
 
 \end{document}
