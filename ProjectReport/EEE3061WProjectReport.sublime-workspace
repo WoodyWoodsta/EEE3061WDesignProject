@@ -523,24 +523,16 @@
 			"file": "EEE3061WProjectReport.tex",
 			"settings":
 			{
-				"buffer_size": 7185,
+				"buffer_size": 7736,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "/C/_ITDev/Documents/.gitignore",
+			"file": "/C/Users/Sean/.bashrc",
 			"settings":
 			{
-				"buffer_size": 878,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/C/_ITDev/Projects/EEE3061WDesignProject/.gitignore",
-			"settings":
-			{
-				"buffer_size": 1089,
-				"line_ending": "Windows"
+				"buffer_size": 1484,
+				"line_ending": "Unix"
 			}
 		},
 		{
@@ -559,12 +551,12 @@
 		"selected_items":
 		[
 			[
-				"p",
-				"Package Control: Disable Package"
-			],
-			[
 				"Package Control: ",
 				"Package Control: Install Package"
+			],
+			[
+				"p",
+				"Package Control: Disable Package"
 			],
 			[
 				"Lat",
@@ -639,11 +631,17 @@
 	],
 	"file_history":
 	[
+		"/C/Users/Sean/.bashrc",
+		"/C/Store/cmder/config/aliases",
+		"/C/Users/Sean/AppData/Roaming/Skype/My Skype Received Files/.bashrc",
+		"/D/_SolidSQUAD_/readme.txt",
+		"/D/_SolidSQUAD_/SolidSQUAD.nfo",
+		"/C/_ITDev/Documents/.gitignore",
+		"/C/_ITDev/Projects/EEE3061WDesignProject/.gitignore",
 		"/C/_ITDev/Projects/EEE3061WDesignProject/ProjectReport/EEE3061WProjectReport.sublime-project",
 		"/C/_ITDev/Documents/ReportTemplate/AssignmentTemplate V01.02.01.tex",
 		"/C/_ITDev/Documents/ReportTemplate/AssignmentTemplate V01.02.00.tex",
 		"/C/_ITDev/Documents/EEE3069WHeliProjectReport/EEE3069WHeliProjectReport.sublime-project",
-		"/C/_ITDev/Documents/.gitignore",
 		"/C/_AndroidDev/.gitignore",
 		"/C/_ITDev/Documents/EEE2039E Project Report/EEE2039E Project Report.tex",
 		"/C/Users/Sean/AppData/Roaming/Sublime Text 3/Packages/User/bh_core.sublime-settings",
@@ -760,13 +758,7 @@
 		"/D/Sean/UCT/2nd Year/EEE2039 G/Assignments/Assignment 2/Assignment 2/Assignment 2/main.cpp",
 		"/D/Sean/UCT/2nd Year/EEE2039 G/Assignments/Assignment 2/Assignment 2/Assignment 2/data.txt",
 		"/C/Users/Sean/Downloads/PongPP/PongPP/main.cpp",
-		"/D/ITDev/Documents/Latex-Documents/EEE2039E Project Report/woodamble.tex",
-		"/D/ITDev/Projects/EEE2039DPracs/Prac 7/main.c",
-		"/D/ITDev/Documents/Latex-Documents/woodamble.tex",
-		"/D/ITDev/Documents/Latex-Documents/AssignmentTemplate V01.02.00.tex",
-		"/D/ITDev/Projects/EEE2039DPracs/Prac 8/prac8_template.c",
-		"/D/ITDev/Projects/EEE2039DPracs/Prac 8/system_stm32f0xx.c",
-		"/D/Sean/UCT/2nd Year/EEE2039 D/Software/stm32f0_devel/jgowans-sample-projects/led-pattern/Makefile"
+		"/D/ITDev/Documents/Latex-Documents/EEE2039E Project Report/woodamble.tex"
 	],
 	"find":
 	{
@@ -828,7 +820,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -837,7 +829,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7185,
+						"buffer_size": 7736,
 						"regions":
 						{
 						},
@@ -853,120 +845,91 @@
 							"BracketHighlighterBusy": false,
 							"bh_regions":
 							[
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
 								"bh_default",
 								"bh_default_center",
 								"bh_default_open",
 								"bh_default_close",
 								"bh_default_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
 								"bh_curly",
 								"bh_curly_center",
 								"bh_curly_open",
 								"bh_curly_close",
 								"bh_curly_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
 								"bh_regex",
 								"bh_regex_center",
 								"bh_regex_open",
 								"bh_regex_close",
 								"bh_regex_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
 								"bh_single_quote",
 								"bh_single_quote_center",
 								"bh_single_quote_open",
 								"bh_single_quote_close",
 								"bh_single_quote_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
 								"bh_unmatched",
 								"bh_unmatched_center",
 								"bh_unmatched_open",
 								"bh_unmatched_close",
-								"bh_unmatched_content"
+								"bh_unmatched_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content"
 							],
-							"syntax": "Packages/LaTeX-Plus/syntax/LaTeX Extended.tmLanguage"
+							"syntax": "Packages/LaTeX/LaTeX.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "/C/_ITDev/Documents/.gitignore",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 878,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								850
-							]
-						],
-						"settings":
-						{
-							"BracketHighlighterBusy": true,
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 518.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "/C/_ITDev/Projects/EEE3061WDesignProject/.gitignore",
+					"buffer": 1,
+					"file": "/C/Users/Sean/.bashrc",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1089,
+						"buffer_size": 1484,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								403,
-								403
+								180,
+								180
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -976,7 +939,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 2,
 					"file": "woodamble.tex",
 					"semi_transient": false,
 					"settings":
@@ -1058,10 +1021,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 315.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 2,
 					"type": "text"
 				}
 			]
