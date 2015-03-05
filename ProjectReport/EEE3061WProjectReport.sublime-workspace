@@ -523,7 +523,7 @@
 			"file": "EEE3061WProjectReport-ConceptHandin.tex",
 			"settings":
 			{
-				"buffer_size": 10220,
+				"buffer_size": 10256,
 				"line_ending": "Windows"
 			}
 		},
@@ -631,6 +631,7 @@
 	],
 	"file_history":
 	[
+		"/C/_ITDev/Projects/EEE3061WDesignProject/.gitignore",
 		"/C/Users/Sean/.bashrc",
 		"/C/Users/Sean/AppData/Roaming/npm/node_modules/cca/node_modules/chrome-app-developer-tool-client/node_modules/agentkeepalive/lib/agent.js",
 		"/C/Store/cmder/config/aliases",
@@ -638,7 +639,6 @@
 		"/D/_SolidSQUAD_/readme.txt",
 		"/D/_SolidSQUAD_/SolidSQUAD.nfo",
 		"/C/_ITDev/Documents/.gitignore",
-		"/C/_ITDev/Projects/EEE3061WDesignProject/.gitignore",
 		"/C/_ITDev/Projects/EEE3061WDesignProject/ProjectReport/EEE3061WProjectReport.sublime-project",
 		"/C/_ITDev/Documents/ReportTemplate/AssignmentTemplate V01.02.01.tex",
 		"/C/_ITDev/Documents/ReportTemplate/AssignmentTemplate V01.02.00.tex",
@@ -829,15 +829,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10220,
+						"buffer_size": 10256,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6255,
-								6255
+								1603,
+								1603
 							]
 						],
 						"settings":
@@ -845,41 +845,6 @@
 							"BracketHighlighterBusy": false,
 							"bh_regions":
 							[
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
@@ -890,24 +855,59 @@
 								"bh_double_quote_open",
 								"bh_double_quote_close",
 								"bh_double_quote_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
 								"bh_curly",
 								"bh_curly_center",
 								"bh_curly_open",
 								"bh_curly_close",
 								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
 								"bh_tag",
 								"bh_tag_center",
 								"bh_tag_open",
 								"bh_tag_close",
-								"bh_tag_content"
+								"bh_tag_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content"
 							],
-							"spell_check": true,
+							"spell_check": false,
 							"syntax": "Packages/LaTeX/LaTeX.tmLanguage",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1638.0,
+						"translation.y": 1134.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -999,7 +999,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
@@ -1085,10 +1085,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 126.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 1,
 					"type": "text"
 				}
 			]
