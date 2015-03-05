@@ -126,3 +126,5 @@ sympy-plots-for-*.tex/
 *.png
 *.jpg
 Models/
+*.sublime-workspace
+*.sublime-project
