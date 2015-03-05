@@ -125,6 +125,6 @@ sympy-plots-for-*.tex/
 *.pdf
 *.png
 *.jpg
-Models/
 *.sublime-workspace
 *.sublime-project
+Models/
