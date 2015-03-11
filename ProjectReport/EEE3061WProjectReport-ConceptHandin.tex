@@ -8,7 +8,7 @@
 \newcommand{\hmwkClass}{EEE3061W - Mechatronics Design}                    % Course/class
 \newcommand{\hmwkClassTime}{10:30am}                                 % Class/lecture time
 \newcommand{\hmwkClassInstructor}{Jones}                               % Teacher/lecturer
-\newcommand{\hmwkAuthorName}{WDXSEA003 \textbar\space PRSSAM004 \textbar\space RJDYAR001 \textbar\space STRIBR001}    % Your name
+\newcommand{\hmwkAuthorName}{Team 13}    % Your name
 \newcommand{\hmwkDepartment}{Department of Electrical Engineering}           % Department
 
 %----------------------------------------------------------------------------------------
@@ -23,7 +23,7 @@
 \end{figure}
 \textmd{\Huge UNIVERSITY OF CAPETOWN \\ \LARGE \hmwkDepartment} \\
 \vspace{2in}
-\textmd{\textbf{\LARGE \hmwkClass \\ \Huge Biathlon Robot \\ \hmwkTitle \\ \vspace{1.5in} \Large Team 13 \\  \hmwkAuthorName}}\\
+\textmd{\textbf{\LARGE \hmwkClass \\ \Huge Biathlon Robot \\ \hmwkTitle \\ \vspace{1.5in} \Large Team 13 \\  WDXSEA003 \textbar\space PRSSAM004 \textbar\space RJDYAR001 \textbar\space STRIBR001}}\\
 %\normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate}\\
 %\vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
 }
@@ -43,10 +43,10 @@
 %----------------------------------------------------------------------------------------
 \setcounter{tocdepth}{2}                                                      % ToC Depth
 
-\begin{abstract}
-This preliminary report covers the conceptual design stage of the EEE3061W Mechatronics Design 2015 project involving the design and manufacture of a bi-athletic robot.  This robot is to partake in a sprint as well as throw a weighted ping-pong ball.
+% \begin{abstract}
+% This preliminary report covers the conceptual design stage of the EEE3061W Mechatronics Design 2015 project involving the design and manufacture of a bi-athletic robot.  This robot is to partake in a sprint as well as throw a weighted ping-pong ball.
 
-\end{abstract}
+% \end{abstract}
 % \newpage
 
 %----------------------------------------------------------------------------------------
@@ -132,24 +132,168 @@ This report covers purely the initial stage of the design process, that being co
 % DESIGN CONCEPTS
 %----------------------------------------------------------------------------------------
 \begin{homeworkProblem}[{Design Concepts}]
-
-% TODO: Possible list of all the seperate ideas in a list
-
 \begin{homeworkSection}{Design Concept 1}
 
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.8\columnwidth]{DesignConcept1RenderCropped}
+    \caption{3D Render of Design Concept 1}
+    \label{3dConcept1}
+  \end{center}
+\end{figure}
+
+Our first design concept is one which incorporates the Klann Linkage system in the leg design. This allows direct conversion of rotary motion from the motors to linear motion in the legs. The body design, which is somewhat complex, is octagonal in shape, with the angled panels fastened using internal brackets bolted onto the inside. This design is aesthetically appealing however, may make it difficult to access the internal components once the design is completed.  Also, the body restricts the height of the gearing system within. The leg system is a standard Klann Linkage with 8 legs. The legs are connected in pairs, situated on each side of the body, which are run by the same gear (i.e. each motor controls one side each of the leg system).  The main advantage of the extra 4 legs is to provide improved stability. Definitive of the Klann Linkage system, each stride lasts for 180 degrees of each revolution, and so having two legs per revolution, the leg group is able to provide at least one leg for the full revolution. This means there will be 4 legs on the ground at all times during the robot's motion. Although not shown in the rendering, the gearing system would have the final output on the outside of the main body, with the gears placed between the rotating disks. This prevents physical interference at any point during the leg cycles.\\
+
+The rendering is not necessarily to scale or proportion.  Due to restrictions in volume and dimensions, the legs would be shorter and body closer to the ground.
 \end{homeworkSection}
 
 \begin{homeworkSection}{Design Concept 2}
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.8\columnwidth]{DesignConcept2RenderCropped}
+    \caption{3D Render of Design Concept 2}
+    \label{3dConcept2}
+  \end{center}
+\end{figure}
+
+The second design concept is somewhat similar to the previous one, but with one important difference: the left and right leg pairings are driven by a single, central driving gear. The main body of the robot is also similar to the previous design, but with an open rear to make it easier to access internal components. The front of the main body acts primarily as a visor to help protect the components to some extent during the motion. This is also an attempt to minimize weight, but compromises the aesthetic appeal as all the components will be visible. The same 8-leg Klann Linkage system is employed here as well. The gearing system and motor placement will be the same as the previous concept, as the ratios and general internal configuration will be the same.
 
 \end{homeworkSection}
 
 \begin{homeworkSection}{Design Concept 3}
 
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.8\columnwidth]{DesignConcept3RenderCropped}
+    \caption{3D Render of Design Concept 3}
+    \label{3dConcept3}
+  \end{center}
+\end{figure}
+
+The third and final design again employs the Klann Linkage system. The primary difference is that the legs are now placed closer towards the front and back of the main body rather than on the sides. The general body shape is box-like as this will be most efficient to accommodate this particular leg system. The motor and gear placement would also be different: they would be placed on the front and back, with the circuitry and control system placed more centrally. The 8-piece Klann Linkage legs would be most stable in this orientation and allow greater body width. This implementation, however, will result in an overall loss in body length. 
+
+\end{homeworkSection}
+\end{homeworkProblem}
+
+\clearpage
+
+\begin{homeworkProblem}[{Final Concept}]
+The following table (Table \ref{comparison1}1) compares the pros and cons of each design concept in order to analyze the merits and shortfalls of each concept.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{cccccc}
+\hline
+\multicolumn{2}{c}{\cellcolor[HTML]{E3E3E3}{\color[HTML]{000000} \textbf{Design Concept 1}}} & \multicolumn{2}{c}{\cellcolor[HTML]{E3E3E3}{\color[HTML]{000000} \textbf{Design Concept 2}}} & \multicolumn{2}{c}{\cellcolor[HTML]{E3E3E3}{\color[HTML]{000000} \textbf{Design Concept 3}}} \\ \hline
+\multicolumn{1}{c|}{\textbf{Pros}} & \multicolumn{1}{c|}{\textbf{Cons}} & \multicolumn{1}{c|}{\textbf{Pros}} & \multicolumn{1}{c|}{\textbf{Cons}} & \multicolumn{1}{c|}{\textbf{Pros}} & \textbf{Cons} \\ \hline
+\multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Great\\ stability\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}May be\\ heavy\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}High\\ stability\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}More\\ complex\\ mechanism\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Improved\\ longitudinal\\ stability\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Limited\\ longitudinal\\ length\end{tabular} \\ \hline
+\multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Reasonable\\ speed\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Difficult\\ body\\ assembly\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Good\\ maneuverability\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Low\\ protection\\ of parts\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Higher\\ speed\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Difficult\\ part\\ placement\end{tabular} \\ \hline
+\multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Good\\ maneuverability\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Difficult\\ access\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Easier\\ assembly\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Limit\\ lateral\\ space/width\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}More\\ lateral\\ width\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Difficult\\ to assemble\end{tabular} \\ \hline
+\multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Good\\ part\\ orientation\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Limited\\ lateral\\ space/width\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Ease\\ of access\end{tabular}} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \begin{tabular}[c]{@{}c@{}}More\\ machining\\ required\end{tabular} \\ \hline
+\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}More\\ gears\\ required\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Less\\ gears\\ needed\end{tabular}} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  \\ \hline
+\end{tabular}
+
+\label{comparison1}
+\caption{Table of pros and cons for each of the three design concepts}
+\end{table}
+
+Given the pros and cons of each, a combination of the leg design from concept 1 and the body design from concept 2 was decided upon. This provides a good speed design, a simple but functional body design, as well as good weight distribution with the gears placed at the back, while the battery pack placed is at the front.\\
+
+Figure 3.1 below shows a conceptual feature plan of the above chosen design:
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=1\columnwidth]{ModulePlanView-Conceptual}
+    \caption{Conceptual feature plan and component placement diagram}
+    \label{moduleplanview1}
+  \end{center}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.8\columnwidth]{KlannLinkageDiagram}
+    \caption{Diagram of the Klann Linkage System}
+    \label{klannLinkage1}
+  \end{center}
+\end{figure}
+
+\begin{homeworkSection}{Other Design Considerations}
+The Jansen linkage was another concept that we considered for the legs. Its primary advantage over the Klann linkage is that it is notably faster. It is also more stable when dealing with obstacles. Despite this, however, the linkage system as well as its complex implementation would be considerably more difficult. The increased number of linkages per leg would make assembly as well as dimensioning and optimizing very difficult. This is the primary reason why we decided not to consider it for our final design.
 \end{homeworkSection}
 
-\end{homeworkProblem}
-\end{document}
+\begin{homeworkSection}{Potential Improvements}
+One possible design improvement would be to implement the use of oval gears instead of circular for the final output gear. By doing this with the correct orientation, the legs would have a longer contact time with the ground as the downward motion would be slower. This would serve to increase the torque of each leg. As well as this, the upward leg motion would be faster, resulting in a shorter stride time and an overall increase in speed because a smaller gear ratio would then be used.\\
 
+As mentioned above, the legs should be shortened and widened, offering more height to the body, lower center of gravity for stability and extra strength in the legs.
+\end{homeworkSection}
+\end{homeworkProblem}
+
+%----------------------------------------------------------------------------------------
+% PRELIMINARY CALCULATIONS
+%----------------------------------------------------------------------------------------
+\begin{homeworkProblem}[{Preliminary Calculations}]
+\begin{homeworkSection}{Gear Ratio}
+
+The gear ratio is entirely dependent of the minimum torque that would be required per leg in order to move the robot forward. As per the specifications, the output rpm of the motors is too high to directly drive the legs whilst providing enough torque to overcome the inertia of the body. An initial calculation for the minimum torque would be enough to determine the best gear ratio.\\
+
+\begin{equation}
+  \text{Torque} = \text{force}\times\text{distance}
+\end{equation}
+
+The weight of the overall design, as well as its perpendicular distance from the legs in contact with the ground would easily determine the minimum torque needed in order to drive the robot. \\
+
+Mass of Robot = 510g \\
+Distance from Leg = 7.5 cm
+
+\begin{equation*}
+\begin{split}
+  \therefore \text{Torque} &= \frac{510\left(7.5\right)}{2}\\
+                           &\approx 1913 \text{g}\cdot\text{cm}
+\end{split}
+\end{equation*}
+
+Given that the ratio of the input and output torque would be the same as the gear ratio, the final gear ratio would therefore be:
+
+\begin{equation*}
+\begin{split}
+  \text{Ratio} &= \frac{1913}{220} \\
+               &\approx 9
+\end{split}
+\end{equation*}
+
+The gear arrangement can be seen in Fig. 3.1. 
+
+\end{homeworkSection}
+
+\begin{homeworkSection}{Weight Budget}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\rowcolor[HTML]{D9D9D9} 
+\textbf{Item/Material}                                                        & \textbf{Mass (g)} \\ \hline
+Gears/sprockets                                                               & 50                \\ \hline
+Nuts and Bolts                                                                & 30                \\ \hline
+Legs (Perspex and Wood)                                                       & 100               \\ \hline
+Pins                                                                          & 20                \\ \hline
+Rubber Feet                                                                   & 10                \\ \hline
+\begin{tabular}[c]{@{}c@{}}Body/Casing \\ (Perspex and Wood)\end{tabular}     & 135               \\ \hline
+\begin{tabular}[c]{@{}c@{}}PCB (including components\\ and wire)\end{tabular} & 175               \\ \hline
+Battery                                                                       & 20                \\ \hline
+\rowcolor[HTML]{D9FFA4} 
+\multicolumn{1}{|r|}{\cellcolor[HTML]{D9FFA4}\textbf{TOTAL}}                  & 510               \\ \hline
+\end{tabular}
+
+\label{weightBudget1}
+\caption{Table showing a budget of the weight of the robot by individual components/materials}
+\end{table}
+
+\end{homeworkSection}
+\end{homeworkProblem}
+
+\end{document}
 %----------------------------------------------------------------------------------------
 % INSTRUCTIONS AND TEMPLATE COMPONENTS
 %----------------------------------------------------------------------------------------
