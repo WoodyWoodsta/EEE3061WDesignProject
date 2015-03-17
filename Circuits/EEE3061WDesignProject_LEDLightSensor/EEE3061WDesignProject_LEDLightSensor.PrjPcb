@@ -43,7 +43,7 @@ AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
 AnnotateSuffix=
 AnnotateScope=All
-AnnotateOrder=-1
+AnnotateOrder=0
 DoLibraryUpdate=1
 DoDatabaseUpdate=1
 ClassGenCCAutoEnabled=1
@@ -124,7 +124,7 @@ OutputDefault3=0
 Name=Documentation Outputs
 Description=
 TargetPrinter=Virtual Printer
-PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
+PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=2|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=Assembler Source Print
 OutputName1=Assembler Source Prints
 OutputDocumentPath1=
@@ -903,6 +903,36 @@ UpdateCurrentModels=1
 SelectedOnly=0
 UpdateVariants=1
 PartTypes=0
+ComponentLibIdentifierKind0=Library Name And Type
+ComponentLibraryIdentifier0=Miscellaneous Devices.IntLib
+ComponentDesignItemID0=2N3904
+ComponentSymbolReference0=2N3904
+ComponentUpdate0=1
+ComponentIsDeviceSheet0=0
+ComponentLibIdentifierKind1=Library Name And Type
+ComponentLibraryIdentifier1=Miscellaneous Devices.IntLib
+ComponentDesignItemID1=Cap
+ComponentSymbolReference1=Cap
+ComponentUpdate1=1
+ComponentIsDeviceSheet1=0
+ComponentLibIdentifierKind2=Library Name And Type
+ComponentLibraryIdentifier2=Miscellaneous Devices.IntLib
+ComponentDesignItemID2=LED0
+ComponentSymbolReference2=LED0
+ComponentUpdate2=1
+ComponentIsDeviceSheet2=0
+ComponentLibIdentifierKind3=Library Name And Type
+ComponentLibraryIdentifier3=Miscellaneous Devices.IntLib
+ComponentDesignItemID3=Res1
+ComponentSymbolReference3=Res1
+ComponentUpdate3=1
+ComponentIsDeviceSheet3=0
+ComponentLibIdentifierKind4=Library Name Only
+ComponentLibraryIdentifier4=Altium Content Vault
+ComponentDesignItemID4=CMP-0055-00153-1
+ComponentSymbolReference4=AMP-OPA-LM158-8
+ComponentUpdate4=1
+ComponentIsDeviceSheet4=0
 
 [Comparison Options]
 ComparisonOptions0=Kind=Net|MinPercent=75|MinMatch=3|ShowMatch=-1|Confirm=-1|UseName=-1|InclAllRules=0
