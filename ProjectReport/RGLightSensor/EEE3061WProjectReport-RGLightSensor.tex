@@ -1,0 +1,233 @@
+\input{woodamble}                                                       % Custom preamble
+%----------------------------------------------------------------------------------------
+% NAME AND CLASS SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\hmwkTitle}{RG Light Sensor Report} % Assignment title
+\newcommand{\hmwkDueDate}{Wednesday,\ September\ 03,\ 2014}                    % Due date
+\newcommand{\hmwkClass}{EEE3061W - Mechatronics Design}                    % Course/class
+\newcommand{\hmwkClassTime}{10:30am}                                 % Class/lecture time
+\newcommand{\hmwkClassInstructor}{Jones}                               % Teacher/lecturer
+\newcommand{\hmwkAuthorName}{Team 13}    % Your name
+\newcommand{\hmwkDepartment}{Department of Electrical Engineering}           % Department
+
+%----------------------------------------------------------------------------------------
+% TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title{
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.4\columnwidth]{uct-logo}
+  \end{center}
+\end{figure}
+\textmd{\Huge UNIVERSITY OF CAPETOWN \\ \LARGE \hmwkDepartment} \\
+\vspace{2in}
+\textmd{\textbf{\LARGE \hmwkClass \\ \Huge Biathlon Robot \\ \hmwkTitle \\ \vspace{1.5in} \Large Team 13 \\  WDXSEA003 \textbar\space PRSSAM004 \textbar\space RJDYAR001 \textbar\space STRIBR001}}\\
+%\normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate}\\
+%\vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+}
+
+\date{}
+
+%========================================================================================
+%========================================================================================
+
+\begin{document}
+
+\maketitle
+\clearpage
+
+%----------------------------------------------------------------------------------------
+% ABTRACT
+%----------------------------------------------------------------------------------------
+\setcounter{tocdepth}{2}                                                      % ToC Depth
+
+% \begin{abstract}
+% This preliminary report covers the conceptual design stage of the EEE3061W Mechatronics Design 2015 project involving the design and manufacture of a bi-athletic robot.  This robot is to partake in a sprint as well as throw a weighted ping-pong ball.
+
+% \end{abstract}
+% \newpage
+
+%----------------------------------------------------------------------------------------
+% TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+% \clearpage
+
+% \tableofcontents
+
+% \clearpage
+
+% \listoffigures
+% \listoftables
+
+% \clearpage
+
+%----------------------------------------------------------------------------------------
+% NOMENCLATURE
+%----------------------------------------------------------------------------------------
+
+%----------------------------------------------------------------------------------------
+% INTRODUCTION
+%----------------------------------------------------------------------------------------
+\begin{homeworkProblem}[{Introduction}]
+This report covers the design and build of an Red\(\slash\)Green Light Detecting Sensor (hereafter referred to as RG Sensor) as part of the EEE3061W Mechatronics Design Project involving the building of a biathletic robot.
+\end{homeworkProblem}
+
+%----------------------------------------------------------------------------------------
+% CIRCUIT DIAGRAM
+%----------------------------------------------------------------------------------------
+\begin{homeworkProblem}[Circuit Diagram]
+Figure \ref{schematic1} shows the complete circuit diagram for the light sensor including the sensing, ambient sensing, indication and digital output portions of the circuit.
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=1.5\columnwidth, angle=90]{LightSensorSchematic}
+    \caption{Complete circuit diagram of the RG Light Sensor}
+    \label{schematic1}
+  \end{center}
+\end{figure}
+
+
+\end{homeworkProblem}
+
+
+%----------------------------------------------------------------------------------------
+% CIRCUIT DIAGRAM
+%----------------------------------------------------------------------------------------
+\begin{homeworkProblem}[Brief Explanation and Calculations]
+The team took on a slightly unorthodox approach to sensing the different coloured sources of light in that the sensing is performed by LEDs themselves.  The LM358N is set up in a comparator configuration, one for sensing red light and the other for sensing green light.  Another addition made was the use of same types of LEDs as secondary sensors to sense the ambient light intensity in the immediate environment.  These provide a reference voltage level which, theoretically speaking, will be accurate in any environment with respect to the ambient light levels.  Apart from this ability to adapt, having the LEDs provide the voltage for the reference level for the comparator meant the sensor does not draw any current to do so.  The entire passive element of the sensing portion of the circuit is not connected to the source and hence draws nothing from it.  This is very well aligned with the power consumption design goal.  Unfortunately, the red LED picked up light from the green source, due to the fact that the source is not exactly green.  This meant that a ``small'' amount of combinational logic had to be implemented to result in the correct outputs.\\
+
+The voltage outputs from the sensing LEDs (both for ambient and actual light) were scaled using resistor dividers which were calculated so as to get accurate results from the comparator.  Table 1 shows the voltage levels from the sensors acquired through the tests.\\
+
+\begin{table}[h]
+\centering
+\label{data}
+\begin{tabular}{c|c|c|c|c|c|c|}
+\cline{2-7}
+                           & \multicolumn{3}{c|}{\cellcolor[HTML]{EFEFEF}{\color[HTML]{000000} RED SENSOR (mV)}} & \multicolumn{3}{c|}{\cellcolor[HTML]{EFEFEF}{\color[HTML]{000000} GREEN SENSOR (mV)}} \\ \cline{2-7} 
+                           & Off (Ambient)               & Red Source               & Green Source               & Off (Ambient)                & Red Source                & Green Source               \\ \hline
+\multicolumn{1}{|c|}{20cm} & 10                          & 910                      & 800                        & 6                            & 7                         & 300                        \\ \hline
+\multicolumn{1}{|c|}{30cm} & 10                          & 700                      & 770                        & 6                            & 7                         & 230                        \\ \hline
+\end{tabular}
+\caption{Table showing results from sensor tests}
+
+\end{table}
+
+The above values were used to calculate the correct ratios to divide the output of the sensing LEDs for the opamp.\\
+
+A 3.3V Linear Voltage Regulator was used to provide a rail for the switching components which provide the digital outputs.  All switching and combinational logic was implemeted using BC550 NPN transistors.
+
+\end{homeworkProblem}
+
+%----------------------------------------------------------------------------------------
+% BOM
+%----------------------------------------------------------------------------------------
+\begin{homeworkProblem}[Bill of Materials]
+The next page shows a bill of materials for the above design.
+
+\end{homeworkProblem}
+\end{document}
+%----------------------------------------------------------------------------------------
+% INSTRUCTIONS AND TEMPLATE COMPONENTS
+%----------------------------------------------------------------------------------------
+
+% Document is structured in --> [document]
+%                                 [homeworkProblem]
+%                                   [homeworkSection]
+%                                     [COMPONENTS]
+
+% Set space - \vspace{length}
+% Horizontal line - \hrule
+% Pagebreak - \clearpage or \newpage - they seem to do the same thing
+
+% Normal equation:
+% \begin{equation}
+%   p = \frac{p_g - k}{m}
+% \end{equation}
+
+% Aligned equation:
+% \begin{equation}
+%   \begin{split}
+%     \rho_5  & = -\frac{\left(1575-1900\right)}{g\left(105\e{-3}-70\e{-3}\right)}\\
+%             & = 946.56 \text{ kg/m\(^{-3}\)}\\
+%     \rho_6  & = -\frac{\left(1900-2150\right)}{g\left(70\e{-3}-42\e{-3}\right)}\\
+%             & = 910.15 \text{ kg/m\(^{-3}\)}\\
+%   \end{split}
+% \end{equation}
+
+% Table: Can get from the table site!
+% \begin{table}[h]
+% \centering
+% \begin{tabular}{cccc}
+% \multicolumn{4}{c}{\cellcolor[HTML]{EFEFEF}DATA MEASUREMENTS} \\ \hline
+% \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Known Weight \\ Pressure (Psi)\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Known Weight\\ Pressure (Bar)\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Gauge Pressure\\ (Psi)\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Gauge Pressure\\ (Bar)\end{tabular} \\ \hline
+% \multicolumn{1}{c|}{22} & \multicolumn{1}{c|}{1.52} & \multicolumn{1}{c|}{9.43} & 0.65 \\
+% \multicolumn{1}{c|}{\textbf{27}} & \multicolumn{1}{c|}{\textbf{1.86}} & \multicolumn{1}{c|}{\textbf{13.78}} & \textbf{0.95} \\
+% \multicolumn{1}{c|}{32} & \multicolumn{1}{c|}{2.21} & \multicolumn{1}{c|}{17.40} & 1.20 \\
+% \multicolumn{1}{c|}{37} & \multicolumn{1}{c|}{2.55} & \multicolumn{1}{c|}{21.76} & 1.50 \\
+% \multicolumn{1}{c|}{42} & \multicolumn{1}{c|}{2.90} & \multicolumn{1}{c|}{26.11} & 1.80 \\
+% \multicolumn{1}{c|}{47} & \multicolumn{1}{c|}{3.24} & \multicolumn{1}{c|}{29.01} & 2.00 \\
+% \multicolumn{1}{c|}{\textbf{52}} & \multicolumn{1}{c|}{\textbf{3.59}} & \multicolumn{1}{c|}{\textbf{33.36}} & \textbf{2.30} \\
+% \multicolumn{1}{c|}{57} & \multicolumn{1}{c|}{3.93} & \multicolumn{1}{c|}{37.71} & 2.60 \\ \hline
+% \end{tabular}
+% \caption{Dead weight tester and gauge measurements}
+% \label{gaugeMeasurements}
+% \end{table}
+
+% Picture:
+% \begin{figure}[H]
+%   \begin{center}
+%     \includegraphics[width=0.4\columnwidth]{MEC2022SLab1Exp1}
+%     \caption{Apparatus}
+%     \label{liquidDiagram}
+%   \end{center}
+% \end{figure}
+
+% Graph:
+% \begin{figure}[H]
+%   \centering
+%   \begin{tikzpicture}
+%     \begin{axis}[
+%       xlabel=Known Weight (Psi),
+%       ylabel=Reading (Psi),
+%       grid=major]
+%     \addplot[color=red, smooth] coordinates {
+%       (22,9.43)
+%       (27,13.78)
+%     };
+%     \addlegendentry{Gauge}
+    
+%     \addplot[color=blue, dashed, smooth] coordinates {
+%       (22,22)
+%       (27,27)
+%     };
+%     \addlegendentry{Known weight}
+    
+%     \end{axis}
+%   \end{tikzpicture}
+%   \caption{Dead weight tester and gauge measurements}
+%   \label{gaugePlot}
+% \end{figure}
+
+% Indented Text: (bit of a hacky way to do it)
+% \begin{quote}
+% where \(p_g\) is the gauge reading, \(m\) is the error coefficient, \(p\) is the known (``correct'') pressure and \(k\) is the error constant
+% \end{quote}
+
+% Code Snippet:
+% \begin{lstlisting}
+% .model AKM02 D(Is=1.5n Rs=.5 Cjo=80p M=0.3 Vj=1 nbv=3 bv=6.2 Ibv=1m Vpk=6.2 mfg=OnSemi type=zener)
+% \end{lstlisting}
+
+% Bibliography:
+% \begin{thebibliography}{99}
+%   \bibitem{itemname}
+%   Author,
+%   Date.
+%   \emph{Title}.
+%   Edition.
+%   Press.
+%   \url{http://web.iitd.ac.in/~shouri/eel201/tuts/diode_switch.pdf}
+% \end{thebibliography}
