@@ -72,14 +72,62 @@
 % INTRODUCTION
 %----------------------------------------------------------------------------------------
 \begin{homeworkProblem}[{Introduction}]
+This report covers the design and build of an Red\(\slash\)Green Light Detecting Sensor (hereafter referred to as RG Sensor) as part of the EEE3061W Mechatronics Design Project involving the building of a biathletic robot.
+\end{homeworkProblem}
+
+%----------------------------------------------------------------------------------------
+% CIRCUIT DIAGRAM
+%----------------------------------------------------------------------------------------
+\begin{homeworkProblem}[Circuit Diagram]
+Figure \ref{schematic1} shows the complete circuit diagram for the light sensor including the sensing, ambient sensing, indication and digital output portions of the circuit.
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=1.5\columnwidth, angle=90]{LightSensorSchematic}
+    \caption{Complete circuit diagram of the RG Light Sensor}
+    \label{schematic1}
+  \end{center}
+\end{figure}
+
+
+\end{homeworkProblem}
+
+
+%----------------------------------------------------------------------------------------
+% CIRCUIT DIAGRAM
+%----------------------------------------------------------------------------------------
+\begin{homeworkProblem}[Brief Explanation and Calculations]
+The team took on a slightly unorthodox approach to sensing the different coloured sources of light in that the sensing is performed by LEDs themselves.  The LM358N is set up in a comparator configuration, one for sensing red light and the other for sensing green light.  Another addition made was the use of same types of LEDs as secondary sensors to sense the ambient light intensity in the immediate environment.  These provide a reference voltage level which, theoretically speaking, will be accurate in any environment with respect to the ambient light levels.  Apart from this ability to adapt, having the LEDs provide the voltage for the reference level for the comparator meant the sensor does not draw any current to do so.  The entire passive element of the sensing portion of the circuit is not connected to the source and hence draws nothing from it.  This is very well aligned with the power consumption design goal.  Unfortunately, the red LED picked up light from the green source, due to the fact that the source is not exactly green.  This meant that a ``small'' amount of combinational logic had to be implemented to result in the correct outputs.\\
+
+The voltage outputs from the sensing LEDs (both for ambient and actual light) were scaled using resistor dividers which were calculated so as to get accurate results from the comparator.  Table 1 shows the voltage levels from the sensors acquired through the tests.\\
+
+\begin{table}[h]
+\centering
+\label{data}
+\begin{tabular}{c|c|c|c|c|c|c|}
+\cline{2-7}
+                           & \multicolumn{3}{c|}{\cellcolor[HTML]{EFEFEF}{\color[HTML]{000000} RED SENSOR (mV)}} & \multicolumn{3}{c|}{\cellcolor[HTML]{EFEFEF}{\color[HTML]{000000} GREEN SENSOR (mV)}} \\ \cline{2-7} 
+                           & Off (Ambient)               & Red Source               & Green Source               & Off (Ambient)                & Red Source                & Green Source               \\ \hline
+\multicolumn{1}{|c|}{20cm} & 10                          & 910                      & 800                        & 6                            & 7                         & 300                        \\ \hline
+\multicolumn{1}{|c|}{30cm} & 10                          & 700                      & 770                        & 6                            & 7                         & 230                        \\ \hline
+\end{tabular}
+\caption{Table showing results from sensor tests}
+
+\end{table}
+
+The above values were used to calculate the correct ratios to divide the output of the sensing LEDs for the opamp.\\
+
+A 3.3V Linear Voltage Regulator was used to provide a rail for the switching components which provide the digital outputs.  All switching and combinational logic was implemeted using BC550 NPN transistors.
 
 \end{homeworkProblem}
 
 %----------------------------------------------------------------------------------------
-% DESIGN CONCEPTS
+% BOM
 %----------------------------------------------------------------------------------------
+\begin{homeworkProblem}[Bill of Materials]
+The next page shows a bill of materials for the above design.
 
-
+\end{homeworkProblem}
 \end{document}
 %----------------------------------------------------------------------------------------
 % INSTRUCTIONS AND TEMPLATE COMPONENTS

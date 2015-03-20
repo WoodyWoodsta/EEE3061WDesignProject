@@ -1,0 +1,20 @@
+Field=Comment~String~Comment~100|Field=Description~String~Description~100|Field=Designator~String~Designator~100|Field=Footprint~String~Footprint~100|Field=LibRef~String~LibRef~100|Field=Quantity~Integer~Quantity~100|ReportField=Currency~<none>|ReportField=ProductionQuantity~1|ReportField=ProjectFileName~EEE3061WDesignProject_LEDLightSensor.PrjPcb|ReportField=ProjectFullPath~C:\_ITDev\Projects\EEE3061WDesignProject\Circuits\EEE3061WDesignProject_LEDLightSensor\EEE3061WDesignProject_LEDLightSensor.PrjPcb|ReportField=Title~Bill of Materials For Project [EEE3061WDesignProject_LEDLightSensor.PrjPcb] (No PCB Document Selected)|ReportField=TotalQuantity~37|ReportField=ReportTime~08:22:55 AM|ReportField=ReportDate~2015-03-20|ReportField=ReportDateTime~2015-03-20 08:22:55 AM|ReportField=OutputName~Bill of Materials|ReportField=OutputType~BOM_PartType|ReportField=GeneratorName~BOM|ReportField=GeneratorDescription~Bill of Materials|ReportField=VariantName~None|ReportField=Address1~|ReportField=Address2~|ReportField=Address3~|ReportField=Address4~|ReportField=Application_BuildNumber~|ReportField=ApprovedBy~|ReportField=Author~|ReportField=CheckedBy~|ReportField=CompanyName~|ReportField=ConfigurationParameters~|ReportField=ConfiguratorName~|ReportField=CurrentDate~|ReportField=CurrentTime~|ReportField=Date~|ReportField=DocumentFullPathAndName~|ReportField=DocumentName~|ReportField=DocumentNumber~|ReportField=DrawnBy~|ReportField=Engineer~|ReportField=ImagePath~|ReportField=IsUserConfigurable~|ReportField=ModifiedDate~|ReportField=Organization~|ReportField=PageSetup~Record=PageOptions:CenterHorizontal=True:CenterVertical=True:PrintScale=1.00:XCorrection=1.00:YCorrection=1.00:PrintKind=1:BorderSize=5000000:LeftOffset=0:BottomOffset=0:Orientation=2:PaperLength=2970:PaperWidth=2100:Scale=100:PaperSource=7:PrintQuality=600:MediaType=1:DitherType=10:PrintScaleMode=1:PaperKind=A4:PaperIndex=9|ReportField=ProjectName~|ReportField=Revision~4|ReportField=Rule~|ReportField=SheetNumber~1|ReportField=SheetTotal~1|ReportField=Time~|ReportField=Title~EEE3061WDesignProject - Active Light Sensor|ReportField=VersionControl_RevNumber~|ReportField=DataSourceFileName~EEE3061WDesignProject_LEDLightSensor.PrjPcb|ReportField=DataSourceFullPath~C:\_ITDev\Projects\EEE3061WDesignProject\Circuits\EEE3061WDesignProject_LEDLightSensor\EEE3061WDesignProject_LEDLightSensor.PrjPcb
+9V|Multicell Battery|BT1|BAT-2|Battery|1
+10nF|Capacitor|C1, C2|RAD-0.3|Cap|2
+1uF|Capacitor|C3, C4|RAD-0.3|Cap|2
+Sensor RED|Typical INFRARED GaAs LED|D1|LED-0|LED0|1
+Sensor GREEN|Typical INFRARED GaAs LED|D2|LED-0|LED0|1
+Ambient RED|Typical INFRARED GaAs LED|D3|LED-0|LED0|1
+Ambient GREEN|Typical INFRARED GaAs LED|D4|LED-0|LED0|1
+Indicator RED|Typical INFRARED GaAs LED|D5|LED-0|LED0|1
+Indicator GREEN|Typical INFRARED GaAs LED|D6|LED-0|LED0|1
+BC55|NPN General Purpose Amplifier|Q1, Q2, Q3, Q4, Q5, Q6, Q7|TO-92A|2N3904|7
+8M2|Resistor|R1, R2, R5, R6|AXIAL-0.3|Res1|4
+1M|Resistor|R3, R4, R15, R16, R17|AXIAL-0.3|Res1|5
+2M2|Resistor|R7|AXIAL-0.3|Res1|1
+1M8|Resistor|R8|AXIAL-0.3|Res1|1
+10K|Resistor|R9, R10, R12|AXIAL-0.3|Res1|3
+330|Resistor|R11, R13|AXIAL-0.3|Res1|2
+100K|Resistor|R14|AXIAL-0.3|Res1|1
+LM358N/NOPB|Low Power Dual Operational Amplifier, 8-pin MDIP, Pb-Free|U1|N08E|CMP-0055-00153-1|1
+LM78L033|Voltage Regulator|VR1|D2PAK_N|Volt Reg|1
