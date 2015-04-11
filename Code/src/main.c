@@ -1,25 +1,25 @@
-//
-// This file is part of the GNU ARM Eclipse distribution.
-// Copyright (c) 2014 Liviu Ionescu.
-//
+/*
+ * ============================================================================
+ * EEE3061W Design Project
+ * ============================================================================
+ *
+ * @file      | main.c
+ * @brief     | Main program file
+ * @authors   | Team 13
+ *
+ * This is the main C file, holds initializations and high level execution
+ *
+ * Traces can be output using trace_puts() for strings or trace_printf() for
+ * formatted strings
+ *
+ * ============================================================================
+ */
 
-// ----------------------------------------------------------------------------
-
+// == Includes ==
 #include <stdio.h>
-#include "diag/Trace.h"
+#include "diag/Trace.h" // Trace output via STDOUT
 
-// ----------------------------------------------------------------------------
-//
-// Standalone STM32F0 empty sample (trace via $(trace)).
-//
-// Trace support is enabled by adding the TRACE macro definition.
-// By default the trace messages are forwarded to the $(trace) output,
-// but can be rerouted to any device or completely suppressed, by
-// changing the definitions required in system/src/diag/trace_impl.c
-// (currently OS_USE_TRACE_ITM, OS_USE_TRACE_SEMIHOSTING_DEBUG/_STDOUT).
-//
-
-// ----- main() ---------------------------------------------------------------
+// == Defines ==
 
 // Sample pragmas to cope with warnings. Please note the related line at
 // the end of this function, used to pop the compiler diagnostics status.
@@ -28,10 +28,11 @@
 #pragma GCC diagnostic ignored "-Wmissing-declarations"
 #pragma GCC diagnostic ignored "-Wreturn-type"
 
+// == Global Variables ==
+
+// == Declarations ==
+
 int main(int argc, char* argv[]) {
-  trace_puts("This is a test trace...");
-  // At this stage the system clock should have already been configured
-  // at high speed.
 
   // Infinite loop
   while (1) {
