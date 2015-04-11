@@ -1,37 +1,25 @@
 /*
- * -----------------------------------------
- * EEE3061W MECHATRONICS DESIGN PROJECT 2015
- * -----------------------------------------
+ * ============================================================================
+ * EEE3061W Design Project
+ * ============================================================================
  *
- * @file: main.c
- * @description: Main source file
- * @authors: Team 13
+ * @file      | main.c
+ * @brief     | Main program file
+ * @authors   | Team 13
  *
+ * This is the main C file, holds initializations and high level execution
+ *
+ * Traces can be output using trace_puts() for strings or trace_printf() for
+ * formatted strings
+ *
+ * ============================================================================
  */
 
-// ----------------------------------------------------------------------------
-// == Includes
+// == Includes ==
 #include <stdio.h>
-#include "diag/Trace.h" // In case we would like to use trace output
+#include "diag/Trace.h" // Trace output via STDOUT
 
-// == Defines
-#define EVER ;;
-#define STM32F051
-
-// ----------------------------------------------------------------------------
-//
-// Standalone STM32F0 empty sample (trace via $(trace)).
-//
-// Trace support is enabled by adding the TRACE macro definition.
-// By default the trace messages are forwarded to the $(trace) output,
-// but can be rerouted to any device or completely suppressed, by
-// changing the definitions required in system/src/diag/trace_impl.c
-// (currently OS_USE_TRACE_ITM, OS_USE_TRACE_SEMIHOSTING_DEBUG/_STDOUT).
-//
-
-// == Global Variables
-
-// == Global Declarations
+// == Defines ==
 
 // Sample pragmas to cope with warnings. Please note the related line at
 // the end of this function, used to pop the compiler diagnostics status.
@@ -40,18 +28,15 @@
 #pragma GCC diagnostic ignored "-Wmissing-declarations"
 #pragma GCC diagnostic ignored "-Wreturn-type"
 
-/*
- * ============================================================================
- * @brief   | Main program execution
- * @param   | none
- * @return  | 0 (never)
- * ============================================================================
- */
+// == Global Variables ==
+
+// == Declarations ==
 
 int main(int argc, char* argv[]) {
-  // TODO: Add some code!
+
   // Infinite loop
   while (1) {
+    // Add your code here.
   }
 }
 
