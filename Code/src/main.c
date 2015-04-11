@@ -1,4 +1,4 @@
-/*
+/**
  * ============================================================================
  * EEE3061W Design Project
  * ============================================================================
@@ -48,21 +48,22 @@ int main(int argc, char* argv[]) {
   lcd_init();
   lcd_command(LCD_CLEAR_DISPLAY);
   lcd_string("Hello World");
-//  init_leds();
+  init_leds();
 
   init_spi();
   setup_gyro_registers();
 
   for (;;) {
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
-//      ;
-//    half_on();
+      ;
+    half_on();
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
-//      ;
-//    other_half_on();
-    trace_puts("Checking gyro");
+      ;
+    other_half_on();
+
+    trace_puts("Checking gyro...");
     getGyro(gyro);
-    trace_printf("Gyro value 1 is: %d", gyro[0]);
+    trace_printf("Gyro value 1 is: %f \n", gyro[0]);
   }
 
   return 0;

@@ -14,6 +14,14 @@ void init_leds(void) {
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 }
+
+/**
+ * @brief Turn half of the LEDs on
+ * @param None
+ * @retval None
+ */
+// TODO: Move to correct file
+
 void half_on() {
   GPIO_SetBits(GPIOB, GPIO_Pin_0);
   GPIO_ResetBits(GPIOB, GPIO_Pin_1);
@@ -24,6 +32,14 @@ void half_on() {
   GPIO_SetBits(GPIOB, GPIO_Pin_6);
   GPIO_ResetBits(GPIOB, GPIO_Pin_7);
 }
+
+/**
+ * @brief Turn the other half of the LEDs on
+ * @param None
+ * @retval None
+ */
+// TODO: Move to correct file
+
 void other_half_on() {
   GPIO_ResetBits(GPIOB, GPIO_Pin_0);
   GPIO_SetBits(GPIOB, GPIO_Pin_1);
@@ -79,7 +95,7 @@ void init_spi() {
   SPI_InitStructure.SPI_DataSize = SPI_DataSize_16b;
   SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
   SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
-  SPI_InitStructure.SPI_NSS = SPI_NSS_Soft | SPI_NSSInternalSoft_Set;
+  SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
   SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;
   SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
   SPI_InitStructure.SPI_CRCPolynomial = 7;
@@ -95,13 +111,16 @@ void init_spi() {
  */
 
 void setup_gyro_registers(void) {
-  // Check if the gyro is responding or not
-  if (writeSPIgyro(0x0, 0x00) == 0b11010100) {
-    trace_puts("Gyro is saying hello!");
+  // Write config to slave registers
+  writeSPIgyro(0x23, 0b01000000); // Set the MSB to be first address
+  writeSPIgyro(0x20, 0b00001111); // Switch the gyro into Normal Mode and enable all axes
 
-    // Write config to slave registers
-    writeSPIgyro(0x23, 0b01000000); // Set the MSB to be first address
-    writeSPIgyro(0x20, 0b00001111); // Switch the gyro into Normal Mode and enable all axes
+  // Check if the gyro is responding or not
+  uint8_t whoAmI = writeSPIgyro(0x0, 0x01);
+  trace_printf("WHO_AM_I = %d", whoAmI);
+
+  if (whoAmI == 0b11010100) {
+    trace_puts("Gyro is saying hello!");
   } else {
     trace_puts("Gyro is not responding");
   }
@@ -117,15 +136,16 @@ void getGyro(float* out) {
   uint8_t crtlB;
 
   crtlB = (uint8_t) writeSPIgyro(0b10100011, 0x00); // Determines what range the gyro is in (250dps, 500dps or 2000dps)
+  trace_printf("Range = %d", crtlB);
 
   uint8_t status = writeSPIgyro(0x27, 0x00);
   while (((status & 0b1000) == 0) || ((status & 0b10000000) == 1)) {
     // Wait for data to become available
   }
 
-  uint8_t gyroXL = writeSPIgyro(0x28, 0x00);
-  uint8_t gyroXH = writeSPIgyro(0x29, 0x00);
-  uint8_t gyroYL = writeSPIgyro(0x2A, 0x00);
+  uint8_t gyroXL = writeSPIgyro(0x28, 0x01);
+  uint8_t gyroXH = writeSPIgyro(0x29, 0x01);
+  uint8_t gyroYL = writeSPIgyro(0x2A, 0x01);
   uint8_t gyroYH = writeSPIgyro(0x2B, 0x00);
   uint8_t gyroZL = writeSPIgyro(0x2C, 0x00);
   uint8_t gyroZH = writeSPIgyro(0x2D, 0x00);
@@ -212,6 +232,7 @@ uint8_t writeSPIgyro(uint8_t regAdr, uint8_t data) {
 
   uint16_t concatData = (uint16_t) regAdr | (uint16_t) data << 8; // Concatenate the address and the data
   SPI_I2S_SendData16(SPI2, concatData); //send the data
+
   while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET) {
     //Wait for data
   }
