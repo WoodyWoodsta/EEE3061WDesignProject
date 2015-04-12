@@ -116,7 +116,7 @@ void setup_gyro_registers(void) {
   writeSPIgyro(0x20, 0b00001111); // Switch the gyro into Normal Mode and enable all axes
 
   // Check if the gyro is responding or not
-  uint8_t whoAmI = writeSPIgyro(0x0, 0x01);
+  uint8_t whoAmI = writeSPIgyro(0x0, 0x80);
   trace_printf("WHO_AM_I = %d", whoAmI);
 
   if (whoAmI == 0b11010100) {
@@ -143,9 +143,9 @@ void getGyro(float* out) {
     // Wait for data to become available
   }
 
-  uint8_t gyroXL = writeSPIgyro(0x28, 0x01);
-  uint8_t gyroXH = writeSPIgyro(0x29, 0x01);
-  uint8_t gyroYL = writeSPIgyro(0x2A, 0x01);
+  uint8_t gyroXL = writeSPIgyro(0x28, 0x80);
+  uint8_t gyroXH = writeSPIgyro(0x29, 0x80);
+  uint8_t gyroYL = writeSPIgyro(0x2A, 0x80);
   uint8_t gyroYH = writeSPIgyro(0x2B, 0x00);
   uint8_t gyroZL = writeSPIgyro(0x2C, 0x00);
   uint8_t gyroZH = writeSPIgyro(0x2D, 0x00);
@@ -279,3 +279,15 @@ static void delay(uint32_t delay_in_us) {
     __asm("nop");
   }
 }
+
+/**
+ * @brief Check the WHO_AM_I register to see if SPI communications is up and riding
+ * @param None
+ * @retval None
+ */
+
+void checkSPIResponse() {
+  uint8_t SPIResponse = writeSPIgyro(0x0, 0x80);
+  trace_printf("SPIgyro Responded with %u\n", (uint8_t) SPIResponse);
+}
+

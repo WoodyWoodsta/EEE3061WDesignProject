@@ -35,4 +35,6 @@ static void delay(uint32_t delay_in_us);
 void half_on(void);
 void other_half_on(void);
 
+void checkSPIResponse();
+
 #endif /* SPIGYRO_LIB_H_ */

@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
   volatile uint32_t delay_counter = 0;
 
   for (delay_counter = 0; delay_counter < 655350; delay_counter++)
-    ; // Start up delay
+    ; // Start up delay - Not entirely sure why we need this?
   for (delay_counter = 0; delay_counter < 655350; delay_counter++)
     ;
   for (delay_counter = 0; delay_counter < 655350; delay_counter++)
@@ -51,19 +51,21 @@ int main(int argc, char* argv[]) {
   init_leds();
 
   init_spi();
-  setup_gyro_registers();
+//  setup_gyro_registers();
 
   for (;;) {
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
       ;
+    checkSPIResponse();
     half_on();
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
       ;
+    checkSPIResponse();
     other_half_on();
 
-    trace_puts("Checking gyro...");
-    getGyro(gyro);
-    trace_printf("Gyro value 1 is: %f \n", gyro[0]);
+//    trace_puts("Checking gyro...");
+//    getGyro(gyro);
+//    trace_printf("Gyro value 1 is: %f \n", gyro[0]);
   }
 
   return 0;
