@@ -138,7 +138,7 @@ void getGyro(float* out) {
   crtlB = (uint8_t) writeSPIgyro(0b10100011, 0x00); // Determines what range the gyro is in (250dps, 500dps or 2000dps)
   trace_printf("Range = %d", crtlB);
 
-  uint8_t status = writeSPIgyro(0x27, 0x00);
+  uint8_t status = writeSPIgyro(0x27, 0x80);
   while (((status & 0b1000) == 0) || ((status & 0b10000000) == 1)) {
     // Wait for data to become available
   }
@@ -252,14 +252,14 @@ int16_t twosCompToDec16(uint16_t val) // For 16 bit
 
   if ((v & (1 << 15))) {
     isNeg = TRUE;
+    v = v^(0xFFFF);
+    // Add 1
+    v++;
   }
-
-  // Subtract 1
-  v--;
 
   // Convert to dec
   uint8_t pos;
-  for (pos = 0; pos < 15; pos++) {
+  for (pos = 0; pos <= 15; pos++) {
     temp = temp + ((v & (1 << pos))*pow(2, 4));
   }
 
