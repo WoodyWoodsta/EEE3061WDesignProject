@@ -2,6 +2,12 @@
 
 #include "spiGyro_lib.h"
 
+/**
+ * @brief Initialise the pins for the LEDs
+ * @param None
+ * @retval None
+ */
+
 void init_leds(void) {
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -63,19 +69,28 @@ void init_spi() {
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB | RCC_AHBPeriph_GPIOA, ENABLE);
 
-  // CS: Chip select pin (PB12) which simply outputs 1 to disable chip and 0 to enable chip
+  // CS: Gyro chip select pin (PA8) which simply outputs 1 to disable chip and 0 to enable chip
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8; // CSN = B12
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+  // CS: EEPROM Chip select pin (PB12) which simply outputs 1 to disable chip and 0 to enable chip
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12; // CSN = B12
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_Level_3;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  chipDeSelect();
+  EEPROMChipDeselect();
+  gyroChipDeselect();
 
-  // SPI Pins: PB13 - SCK, PB14 - MISO (SDO), PB15 - MOSI (SDI)
+  // SPI Pins: PB13 - SCK, PB14 - MISO (SDO), PB15 - MOSI (SDI/SDA)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_Level_3;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
@@ -112,11 +127,11 @@ void init_spi() {
 
 void setup_gyro_registers(void) {
   // Write config to slave registers
-  writeSPIgyro(0x23, 0b01000000); // Set the MSB to be first address
+  writeSPIgyro(0x23, 0b00000000); // Set the MSB to be first address
   writeSPIgyro(0x20, 0b00001111); // Switch the gyro into Normal Mode and enable all axes
 
   // Check if the gyro is responding or not
-  uint8_t whoAmI = writeSPIgyro(0x0, 0x80);
+  uint8_t whoAmI = writeSPIgyro(0x0F, 0x80);
   trace_printf("WHO_AM_I = %d", whoAmI);
 
   if (whoAmI == 0b11010100) {
@@ -196,22 +211,42 @@ void getGyro(float* out) {
 }
 
 /**
- * @brief Select the SPI slave chip to start communication
+ * @brief Select the gyro slave chip to start communication
  * @param None
  * @retval None
  */
 
-void chipSelect() {
+void gyroChipSelect() {
+  GPIO_ResetBits(GPIOA, GPIO_Pin_8);
+}
+
+/**
+ * @brief Deselect the gyro slave chip to start communication
+ * @param None
+ * @retval None
+ */
+
+void gyroChipDeselect() {
+  GPIO_SetBits(GPIOA, GPIO_Pin_8);
+}
+
+/**
+ * @brief Select the EEPROM slave chip to start communication
+ * @param None
+ * @retval None
+ */
+
+void EEPROMChipSelect() {
   GPIO_ResetBits(GPIOB, GPIO_Pin_12);
 }
 
 /**
- * @brief Deselect the SPI slave chip to start communication
+ * @brief Deselect the EEPROM slave chip to start communication
  * @param None
  * @retval None
  */
 
-void chipDeSelect() {
+void EEPROMChipDeselect() {
   GPIO_SetBits(GPIOB, GPIO_Pin_12);
 }
 
@@ -224,7 +259,7 @@ void chipDeSelect() {
 uint8_t writeSPIgyro(uint8_t regAdr, uint8_t data) {
   uint8_t dummyVar; // Holds the dummy data from the address register (send to receive)
   uint32_t actualData;
-  chipSelect();
+  gyroChipSelect();
   delay(10);
   while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET) {
     // Wait for all transmissions to complete
@@ -240,9 +275,15 @@ uint8_t writeSPIgyro(uint8_t regAdr, uint8_t data) {
   delay(200); // Delay for transmission, if you speed up the SPI then you can decrease this delay
   uint8_t badData = SPI_ReceiveData8(SPI2); // Unwanted data
   actualData = SPI_ReceiveData8(SPI2); // The actual data
-  chipDeSelect();
+  gyroChipDeselect();
   return (uint8_t) actualData;
 }
+
+/**
+ * @brief Converts a 16-bit 2's complement binary number into a 16-bit signed decimal
+ * @param val: 2's complement binary number to be converted
+ * @retval Converted 16-bit signed decimal
+ */
 
 int16_t twosCompToDec16(uint16_t val) // For 16 bit
 {
@@ -270,6 +311,12 @@ int16_t twosCompToDec16(uint16_t val) // For 16 bit
   return (int16_t) temp;
 }
 
+/**
+ * @brief Creates a delay for a set number of microseconds
+ * @param delay_in_us: Delay in microseconds
+ * @retval None
+ */
+
 static void delay(uint32_t delay_in_us) {
   /* Hangs for specified number of microseconds. */
   volatile uint32_t counter = 0;
@@ -287,7 +334,7 @@ static void delay(uint32_t delay_in_us) {
  */
 
 void checkSPIResponse() {
-  uint8_t SPIResponse = writeSPIgyro(0x0, 0x80);
+  uint8_t SPIResponse = writeSPIgyro(0x8F, 0x0);
   trace_printf("SPIgyro Responded with %u\n", (uint8_t) SPIResponse);
 }
 
