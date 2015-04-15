@@ -90,7 +90,7 @@ void init_spi() {
 
   // SPI Pins: PB13 - SCK, PB14 - MISO (SDO), PB15 - MOSI (SDI/SDA)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
@@ -269,7 +269,7 @@ uint8_t writeSPIgyro(uint8_t regAdr, uint8_t data) {
   SPI_I2S_SendData16(SPI2, concatData); //send the data
 
   while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET) {
-    //Wait for data
+    // Wait for data
   }
 
   delay(200); // Delay for transmission, if you speed up the SPI then you can decrease this delay
@@ -334,7 +334,10 @@ static void delay(uint32_t delay_in_us) {
  */
 
 void checkSPIResponse() {
-  uint8_t SPIResponse = writeSPIgyro(0x8F, 0x0);
+  uint8_t SPIResponse = (uint8_t) writeSPIgyro(0b10001111, 0x0);
   trace_printf("SPIgyro Responded with %u\n", (uint8_t) SPIResponse);
+  char SPIResponseChar[16];
+  sprintf(SPIResponseChar, "%u", SPIResponse);
+  lcd_two_line_write("Gyro said:", SPIResponseChar);
 }
 

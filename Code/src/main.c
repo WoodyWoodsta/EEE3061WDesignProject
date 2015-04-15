@@ -37,7 +37,6 @@ float gyro[3];
 int main(int argc, char* argv[]) {
 
   volatile uint32_t delay_counter = 0;
-
   for (delay_counter = 0; delay_counter < 655350; delay_counter++)
     ; // Start up delay - Not entirely sure why we need this?
   for (delay_counter = 0; delay_counter < 655350; delay_counter++)

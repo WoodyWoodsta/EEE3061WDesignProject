@@ -23,18 +23,22 @@
 #define FALSE 0
 #define TRUE 1
 
-void init_leds(void);
 void init_spi(void);
-void chipSelect(void);
-void chipDeSelect(void);
+void gyroChipSelect();
+void gyroChipDeselect();
+void EEPROMChipSelect();
+void EEPROMChipDeselect();
 uint8_t writeSPIgyro(uint8_t regAdr, uint8_t data);
 void setup_gyro_registers(void);
 void getGyro(float* out);
+void checkSPIResponse();
+
 int16_t twosCompToDec16(uint16_t val);
 static void delay(uint32_t delay_in_us);
+
+void init_leds(void);
 void half_on(void);
 void other_half_on(void);
 
-void checkSPIResponse();
 
 #endif /* SPIGYRO_LIB_H_ */
