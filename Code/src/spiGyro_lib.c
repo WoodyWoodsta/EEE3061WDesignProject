@@ -1,6 +1,30 @@
-//-f interface/stlink-v2.cfg -f target/stm32f0x_stlink.cfg
+/**
+ * ============================================================================
+ * EEE3061W Design Project
+ * ============================================================================
+ *
+ * @file      | spiGyro_lib.c
+ * @brief     | LD3G20 3-Axis Gyro Library (SPI)
+ * @authors   | Team 13
+ *
+ * This library is for use with the STM LD3D20 3-axis gyro sensor for the
+ * EEE3061W Mechatronics Design Project.  It covers most of the operation of
+ * the sensor required for the robot.
+ *
+ * Traces can be output using trace_puts() for strings or trace_printf() for
+ * formatted strings
+ *
+ * ============================================================================
+ */
 
+// == Includes ==
 #include "spiGyro_lib.h"
+
+// == Defines ==
+//#define CAPTURE // This enables data capture via semihosting trace, micro will not run when trace
+                // methods are called and the micro is not being debugged by Eclipse - don't ask me why
+
+// == Declarations ==
 
 /**
  * @brief Initialise the pins for the LEDs
@@ -70,7 +94,7 @@ void init_spi() {
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB | RCC_AHBPeriph_GPIOA, ENABLE);
 
   // CS: Gyro chip select pin (PA8) which simply outputs 1 to disable chip and 0 to enable chip
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8; // CSN = B12
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8; // CSN = PA8
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -78,7 +102,7 @@ void init_spi() {
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 
   // CS: EEPROM Chip select pin (PB12) which simply outputs 1 to disable chip and 0 to enable chip
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12; // CSN = B12
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12; // CSN = PB12
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -266,13 +290,13 @@ uint8_t writeSPIgyro(uint8_t regAdr, uint8_t data) {
   }
 
   uint16_t concatData = (uint16_t) regAdr | (uint16_t) data << 8; // Concatenate the address and the data
-  SPI_I2S_SendData16(SPI2, concatData); //send the data
+  SPI_I2S_SendData16(SPI2, concatData); // Send the data
 
   while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_RXNE) == RESET) {
     // Wait for data
   }
 
-  delay(50); // Delay for transmission, if you speed up the SPI then you can decrease this delay
+  delay(200); // Delay for transmission, if you speed up the SPI then you can decrease this delay
   uint8_t badData = SPI_ReceiveData8(SPI2); // Unwanted data
   actualData = SPI_ReceiveData8(SPI2); // The actual data
   gyroChipDeselect();
@@ -336,7 +360,11 @@ static void delay(uint32_t delay_in_us) {
 
 void checkSPIResponse() {
   uint8_t SPIResponse = (uint8_t) writeSPIgyro(0b10001111, 0b10101010);
+
+#ifdef CAPTURE
   trace_printf("SPIgyro Responded with %u\n", (uint8_t) SPIResponse);
+#endif
+
   char SPIResponseChar[16];
   sprintf(SPIResponseChar, "%u",(uint8_t) SPIResponse);
   lcd_two_line_write("Gyro said:", SPIResponseChar);

@@ -12,6 +12,8 @@
  * Traces can be output using trace_puts() for strings or trace_printf() for
  * formatted strings
  *
+ * OpenOCD Config: -f interface/stlink-v2.cfg -f target/stm32f0x_stlink.cfg
+ *
  * ============================================================================
  */
 
@@ -21,6 +23,8 @@
 #include "diag/Trace.h" // Trace output via STDOUT
 
 // == Defines ==
+#define CAPTURE // This enables data capture via semihosting trace, micro will not run when trace
+                // methods are called and the micro is not being debugged by Eclipse - don't ask me why
 
 // Sample pragmas to cope with warnings. Please note the related line at
 // the end of this function, used to pop the compiler diagnostics status.
@@ -30,7 +34,6 @@
 #pragma GCC diagnostic ignored "-Wreturn-type"
 
 // == Global Variables ==
-float gyro[3];
 
 // == Declarations ==
 
