@@ -90,16 +90,16 @@ void init_spi() {
 
   // SPI Pins: PB13 - SCK, PB14 - MISO (SDO), PB15 - MOSI (SDI/SDA)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
   // Set SPI pins to AF0 (SPI2xxx)
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource13, GPIO_AF_0);
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource14, GPIO_AF_0);
-  GPIO_PinAFConfig(GPIOB, GPIO_PinSource15, GPIO_AF_0);
+//  GPIO_PinAFConfig(GPIOB, GPIO_PinSource13, GPIO_AF_0);
+//  GPIO_PinAFConfig(GPIOB, GPIO_PinSource14, GPIO_AF_0);
+//  GPIO_PinAFConfig(GPIOB, GPIO_PinSource15, GPIO_AF_0);
 
   // SPI Initialization
   SPI_InitTypeDef SPI_InitStructure;
@@ -107,7 +107,7 @@ void init_spi() {
   SPI_I2S_DeInit(SPI2); // De-init the SPI2 to reset
   SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
   SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-  SPI_InitStructure.SPI_DataSize = SPI_DataSize_16b;
+  SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
   SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
   SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
   SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
@@ -127,18 +127,18 @@ void init_spi() {
 
 void setup_gyro_registers(void) {
   // Write config to slave registers
-  writeSPIgyro(0x23, 0b00000000); // Set the MSB to be first address
-  writeSPIgyro(0x20, 0b00001111); // Switch the gyro into Normal Mode and enable all axes
+  writeSPIgyro(0x23, 0b10000000); // Set the BDU to enabled
+  writeSPIgyro(0x20, 0b11111111); // Switch the gyro into Normal Mode, enable all axes and set highest data transfer frequency
 
   // Check if the gyro is responding or not
-  uint8_t whoAmI = writeSPIgyro(0x0F, 0x80);
-  trace_printf("WHO_AM_I = %d", whoAmI);
+//  uint8_t whoAmI = writeSPIgyro(0x8F, 0x0);
+//  trace_printf("WHO_AM_I = %u", whoAmI);
 
-  if (whoAmI == 0b11010100) {
-    trace_puts("Gyro is saying hello!");
-  } else {
-    trace_puts("Gyro is not responding");
-  }
+//  if (whoAmI == 0b11010100) {
+//    trace_puts("Gyro is saying hello!");
+//  } else {
+//    trace_puts("Gyro is not responding");
+//  }
 }
 
 /**
@@ -153,7 +153,7 @@ void getGyro(float* out) {
   crtlB = (uint8_t) writeSPIgyro(0b10100011, 0x00); // Determines what range the gyro is in (250dps, 500dps or 2000dps)
   trace_printf("Range = %d", crtlB);
 
-  uint8_t status = writeSPIgyro(0x27, 0x80);
+  uint8_t status = writeSPIgyro(0xA7, 0x00);
   while (((status & 0b1000) == 0) || ((status & 0b10000000) == 1)) {
     // Wait for data to become available
   }
@@ -272,7 +272,7 @@ uint8_t writeSPIgyro(uint8_t regAdr, uint8_t data) {
     // Wait for data
   }
 
-  delay(200); // Delay for transmission, if you speed up the SPI then you can decrease this delay
+  delay(50); // Delay for transmission, if you speed up the SPI then you can decrease this delay
   uint8_t badData = SPI_ReceiveData8(SPI2); // Unwanted data
   actualData = SPI_ReceiveData8(SPI2); // The actual data
   gyroChipDeselect();
@@ -293,6 +293,7 @@ int16_t twosCompToDec16(uint16_t val) // For 16 bit
 
   if ((v & (1 << 15))) {
     isNeg = TRUE;
+    // Invert bits
     v = v^(0xFFFF);
     // Add 1
     v++;
@@ -334,10 +335,10 @@ static void delay(uint32_t delay_in_us) {
  */
 
 void checkSPIResponse() {
-  uint8_t SPIResponse = (uint8_t) writeSPIgyro(0b10001111, 0x0);
+  uint8_t SPIResponse = (uint8_t) writeSPIgyro(0b10001111, 0b10101010);
   trace_printf("SPIgyro Responded with %u\n", (uint8_t) SPIResponse);
   char SPIResponseChar[16];
-  sprintf(SPIResponseChar, "%u", SPIResponse);
+  sprintf(SPIResponseChar, "%u",(uint8_t) SPIResponse);
   lcd_two_line_write("Gyro said:", SPIResponseChar);
 }
 

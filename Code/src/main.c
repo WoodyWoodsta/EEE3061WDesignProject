@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
   init_leds();
 
   init_spi();
-//  setup_gyro_registers();
+  setup_gyro_registers();
 
   for (;;) {
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
