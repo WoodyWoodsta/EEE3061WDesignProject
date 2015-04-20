@@ -54,18 +54,20 @@ int main(int argc, char* argv[]) {
   setup_gyro_registers();
 
   for (;;) {
-    for (delay_counter = 0; delay_counter < 655350; delay_counter++)
-      ;
-    trace_puts("Checking gyro...");
     getGyro(gyro);
-    prettyTraceGyro(gyro);
-    half_on();
-    for (delay_counter = 0; delay_counter < 655350; delay_counter++)
-      ;
-    trace_puts("Checking gyro...");
-    getGyro(gyro);
-    prettyTraceGyro(gyro);
-    other_half_on();
+    prettyLCDGyro(gyro);
+//    for (delay_counter = 0; delay_counter < 655350; delay_counter++)
+//      ;
+//    trace_puts("Checking gyro...");
+//    getGyro(gyro);
+//    prettyTraceGyro(gyro);
+//    half_on();
+//    for (delay_counter = 0; delay_counter < 655350; delay_counter++)
+//      ;
+//    trace_puts("Checking gyro...");
+//    getGyro(gyro);
+//    prettyTraceGyro(gyro);
+//    other_half_on();
   }
 
   return 0;

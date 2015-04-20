@@ -494,4 +494,5 @@
 			<resource resourceType="PROJECT" workspacePath="/EEE3061WDesignProjectCode"/>
 		</configuration>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

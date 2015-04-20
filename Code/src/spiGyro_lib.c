@@ -173,8 +173,11 @@ void getGyro(float* out) {
   uint8_t crtlB;
 
   crtlB = (uint8_t) writeSPIgyro(0b10100011, 0x00); // Determines what range the gyro is in (250dps, 500dps or 2000dps)
+#ifdef CAPTURE
   trace_printf("Range = %d\n", crtlB);
+#endif
 
+  delay(200000);
   uint8_t status = writeSPIgyro(0xA7, 0x00);
   while (((status & 0b1000) == 0) || ((status & 0b10000000) == 1)) {
     // Wait for data to become available
@@ -281,6 +284,51 @@ void prettyTraceGyro(float *input) {
   trace_puts(result);
 #endif
 
+}
+
+/**
+ * @brief Convert the float input, truncate to 4 decimal places and print to screen
+ * @param input: Float array of gyro values obtained using getGyro();
+ * @retval None
+ */
+
+void prettyLCDGyro(float *gyro) {
+  char resultLine1[16];
+  char resultLine2[16];
+  float value;
+  int32_t Xint_d;
+  int32_t Xfrac_d;
+  float Xfrac_f;
+  int32_t Yint_d;
+  int32_t Yfrac_d;
+  float Yfrac_f;
+  int32_t Zint_d;
+  int32_t Zfrac_d;
+  float Zfrac_f;
+
+  // X Value
+  value = gyro[0];
+  Xint_d = value;
+  Xfrac_f = value - Xint_d;
+  Xfrac_d = fabs(trunc(Xfrac_f * 10000));
+
+  // Y Value
+  value = gyro[1];
+  Yint_d = value;
+  Yfrac_f = value - Yint_d;
+  Yfrac_d = fabs(trunc(Yfrac_f * 10000));
+
+  // Z Value
+//  value = gyro[2];
+//  Zint_d = value;
+//  Zfrac_f = value - int_d;
+//  Zfrac_d = fabs(trunc(frac_f * 10000));
+
+  // Format and Print
+  sprintf(resultLine1, "X:%d.%d", Xint_d, Xfrac_d);
+  sprintf(resultLine2, "Y:%d.%d", Yint_d, Yfrac_d);
+
+  lcd_two_line_write(resultLine1, resultLine2);
 }
 
 /**
