@@ -21,8 +21,6 @@
 #include "spiGyro_lib.h"
 
 // == Defines ==
-//#define CAPTURE // This enables data capture via semihosting trace, micro will not run when trace
-                // methods are called and the micro is not being debugged by Eclipse - don't ask me why
 
 // == Declarations ==
 
@@ -116,7 +114,7 @@ void init_spi() {
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
@@ -175,19 +173,19 @@ void getGyro(float* out) {
   uint8_t crtlB;
 
   crtlB = (uint8_t) writeSPIgyro(0b10100011, 0x00); // Determines what range the gyro is in (250dps, 500dps or 2000dps)
-  trace_printf("Range = %d", crtlB);
+  trace_printf("Range = %d\n", crtlB);
 
   uint8_t status = writeSPIgyro(0xA7, 0x00);
   while (((status & 0b1000) == 0) || ((status & 0b10000000) == 1)) {
     // Wait for data to become available
   }
 
-  uint8_t gyroXL = writeSPIgyro(0x28, 0x80);
-  uint8_t gyroXH = writeSPIgyro(0x29, 0x80);
-  uint8_t gyroYL = writeSPIgyro(0x2A, 0x80);
-  uint8_t gyroYH = writeSPIgyro(0x2B, 0x00);
-  uint8_t gyroZL = writeSPIgyro(0x2C, 0x00);
-  uint8_t gyroZH = writeSPIgyro(0x2D, 0x00);
+  uint8_t gyroXL = writeSPIgyro(0xA8, 0x0);
+  uint8_t gyroXH = writeSPIgyro(0xA9, 0x0);
+  uint8_t gyroYL = writeSPIgyro(0xAA, 0x0);
+  uint8_t gyroYH = writeSPIgyro(0xAB, 0x0);
+  uint8_t gyroZL = writeSPIgyro(0xAC, 0x0);
+  uint8_t gyroZH = writeSPIgyro(0xAD, 0x0);
 
   uint8_t buffer[6];
 
@@ -232,6 +230,57 @@ void getGyro(float* out) {
     }
     break;
   }
+}
+
+/**
+ * @brief Convert the float input, truncate to 4 decimal places and trace to the debugger
+ * @param input: Float array of gyro values obtained using getGyro();
+ * @retval None
+ */
+
+void prettyTraceGyro(float *input) {
+  char result[50];
+  float value;
+  int32_t int_d;
+  int32_t frac_d;
+  float frac_f;
+
+  // X Value
+  value = gyro[0];
+  int_d = value;
+  frac_f = value - int_d;
+  frac_d = fabs(trunc(frac_f * 10000));
+
+  sprintf(result, "Gyro X value = %d.%d", int_d, frac_d);
+
+#ifdef CAPTURE
+  trace_puts(result);
+#endif
+
+  // Y Value
+  value = gyro[1];
+  int_d = value;
+  frac_f = value - int_d;
+  frac_d = fabs(trunc(frac_f * 10000));
+
+  sprintf(result, "Gyro Y value = %d.%d", int_d, frac_d);
+
+#ifdef CAPTURE
+  trace_puts(result);
+#endif
+
+  // Z Value
+  value = gyro[2];
+  int_d = value;
+  frac_f = value - int_d;
+  frac_d = fabs(trunc(frac_f * 10000));
+
+  sprintf(result, "Gyro Z value = %d.%d", int_d, frac_d);
+
+#ifdef CAPTURE
+  trace_puts(result);
+#endif
+
 }
 
 /**

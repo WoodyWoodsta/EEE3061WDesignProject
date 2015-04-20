@@ -46,6 +46,7 @@ void EEPROMChipDeselect();
 uint8_t writeSPIgyro(uint8_t regAdr, uint8_t data);
 void setup_gyro_registers(void);
 void getGyro(float* out);
+void prettyTraceGyro(float *input);
 void checkSPIResponse();
 
 int16_t twosCompToDec16(uint16_t val);

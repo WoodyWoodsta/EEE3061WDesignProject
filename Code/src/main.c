@@ -23,8 +23,6 @@
 #include "diag/Trace.h" // Trace output via STDOUT
 
 // == Defines ==
-#define CAPTURE // This enables data capture via semihosting trace, micro will not run when trace
-                // methods are called and the micro is not being debugged by Eclipse - don't ask me why
 
 // Sample pragmas to cope with warnings. Please note the related line at
 // the end of this function, used to pop the compiler diagnostics status.
@@ -58,16 +56,16 @@ int main(int argc, char* argv[]) {
   for (;;) {
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
       ;
-    checkSPIResponse();
+    trace_puts("Checking gyro...");
+    getGyro(gyro);
+    prettyTraceGyro(gyro);
     half_on();
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
       ;
-    checkSPIResponse();
+    trace_puts("Checking gyro...");
+    getGyro(gyro);
+    prettyTraceGyro(gyro);
     other_half_on();
-
-//    trace_puts("Checking gyro...");
-//    getGyro(gyro);
-//    trace_printf("Gyro value 1 is: %f \n", gyro[0]);
   }
 
   return 0;
