@@ -20,6 +20,7 @@
 // == Includes ==
 #include <stdio.h>
 #include "spiGyro_lib.h"
+#include "TempSense_lib.h"
 #include "diag/Trace.h" // Trace output via STDOUT
 
 // == Defines ==
@@ -50,24 +51,29 @@ int main(int argc, char* argv[]) {
   lcd_string("Hello World");
   init_leds();
 
+//  init_adc_POTs();
+//  DMA_ADC_init();
+
+
+
   init_spi();
   setup_gyro_registers();
 
   for (;;) {
     getGyro(gyro);
     prettyLCDGyro(gyro);
-//    for (delay_counter = 0; delay_counter < 655350; delay_counter++)
-//      ;
-//    trace_puts("Checking gyro...");
-//    getGyro(gyro);
-//    prettyTraceGyro(gyro);
-//    half_on();
-//    for (delay_counter = 0; delay_counter < 655350; delay_counter++)
-//      ;
-//    trace_puts("Checking gyro...");
-//    getGyro(gyro);
-//    prettyTraceGyro(gyro);
-//    other_half_on();
+    for (delay_counter = 0; delay_counter < 655350; delay_counter++)
+      ;
+    trace_puts("Checking gyro...");
+    getGyro(gyro);
+    prettyTraceGyro(gyro);
+    half_on();
+    for (delay_counter = 0; delay_counter < 655350; delay_counter++)
+      ;
+    trace_puts("Checking gyro...");
+    getGyro(gyro);
+    prettyTraceGyro(gyro);
+    other_half_on();
   }
 
   return 0;
