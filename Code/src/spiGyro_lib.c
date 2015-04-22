@@ -5,6 +5,7 @@
  *
  * @file      | spiGyro_lib.c
  * @brief     | LD3G20 3-Axis Gyro Library (SPI)
+ * @pre       | gyr
  * @authors   | Team 13
  *
  * This library is for use with the STM LD3D20 3-axis gyro sensor for the
@@ -85,7 +86,7 @@ void other_half_on() {
  * @retval None
  */
 
-void init_spi() {
+void gyr_SPIInit() {
   GPIO_InitTypeDef GPIO_InitStructure;
 
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
@@ -149,8 +150,8 @@ void init_spi() {
 
 void setup_gyro_registers(void) {
   // Write config to slave registers
-  writeSPIgyro(0x23, 0b10000000); // Set the BDU to enabled
-  writeSPIgyro(0x20, 0b11111111); // Switch the gyro into Normal Mode, enable all axes and set highest data transfer frequency
+  gyr_writeSPIgyro(0x23, 0b10000000); // Set the BDU to enabled
+  gyr_writeSPIgyro(0x20, 0b11111111); // Switch the gyro into Normal Mode, enable all axes and set highest data transfer frequency
 
   // Check if the gyro is responding or not
 //  uint8_t whoAmI = writeSPIgyro(0x8F, 0x0);
@@ -169,26 +170,26 @@ void setup_gyro_registers(void) {
  * @retval None
  */
 
-void getGyro(float* out) {
+void gyr_getGyro(float* out) {
   uint8_t crtlB;
 
-  crtlB = (uint8_t) writeSPIgyro(0b10100011, 0x00); // Determines what range the gyro is in (250dps, 500dps or 2000dps)
+  crtlB = (uint8_t) gyr_writeSPIgyro(0b10100011, 0x00); // Determines what range the gyro is in (250dps, 500dps or 2000dps)
 #ifdef CAPTURE
   trace_printf("Range = %d\n", crtlB);
 #endif
 
   delay(200000);
-  uint8_t status = writeSPIgyro(0xA7, 0x00);
+  uint8_t status = gyr_writeSPIgyro(0xA7, 0x00);
   while (((status & 0b1000) == 0) || ((status & 0b10000000) == 1)) {
     // Wait for data to become available
   }
 
-  uint8_t gyroXL = writeSPIgyro(0xA8, 0x0);
-  uint8_t gyroXH = writeSPIgyro(0xA9, 0x0);
-  uint8_t gyroYL = writeSPIgyro(0xAA, 0x0);
-  uint8_t gyroYH = writeSPIgyro(0xAB, 0x0);
-  uint8_t gyroZL = writeSPIgyro(0xAC, 0x0);
-  uint8_t gyroZH = writeSPIgyro(0xAD, 0x0);
+  uint8_t gyroXL = gyr_writeSPIgyro(0xA8, 0x0);
+  uint8_t gyroXH = gyr_writeSPIgyro(0xA9, 0x0);
+  uint8_t gyroYL = gyr_writeSPIgyro(0xAA, 0x0);
+  uint8_t gyroYH = gyr_writeSPIgyro(0xAB, 0x0);
+  uint8_t gyroZL = gyr_writeSPIgyro(0xAC, 0x0);
+  uint8_t gyroZH = gyr_writeSPIgyro(0xAD, 0x0);
 
   uint8_t buffer[6];
 
@@ -241,7 +242,7 @@ void getGyro(float* out) {
  * @retval None
  */
 
-void prettyTraceGyro(float *input) {
+void gyr_prettyTraceGyro(float *input) {
   char result[50];
   float value;
   int32_t int_d;
@@ -292,7 +293,7 @@ void prettyTraceGyro(float *input) {
  * @retval None
  */
 
-void prettyLCDGyro(float *gyro) {
+void gyr_prettyLCDGyro(float *gyro) {
   char resultLine1[16];
   char resultLine2[16];
   float value;
@@ -377,7 +378,7 @@ void EEPROMChipDeselect() {
  * @retval Register data from the slave
  */
 
-uint8_t writeSPIgyro(uint8_t regAdr, uint8_t data) {
+uint8_t gyr_writeSPIgyro(uint8_t regAdr, uint8_t data) {
   uint8_t dummyVar; // Holds the dummy data from the address register (send to receive)
   uint32_t actualData;
   gyroChipSelect();
@@ -456,7 +457,7 @@ static void delay(uint32_t delay_in_us) {
  */
 
 void checkSPIResponse() {
-  uint8_t SPIResponse = (uint8_t) writeSPIgyro(0b10001111, 0b10101010);
+  uint8_t SPIResponse = (uint8_t) gyr_writeSPIgyro(0b10001111, 0b10101010);
 
 #ifdef CAPTURE
   trace_printf("SPIgyro Responded with %u\n", (uint8_t) SPIResponse);

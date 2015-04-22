@@ -20,7 +20,7 @@
 // == Includes ==
 #include <stdio.h>
 #include "spiGyro_lib.h"
-#include "TempSense_lib.h"
+#include "adcTempSense_lib.h"
 #include "diag/Trace.h" // Trace output via STDOUT
 
 // == Defines ==
@@ -55,26 +55,31 @@ int main(int argc, char* argv[]) {
 
 
 
-  init_spi();
+  gyr_SPIInit();
   setup_gyro_registers();
 
   for (;;) {
+<<<<<<< HEAD
     //temp_display();
 
 
     getGyro(gyro);
     prettyLCDGyro(gyro);
+=======
+    gyr_getGyro(gyro);
+    gyr_prettyLCDGyro(gyro);
+>>>>>>> Code: rename and refactor!
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
       ;
     trace_puts("Checking gyro...");
-    getGyro(gyro);
-    prettyTraceGyro(gyro);
+    gyr_getGyro(gyro);
+    gyr_prettyTraceGyro(gyro);
     half_on();
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
       ;
     trace_puts("Checking gyro...");
-    getGyro(gyro);
-    prettyTraceGyro(gyro);
+    gyr_getGyro(gyro);
+    gyr_prettyTraceGyro(gyro);
     other_half_on();
   }
 
