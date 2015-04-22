@@ -26,7 +26,7 @@
 #include <stm32f0xx_tim.h>
 #include "lcd_stm32f0.h"
 #include "stm32f0xx_adc.h"
-
+#include "stm32f0xx_dma.h"
 // ==Global Variables
 uint8_t val0;
 uint8_t val1;

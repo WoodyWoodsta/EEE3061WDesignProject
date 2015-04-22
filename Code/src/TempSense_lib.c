@@ -6,7 +6,7 @@ void temp_display(void){
  lcd_command(LCD_CLEAR_DISPLAY);
  val0= RegularConvData_Tab[0];
  sprintf(resultLine1, "T:%d", val0);
- lcd_two_line_write(resultLine1,"");
+ lcd_string(resultLine1);
 
 
 

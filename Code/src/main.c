@@ -51,8 +51,7 @@ int main(int argc, char* argv[]) {
   lcd_string("Hello World");
   init_leds();
 
-//  init_adc_POTs();
-//  DMA_ADC_init();
+  init_adc_POTs();
 
 
 
@@ -60,6 +59,9 @@ int main(int argc, char* argv[]) {
   setup_gyro_registers();
 
   for (;;) {
+    //temp_display();
+
+
     getGyro(gyro);
     prettyLCDGyro(gyro);
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
