@@ -27,13 +27,9 @@
 #include <stm32f0xx_tim.h>
 #include "lcd_stm32f0.h"
 #include "stm32f0xx_adc.h"
-<<<<<<< HEAD:Code/include/TempSense_lib.h
 #include "stm32f0xx_dma.h"
-// ==Global Variables
-=======
 
 // == Global Variables ==
->>>>>>> Code: rename and refactor!:Code/include/adcTempSense_lib.h
 uint8_t val0;
 uint8_t val1;
 uint8_t RegularConvData_Tab[2];

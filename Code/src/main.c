@@ -51,24 +51,14 @@ int main(int argc, char* argv[]) {
   lcd_string("Hello World");
   init_leds();
 
-  init_adc_POTs();
-
-
+  ats_tempSenseInit();
 
   gyr_SPIInit();
-  setup_gyro_registers();
+  gyr_setupRegisters();
 
   for (;;) {
-<<<<<<< HEAD
-    //temp_display();
+//    ats_tempDisplay();
 
-
-    getGyro(gyro);
-    prettyLCDGyro(gyro);
-=======
-    gyr_getGyro(gyro);
-    gyr_prettyLCDGyro(gyro);
->>>>>>> Code: rename and refactor!
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
       ;
     trace_puts("Checking gyro...");

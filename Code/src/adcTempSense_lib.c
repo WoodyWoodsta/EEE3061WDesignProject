@@ -27,7 +27,7 @@ void ats_tempDisplay (void) {
   val0 = RegularConvData_Tab[0];
   sprintf(resultLine1, "T:%d", val0);
 
-  lcd_two_line_write(resultLine1, "");
+  lcd_string(resultLine1);
 
 }
 

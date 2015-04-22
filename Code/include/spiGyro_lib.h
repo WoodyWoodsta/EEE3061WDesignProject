@@ -38,17 +38,17 @@
 float gyro[3];
 
 // == Declarations ==
-void init_spi(void);
+void gyr_SPIInit(void);
 void gyroChipSelect();
 void gyroChipDeselect();
 void EEPROMChipSelect();
 void EEPROMChipDeselect();
-uint8_t writeSPIgyro(uint8_t regAdr, uint8_t data);
-void setup_gyro_registers(void);
-void getGyro(float* out);
-void prettyTraceGyro(float *input);
-void prettyLCDGyro(float *gyro);
-void checkSPIResponse();
+uint8_t gyr_writeSPIgyro(uint8_t regAdr, uint8_t data);
+void gyr_setupRegisters(void);
+void gyr_getGyro(float* out);
+void gyr_prettyTraceGyro(float *input);
+void gyr_prettyLCDGyro(float *gyro);
+void gyr_checkSPIResponse();
 
 int16_t twosCompToDec16(uint16_t val);
 static void delay(uint32_t delay_in_us);

@@ -148,7 +148,7 @@ void gyr_SPIInit() {
  * @retval None
  */
 
-void setup_gyro_registers(void) {
+void gyr_setupRegisters(void) {
   // Write config to slave registers
   gyr_writeSPIgyro(0x23, 0b10000000); // Set the BDU to enabled
   gyr_writeSPIgyro(0x20, 0b11111111); // Switch the gyro into Normal Mode, enable all axes and set highest data transfer frequency
@@ -456,7 +456,7 @@ static void delay(uint32_t delay_in_us) {
  * @retval None
  */
 
-void checkSPIResponse() {
+void gyr_checkSPIResponse() {
   uint8_t SPIResponse = (uint8_t) gyr_writeSPIgyro(0b10001111, 0b10101010);
 
 #ifdef CAPTURE
