@@ -29,6 +29,7 @@ void ats_tempDisplay (void) {
 
   lcd_string(resultLine1);
 
+
 }
 
 void ats_tempSenseInit(void) {
