@@ -28,8 +28,6 @@ void ats_tempDisplay (void) {
   sprintf(resultLine1, "T:%d", val0);
 
   lcd_string(resultLine1);
-
-
 }
 
 void ats_tempSenseInit(void) {

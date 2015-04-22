@@ -26,61 +26,6 @@
 // == Declarations ==
 
 /**
- * @brief Initialise the pins for the LEDs
- * @param None
- * @retval None
- */
-
-void init_leds(void) {
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
-  GPIO_InitTypeDef GPIO_InitStructure;
-
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2
-      | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
-}
-
-/**
- * @brief Turn half of the LEDs on
- * @param None
- * @retval None
- */
-// TODO: Move to correct file
-
-void half_on() {
-  GPIO_SetBits(GPIOB, GPIO_Pin_0);
-  GPIO_ResetBits(GPIOB, GPIO_Pin_1);
-  GPIO_SetBits(GPIOB, GPIO_Pin_2);
-  GPIO_ResetBits(GPIOB, GPIO_Pin_3);
-  GPIO_SetBits(GPIOB, GPIO_Pin_4);
-  GPIO_ResetBits(GPIOB, GPIO_Pin_5);
-  GPIO_SetBits(GPIOB, GPIO_Pin_6);
-  GPIO_ResetBits(GPIOB, GPIO_Pin_7);
-}
-
-/**
- * @brief Turn the other half of the LEDs on
- * @param None
- * @retval None
- */
-// TODO: Move to correct file
-
-void other_half_on() {
-  GPIO_ResetBits(GPIOB, GPIO_Pin_0);
-  GPIO_SetBits(GPIOB, GPIO_Pin_1);
-  GPIO_ResetBits(GPIOB, GPIO_Pin_2);
-  GPIO_SetBits(GPIOB, GPIO_Pin_3);
-  GPIO_ResetBits(GPIOB, GPIO_Pin_4);
-  GPIO_SetBits(GPIOB, GPIO_Pin_5);
-  GPIO_ResetBits(GPIOB, GPIO_Pin_6);
-  GPIO_SetBits(GPIOB, GPIO_Pin_7);
-}
-
-/**
  * @brief Initialise the SPI2 peripheral for use with the L3GD20
  * @param None
  * @retval None
@@ -152,16 +97,6 @@ void gyr_setupRegisters(void) {
   // Write config to slave registers
   gyr_writeSPIgyro(0x23, 0b10000000); // Set the BDU to enabled
   gyr_writeSPIgyro(0x20, 0b11111111); // Switch the gyro into Normal Mode, enable all axes and set highest data transfer frequency
-
-  // Check if the gyro is responding or not
-//  uint8_t whoAmI = writeSPIgyro(0x8F, 0x0);
-//  trace_printf("WHO_AM_I = %u", whoAmI);
-
-//  if (whoAmI == 0b11010100) {
-//    trace_puts("Gyro is saying hello!");
-//  } else {
-//    trace_puts("Gyro is not responding");
-//  }
 }
 
 /**

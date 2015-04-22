@@ -5,6 +5,7 @@
  *
  * @file      | spiGyro_lib.h
  * @brief     | LD3G20 3-Axis Gyro Library Header (SPI)
+ * @pre       | gyr
  * @authors   | Team 13
  *
  * This header file for the spiGyro_lib.c library
@@ -52,10 +53,5 @@ void gyr_checkSPIResponse();
 
 int16_t twosCompToDec16(uint16_t val);
 static void delay(uint32_t delay_in_us);
-
-void init_leds(void);
-void half_on(void);
-void other_half_on(void);
-
 
 #endif /* SPIGYRO_LIB_H_ */

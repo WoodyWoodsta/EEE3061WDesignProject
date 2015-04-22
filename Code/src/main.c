@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include "spiGyro_lib.h"
 #include "adcTempSense_lib.h"
+#include "ledGPIOB_lib.h"
 #include "diag/Trace.h" // Trace output via STDOUT
 
 // == Defines ==
@@ -49,7 +50,7 @@ int main(int argc, char* argv[]) {
   lcd_init();
   lcd_command(LCD_CLEAR_DISPLAY);
   lcd_string("Hello World");
-  init_leds();
+  led_init();
 
   ats_tempSenseInit();
 
@@ -66,14 +67,14 @@ int main(int argc, char* argv[]) {
     gyr_getGyro(gyro);
     gyr_prettyTraceGyro(gyro);
     gyr_prettyLCDGyro(gyro);
-    half_on();
+    led_oddOn();
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
       ;
     trace_puts("Checking gyro...");
     gyr_getGyro(gyro);
     gyr_prettyTraceGyro(gyro);
     gyr_prettyLCDGyro(gyro);
-    other_half_on();
+    led_evenOn();
   }
 
   return 0;
