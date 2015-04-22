@@ -30,9 +30,10 @@
 #include "stm32f0xx_dma.h"
 
 // == Global Variables ==
-uint8_t val0;
-uint8_t val1;
-uint8_t RegularConvData_Tab[2];
+uint16_t val0;
+uint16_t val1;
+uint16_t ADC_Voltage;
+uint16_t RegularConvData_Tab[2];
 
 // == Defines ==
 
@@ -40,5 +41,7 @@ uint8_t RegularConvData_Tab[2];
 void ats_tempSenseInit(void);
 void ats_DMAInit(void);
 void ats_tempDisplay(void);
+uint16_t ats_getVoltage (void);
+void ats_tempDisplayNewMethod (void);
 
 #endif /* ADCTEMPSENSE_LIB_H_ */
