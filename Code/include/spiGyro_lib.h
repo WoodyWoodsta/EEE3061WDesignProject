@@ -37,6 +37,7 @@
 
 // == Global Variables ==
 float gyro[3];
+float gyro_angles[3];
 
 // == Declarations ==
 void gyr_SPIInit(void);

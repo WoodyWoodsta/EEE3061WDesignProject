@@ -97,6 +97,8 @@ void gyr_setupRegisters(void) {
   // Write config to slave registers
   gyr_writeSPIgyro(0x23, 0b10000000); // Set the BDU to enabled
   gyr_writeSPIgyro(0x20, 0b11111111); // Switch the gyro into Normal Mode, enable all axes and set highest data transfer frequency
+  gyr_writeSPIgyro(0x21, 0b00101001); // Set a high-range high-pass filter (to counter drift)
+  gyr_writeSPIgyro(0x24, 0b00010000); // Enable high-pass filter
 }
 
 /**

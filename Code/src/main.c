@@ -56,11 +56,10 @@ int main(int argc, char* argv[]) {
 
   gyr_SPIInit();
   gyr_setupRegisters();
-//  ats_tempDisplay();
 
   for (;;) {
-    ats_tempDisplayNewMethod();
-    trace_printf("%d\n",RegularConvData_Tab[0]);
+      ats_tempDisplayNewMethod();
+//    trace_printf("%d\n",RegularConvData_Tab[0]);
 
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
       ;

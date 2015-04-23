@@ -48,11 +48,16 @@ return ADC_Voltage;
 
 void ats_tempDisplayNewMethod (void) {
   char resultLine1[16];
+  char resultLine2[16];
   uint16_t temp;
   lcd_command(LCD_CLEAR_DISPLAY);
   temp = ats_getVoltage();
   sprintf(resultLine1, "mV:%d", temp);
+  temp = temp/10;
+  sprintf(resultLine2, "T:%d", temp);
   lcd_string(resultLine1);
+  lcd_command(LCD_GOTO_LINE_2);
+  lcd_string(resultLine2);
 }
 
 void ats_tempSenseInit(void) {
