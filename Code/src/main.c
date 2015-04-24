@@ -58,9 +58,12 @@ int main(int argc, char* argv[]) {
   gyr_SPIInit();
   gyr_setupRegisters();
 
-  for (;;) {
-    ats_tempDisplay();
 
+  for (;;) {
+    gyr_checkSPIResponse();
+    gyr_getGyro(gyro);
+    gyr_prettyLCDGyro(gyro);
+    gyr_prettyTraceGyro(gyro);
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
       ;
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
