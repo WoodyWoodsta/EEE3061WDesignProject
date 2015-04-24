@@ -59,11 +59,18 @@ uint16_t ats_getVoltage(void) {
  */
 
 uint16_t ats_getTemp(void) {
-  uint16_t voltage;
+  uint16_t arr_temp[20];
   uint16_t temp;
+  uint8_t icount;
+  uint16_t volts_sum;
+  volts_sum=0;
 
-  voltage = ats_getVoltage();
-  temp = voltage / 10;
+  for (icount = 0; icount < 20; ++icount) {  //averages out the sensor readings
+    arr_temp[icount] = ats_getVoltage()/10;
+    volts_sum=volts_sum+arr_temp[icount];
+  }
+
+  temp = volts_sum/20;
 
   return temp;
 }
