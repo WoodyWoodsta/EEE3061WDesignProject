@@ -47,6 +47,7 @@ int main(int argc, char* argv[]) {
   for (delay_counter = 0; delay_counter < 655350; delay_counter++)
     ;
 
+  // Initializations
   lcd_init();
   lcd_command(LCD_CLEAR_DISPLAY);
   lcd_string("Hello World");

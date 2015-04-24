@@ -240,9 +240,9 @@ void gyr_prettyLCDGyro(float *gyro) {
   int32_t Yint_d;
   int32_t Yfrac_d;
   float Yfrac_f;
-  int32_t Zint_d;
-  int32_t Zfrac_d;
-  float Zfrac_f;
+//  int32_t Zint_d; // Not using the Z data for now.. Will do soon, since it's the one we really care about
+//  int32_t Zfrac_d;
+//  float Zfrac_f;
 
   // X Value
   value = gyro[0];
