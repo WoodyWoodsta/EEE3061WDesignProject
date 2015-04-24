@@ -38,9 +38,8 @@ uint16_t ADCData[2];
 // == Declarations ==
 void ats_tempSenseInit(void);
 void ats_DMAInit(void);
-//void ats_tempDisplay(void);
 uint16_t ats_getVoltage(void);
 uint16_t ats_getTemp(void);
-void ats_tempDisplayNewMethod (void);
+void ats_tempDisplay(void);
 
 #endif /* ADCTEMPSENSE_LIB_H_ */

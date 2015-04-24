@@ -59,23 +59,12 @@ int main(int argc, char* argv[]) {
   gyr_setupRegisters();
 
   for (;;) {
-      ats_tempDisplayNewMethod();
-//    trace_printf("%d\n",RegularConvData_Tab[0]);
+    ats_tempDisplay();
 
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
       ;
-//    trace_puts("Checking gyro...");
-//    gyr_getGyro(gyro);
-//    gyr_prettyTraceGyro(gyro);
-//    gyr_prettyLCDGyro(gyro);
-//    led_oddOn();
     for (delay_counter = 0; delay_counter < 655350; delay_counter++)
       ;
-//    trace_puts("Checking gyro...");
-//    gyr_getGyro(gyro);
-//    gyr_prettyTraceGyro(gyro);
-//    gyr_prettyLCDGyro(gyro);
-//    led_evenOn();
   }
 
   return 0;

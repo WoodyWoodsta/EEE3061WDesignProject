@@ -20,22 +20,6 @@
 // == Includes ==
 #include "adcTempSense_lib.h"
 
-//void ats_tempDisplay(void) {
-//  char resultLine1[16];
-//  char resultLine2[16];
-//  lcd_command(LCD_CLEAR_DISPLAY);
-//  val0 = ADCData[0];
-////  val1 = 2.361341+0.083664*val0;
-//
-//  val1 = 3.2377937194828 + 0.08493537368387 * val0;
-//
-//  sprintf(resultLine1, "T:%d", val0);
-//  sprintf(resultLine2, "T:%d", val1);
-//  lcd_string(resultLine1);
-//  lcd_command(LCD_GOTO_LINE_2);
-//  lcd_string(resultLine2);
-//}
-
 /**
  * @brief Get data from the ADC and convert to voltage
  * @param None
@@ -81,7 +65,7 @@ uint16_t ats_getTemp(void) {
  * @retval None
  */
 
-void ats_tempDisplayNewMethod(void) {
+void ats_tempDisplay(void) {
   char resultLine1[16];
   char resultLine2[16];
 
@@ -95,6 +79,11 @@ void ats_tempDisplayNewMethod(void) {
   lcd_string(resultLine1);
   lcd_command(LCD_GOTO_LINE_2);
   lcd_string(resultLine2);
+
+#ifdef CAPTURE
+  trace_puts(resultLine1);
+  trace_puts(resultLine2);
+#endif
 }
 
 /**
