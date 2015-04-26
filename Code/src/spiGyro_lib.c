@@ -31,7 +31,8 @@
  * @retval None
  */
 
-void gyr_SPIInit() {
+void gyr_SPIInit(void) {
+  gyroState = GYROSTATE_OFF;
   GPIO_InitTypeDef GPIO_InitStructure;
 
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
@@ -85,6 +86,29 @@ void gyr_SPIInit() {
 
   SPI_Init(SPI2, &SPI_InitStructure);
   SPI_Cmd(SPI2, ENABLE);
+}
+
+/**
+ * @brief Initialise all modules required for operation
+ * @param None
+ * @retval None
+ */
+
+void gyr_opInit(void) {
+  // Setup TIM6 as opTimer to be used for gyro operation
+  RCC_APB1PeriphClockCmd(RCC_APB1ENR_TIM6EN, ENABLE); // Enable the RCC clock for TIM6
+  TIM_TimeBaseInitTypeDef opTimerBaseInitStructure;
+
+  TIM_Cmd(TIM6, DISABLE);
+  TIM_DeInit(TIM6); // Reset the timer to default values
+
+  TIM_TimeBaseStructInit(&opTimerBaseInitStructure);
+
+  opTimerBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  opTimerBaseInitStructure.TIM_Period = 0xFFFF; // Set the ARR to 100              | This gives us a max time of 65.535 sec
+  opTimerBaseInitStructure.TIM_Prescaler = 0xBB80; // Set the prescaler to 48000   | and a time-base of 1ms per LSB
+
+  TIM_TimeBaseInit(TIM6, &opTimerBaseInitStructure);
 }
 
 /**
@@ -275,7 +299,7 @@ void gyr_prettyLCDGyro(float *gyro) {
  * @retval None
  */
 
-void gyroChipSelect() {
+void gyroChipSelect(void) {
   GPIO_ResetBits(GPIOA, GPIO_Pin_8);
 }
 
@@ -285,7 +309,7 @@ void gyroChipSelect() {
  * @retval None
  */
 
-void gyroChipDeselect() {
+void gyroChipDeselect(void) {
   GPIO_SetBits(GPIOA, GPIO_Pin_8);
 }
 
@@ -295,7 +319,7 @@ void gyroChipDeselect() {
  * @retval None
  */
 
-void EEPROMChipSelect() {
+void EEPROMChipSelect(void) {
   GPIO_ResetBits(GPIOB, GPIO_Pin_12);
 }
 
@@ -305,7 +329,7 @@ void EEPROMChipSelect() {
  * @retval None
  */
 
-void EEPROMChipDeselect() {
+void EEPROMChipDeselect(void) {
   GPIO_SetBits(GPIOB, GPIO_Pin_12);
 }
 
@@ -377,7 +401,7 @@ int16_t twosCompToDec16(uint16_t val) // For 16 bit
  * @retval None
  */
 
-static void delay(uint32_t delay_in_us) {
+void delay(uint32_t delay_in_us) {
   /* Hangs for specified number of microseconds. */
   volatile uint32_t counter = 0;
   delay_in_us *= 3;
@@ -393,7 +417,7 @@ static void delay(uint32_t delay_in_us) {
  * @retval None
  */
 
-void gyr_checkSPIResponse() {
+void gyr_checkSPIResponse(void) {
   uint8_t SPIResponse = (uint8_t) gyr_writeSPIgyro(0b10001111, 0b10101010);
 
 #ifdef CAPTURE
@@ -403,5 +427,18 @@ void gyr_checkSPIResponse() {
   char SPIResponseChar[16];
   sprintf(SPIResponseChar, "%u",(uint8_t) SPIResponse);
   lcd_two_line_write("Gyro said:", SPIResponseChar);
+}
+
+void gyr_gyroStart(void) {
+  static firstRun = FALSE;
+  // If this is the first time the gyro is being started, get the zero calibration
+  if (!firstRun) {
+    gyroState = GYROSTATE_WAITING_FOR_ZERO;
+    // TODO: Check for button press
+    // TODO: If pressed, call the initial calibration method
+  }
+
+  TIM_Cmd(TIM6, ENABLE); // Start the timer
+  gyroState = GYROSTATE_RUNNING;
 }
 

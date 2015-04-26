@@ -50,28 +50,39 @@ int main(int argc, char* argv[]) {
   // Initializations
   lcd_init();
   lcd_command(LCD_CLEAR_DISPLAY);
-  lcd_string("Hello World");
+  lcd_two_line_write("L3GD20 YAW-DUDE", "      V2.0"); // Hehehe
   led_init();
-
   ats_tempSenseInit();
-
   gyr_SPIInit();
   gyr_setupRegisters();
 
+  gyr_opInit();
+  TIM_Cmd(TIM6, ENABLE);
+
+  char counterValue[16];
+  uint8_t even = TRUE;
 
   for (;;) {
-    gyr_checkSPIResponse();
-    gyr_getGyro(gyro);
-    gyr_prettyLCDGyro(gyro);
-    gyr_prettyTraceGyro(gyro);
-    for (delay_counter = 0; delay_counter < 655350; delay_counter++)
-      ;
-    for (delay_counter = 0; delay_counter < 655350; delay_counter++)
-      ;
+    if ((uint32_t) TIM_GetCounter(TIM6) > 1000) {
+      if (even) {
+        led_oddOn();
+        even = FALSE;
+      } else {
+        led_evenOn();
+        even = TRUE;
+      }
+      TIM_SetCounter(TIM6, 0x0);
+    }
+
+    sprintf(counterValue, "Cntr=%u\n", (uint32_t) TIM_GetCounter(TIM6));
+    lcd_command(LCD_CLEAR_DISPLAY);
+    lcd_string(counterValue);
   }
 
   return 0;
 }
+
+
 
 #pragma GCC diagnostic pop
 
