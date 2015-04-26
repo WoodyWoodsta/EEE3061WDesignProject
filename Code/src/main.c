@@ -56,13 +56,19 @@ int main(int argc, char* argv[]) {
   gyr_SPIInit();
   gyr_setupRegisters();
 
-  gyr_opInit();
-  TIM_Cmd(TIM6, ENABLE);
+//  gyr_opInit();
+
+  char angleString[16];
 
   // Start the gyro (which includes the first run calibration)
   gyr_gyroStart();
 
   for (;;) {
+    if(gyroState == GYROSTATE_RUNNING) {
+      gyr_getGyro(gyro_velocityData);
+      gyr_prettyLCDGyroVelocity(gyro_velocityData);
+      delay(100000);
+    }
   }
 
   return 0;

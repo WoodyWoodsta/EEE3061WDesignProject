@@ -37,17 +37,19 @@
 #define FALSE 0
 #define TRUE 1
 
-#define BIAS_SAMPLE_WIDTH 50
+#define BIAS_SAMPLE_WIDTH 100 // samples
+#define VELOCITY_THRESHOLD 2 // +-dps
 
 typedef enum { // Use to determine which state the gyro is in
   GYROSTATE_OFF,
-  GYROSTATE_STANDBY,
   GYROSTATE_WAITING_FOR_ZERO,
+  GYROSTATE_CALIBRATING,
+  GYROSTATE_STANDBY,
   GYROSTATE_RUNNING
 } gyr_gyroState_t;
 
 typedef enum {
-  GYROCAL_STARTUP,
+  GYROCAL_FULL,
   GYROCAL_INTERVAL
 } gyr_calType_t;
 
@@ -56,10 +58,10 @@ float gyro_velocityData[3];
 float gyro_angleData[3];
 gyr_gyroState_t gyroState;
 
-float xZeroBias;
-float yZeroBias;
-float zZeroBias;
+float zeroBias[3];
 uint32_t initialTemp;
+float senseConst;
+uint8_t gyroFSReg;
 
 // == Declarations ==
 void gyr_SPIInit(void);
@@ -76,6 +78,7 @@ void gyr_prettyLCDGyroVelocity(float *gyro);
 void gyr_checkSPIResponse(void);
 void gyr_gyroStart(void);
 void gyr_calibrate(gyr_calType_t calibrationType);
+void gyr_getAngle(float *out);
 
 int16_t twosCompToDec16(uint16_t val);
 void delay(uint32_t delay_in_us);

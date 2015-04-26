@@ -125,30 +125,51 @@ void gyr_setupRegisters(void) {
   gyr_writeSPIgyro(0x20, 0b11111111); // Switch the gyro into Normal Mode, enable all axes and set highest data transfer frequency
 }
 
+/**
+ * @brief Calibrate the gyro based on temperature (and initial bias)
+ * @param gyr_calType_t calibrationType: The type of calibration to be performed
+ * @retval None
+ */
+
 void gyr_calibrate(gyr_calType_t calibrationType) {
+  gyroState = GYROSTATE_CALIBRATING;
   float velSample[3];
+  uint32_t currentTemp;
+  gyroFSReg = (uint8_t) (gyr_writeSPIgyro(0b10100011, 0x00) & 0x30); // Determines what range the gyro is in (250dps, 500dps or 2000dps)
 
   switch (calibrationType) {
-  case GYROCAL_STARTUP:
+  case GYROCAL_FULL:
+    lcd_two_line_write("FULL CALIBRATION", "IN PROGRESS");
     initialTemp = ats_getTemp();
     uint8_t i;
+
+    // Calculate the sensitivity coefficient before any reads are done
+    switch (gyroFSReg) {
+    case 0x00: // 250 dps
+      senseConst = 8.575 + 0.000028*(initialTemp);
+      break;
+    case 0x10: // 500 dps
+      senseConst = 16.625 + 0.000014*(initialTemp);
+      break;
+    case 0x20: // 2000 dps
+      senseConst = 68.6 + 0.0000224*(initialTemp);
+      break;
+    }
+
     for(i = 0; i < BIAS_SAMPLE_WIDTH; i++) {
       gyr_getGyro(gyro_velocityData); // Grab some velocities
       uint8_t j;
       for(j = 0; j < 3; j++) {
         velSample[j] += gyro_velocityData[j]; // Add the individual axes to the sample array
       }
+      delay(10);
     }
 
-    for(i = 0; i < 3; i++) { // Complete the average
-      velSample[i] /= BIAS_SAMPLE_WIDTH;
+    for(i = 0; i < 3; i++) { // Complete the average and update bias values
+      zeroBias[i] = velSample[i] / BIAS_SAMPLE_WIDTH;
     }
 
-    // Update the bias values
-    xZeroBias = velSample[0];
-    yZeroBias = velSample[1];
-    zZeroBias = velSample[2];
-
+    // Zero the angle data
     gyro_angleData[0] = 0;
     gyro_angleData[1] = 0;
     gyro_angleData[2] = 0;
@@ -156,11 +177,29 @@ void gyr_calibrate(gyr_calType_t calibrationType) {
     break;
 
   case GYROCAL_INTERVAL:
+    currentTemp = ats_getTemp();
+
+    // Calculate the sensitivity coefficient before any reads are done
+    switch (gyroFSReg) {
+    case 0x00: // 250 dps
+      senseConst = 8.575 + 0.000028*(currentTemp);
+      break;
+    case 0x10: // 500 dps
+      senseConst = 16.625 + 0.000014*(currentTemp);
+      break;
+    case 0x20: // 2000 dps
+      senseConst = 68.6 + 0.0000224*(currentTemp);
+      break;
+    }
+
+    // Adjust the bias based on the change in temp
+    float biasDrift = (currentTemp - initialTemp)*0.00003; // Taken from the 250dps scale value (this is so tiny)
+    for(i = 0; i < 3; i++) {
+      zeroBias[i] += biasDrift;
+    }
+
     break;
-
-
   }
-
 }
 
 /**
@@ -170,18 +209,12 @@ void gyr_calibrate(gyr_calType_t calibrationType) {
  */
 
 void gyr_getGyro(float* out) {
-  uint8_t crtlB;
-
-  crtlB = (uint8_t) gyr_writeSPIgyro(0b10100011, 0x00); // Determines what range the gyro is in (250dps, 500dps or 2000dps)
-#ifdef CAPTURE
-  trace_printf("Range = %d\n", crtlB);
-#endif
-
-  delay(200000);
   uint8_t status = gyr_writeSPIgyro(0xA7, 0x00);
-  while (((status & 0b1000) == 0) || ((status & 0b10000000) == 1)) {
-    // Wait for data to become available
-  }
+//  while (((status & 0b1000) == 0) || ((status & 0b10000000) == 1)) {
+//    delay(50);
+//    uint8_t status = gyr_writeSPIgyro(0xA7, 0x00);
+//    // Wait for data to become available
+//  }
 
   uint8_t gyroXL = gyr_writeSPIgyro(0xA8, 0x0);
   uint8_t gyroXH = gyr_writeSPIgyro(0xA9, 0x0);
@@ -201,37 +234,11 @@ void gyr_getGyro(float* out) {
 
   uint16_t t = 0;
   int i = 0;
-  uint8_t temp = (uint8_t) (crtlB & 0x30);
 
-  switch (temp) {
-  case (uint8_t) 0x00: //250dps
-    for (i = 0; i < 3; i++) {
-      t = (((uint16_t) buffer[2 * i] << 8) | buffer[2 * i + 1]);
-      int16_t temp2 = twosCompToDec16(t);
-      out[i] = (float) ((temp2 * 8.75 / 1000.0));
-    }
-    break;
-  case (uint8_t) 0x10: //500dps
-    for (i = 0; i < 3; i++) {
-      t = (((uint16_t) buffer[2 * i] << 8) | buffer[2 * i + 1]);
-      int16_t temp2 = twosCompToDec16(t);
-      out[i] = (float) ((temp2 * 17.5 / 1000.0));
-    }
-    break;
-  case (uint8_t) 0x20: //2000dps
-    for (i = 0; i < 3; i++) {
-      t = (((uint16_t) buffer[2 * i] << 8) | buffer[2 * i + 1]);
-      int16_t temp2 = twosCompToDec16(t);
-      out[i] = (float) ((temp2 * 70 / 1000.0));
-    }
-    break;
-  case (uint8_t) 0x30: //20000dps
-    for (i = 0; i < 3; i++) {
-      t = (((uint16_t) buffer[2 * i] << 8) | buffer[2 * i + 1]);
-      int16_t temp2 = twosCompToDec16(t);
-      out[i] = (float) ((temp2 * 70 / 1000.0));
-    }
-    break;
+  for (i = 0; i < 3; i++) {
+    t = (((uint16_t) buffer[2 * i] << 8) | buffer[2 * i + 1]);
+    int16_t temp2 = (int16_t) t;
+    out[i] = (float) ((temp2 * senseConst / 1000.0) - zeroBias[i]);
   }
 }
 
@@ -254,7 +261,7 @@ void gyr_prettyTraceGyroVelocity(float *input) {
   frac_f = value - int_d;
   frac_d = fabs(trunc(frac_f * 10000));
 
-  sprintf(result, "Gyro X value = %d.%d", int_d, frac_d);
+//  sprintf(result, "Gyro X value = %d.%d", int_d, frac_d);
 
 #ifdef CAPTURE
   trace_puts(result);
@@ -406,29 +413,16 @@ uint8_t gyr_writeSPIgyro(uint8_t regAdr, uint8_t data) {
  * @retval Converted 16-bit signed decimal
  */
 
-int16_t twosCompToDec16(uint16_t val) // For 16 bit
+int16_t twosCompToDec16(uint16_t val) // For 16 bit (this is totally unnecessary)
 {
   uint16_t v = val;
-  int16_t temp = 0;
-  uint8_t isNeg = FALSE;
-
-  if ((v & (1 << 15))) {
-    isNeg = TRUE;
-    // Invert bits
-    v = v^(0xFFFF);
-    // Add 1
-    v++;
+  int16_t test = (int16_t) val;
+  uint16_t negative = (v << 15) >> 15;
+  if(negative) {
+    v = (~(v << 1) >> 1) | 0b10000000;
   }
 
-  // Convert to dec
-  uint8_t pos;
-  for (pos = 0; pos <= 15; pos++) {
-    temp = temp + ((v & (1 << pos))*pow(2, 4));
-  }
-
-  if (isNeg) {
-    temp = -temp;
-  }
+  int16_t temp = (v);
 
   return (int16_t) temp;
 }
@@ -472,14 +466,19 @@ void gyr_gyroStart(void) {
   // If this is the first time the gyro is being started, get the zero calibration
   if (!firstRun) {
     gyroState = GYROSTATE_WAITING_FOR_ZERO;
-    lcd_two_line_write("Put gyro down", "and hit SW0");
-    while (!GPIO_ReadOutputDataBit(GPIOB, 0x0)) { //TODO: Implement a proper debouncing
-      __asm("nop");
-    }
-    gyr_calibrate(GYROCAL_STARTUP);
+    lcd_two_line_write("Keep gyro still", "and hit SW0");
+    delay(1000000);
+//    while (!GPIO_ReadOutputDataBit(GPIOB, 0x0)) { //TODO: Implement a proper debouncing
+//      __asm("nop");
+//    }
+    gyr_calibrate(GYROCAL_FULL);
   }
 
   TIM_Cmd(TIM6, ENABLE); // Start the timer
   gyroState = GYROSTATE_RUNNING;
+}
+
+void gyr_getAngle(float *out) {
+
 }
 
