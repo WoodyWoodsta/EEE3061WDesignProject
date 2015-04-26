@@ -125,6 +125,44 @@ void gyr_setupRegisters(void) {
   gyr_writeSPIgyro(0x20, 0b11111111); // Switch the gyro into Normal Mode, enable all axes and set highest data transfer frequency
 }
 
+void gyr_calibrate(gyr_calType_t calibrationType) {
+  float velSample[3];
+
+  switch (calibrationType) {
+  case GYROCAL_STARTUP:
+    initialTemp = ats_getTemp();
+    uint8_t i;
+    for(i = 0; i < BIAS_SAMPLE_WIDTH; i++) {
+      gyr_getGyro(gyro_velocityData); // Grab some velocities
+      uint8_t j;
+      for(j = 0; j < 3; j++) {
+        velSample[j] += gyro_velocityData[j]; // Add the individual axes to the sample array
+      }
+    }
+
+    for(i = 0; i < 3; i++) { // Complete the average
+      velSample[i] /= BIAS_SAMPLE_WIDTH;
+    }
+
+    // Update the bias values
+    xZeroBias = velSample[0];
+    yZeroBias = velSample[1];
+    zZeroBias = velSample[2];
+
+    gyro_angleData[0] = 0;
+    gyro_angleData[1] = 0;
+    gyro_angleData[2] = 0;
+
+    break;
+
+  case GYROCAL_INTERVAL:
+    break;
+
+
+  }
+
+}
+
 /**
  * @brief Collect data from the gyro and call a 2s compliment conversion
  * @param out: Float pointer to output variable
@@ -203,7 +241,7 @@ void gyr_getGyro(float* out) {
  * @retval None
  */
 
-void gyr_prettyTraceGyro(float *input) {
+void gyr_prettyTraceGyroVelocity(float *input) {
   char result[50];
   float value;
   int32_t int_d;
@@ -211,7 +249,7 @@ void gyr_prettyTraceGyro(float *input) {
   float frac_f;
 
   // X Value
-  value = gyro[0];
+  value = input[0];
   int_d = value;
   frac_f = value - int_d;
   frac_d = fabs(trunc(frac_f * 10000));
@@ -223,7 +261,7 @@ void gyr_prettyTraceGyro(float *input) {
 #endif
 
   // Y Value
-  value = gyro[1];
+  value = input[1];
   int_d = value;
   frac_f = value - int_d;
   frac_d = fabs(trunc(frac_f * 10000));
@@ -235,7 +273,7 @@ void gyr_prettyTraceGyro(float *input) {
 #endif
 
   // Z Value
-  value = gyro[2];
+  value = input[2];
   int_d = value;
   frac_f = value - int_d;
   frac_d = fabs(trunc(frac_f * 10000));
@@ -254,7 +292,7 @@ void gyr_prettyTraceGyro(float *input) {
  * @retval None
  */
 
-void gyr_prettyLCDGyro(float *gyro) {
+void gyr_prettyLCDGyroVelocity(float *input) {
   char resultLine1[16];
   char resultLine2[16];
   float value;
@@ -264,27 +302,27 @@ void gyr_prettyLCDGyro(float *gyro) {
   int32_t Yint_d;
   int32_t Yfrac_d;
   float Yfrac_f;
-//  int32_t Zint_d; // Not using the Z data for now.. Will do soon, since it's the one we really care about
-//  int32_t Zfrac_d;
-//  float Zfrac_f;
+  int32_t Zint_d;
+  int32_t Zfrac_d;
+  float Zfrac_f;
 
   // X Value
-  value = gyro[0];
+  value = input[0];
   Xint_d = value;
   Xfrac_f = value - Xint_d;
   Xfrac_d = fabs(trunc(Xfrac_f * 10000));
 
   // Y Value
-  value = gyro[1];
+  value = input[1];
   Yint_d = value;
   Yfrac_f = value - Yint_d;
   Yfrac_d = fabs(trunc(Yfrac_f * 10000));
 
   // Z Value
-//  value = gyro[2];
-//  Zint_d = value;
-//  Zfrac_f = value - int_d;
-//  Zfrac_d = fabs(trunc(frac_f * 10000));
+  value = input[2];
+  Zint_d = value;
+  Zfrac_f = value - Zint_d;
+  Zfrac_d = fabs(trunc(Zfrac_f * 10000));
 
   // Format and Print
   sprintf(resultLine1, "X:%d.%d", Xint_d, Xfrac_d);
@@ -430,12 +468,15 @@ void gyr_checkSPIResponse(void) {
 }
 
 void gyr_gyroStart(void) {
-  static firstRun = FALSE;
+  static uint8_t firstRun = FALSE;
   // If this is the first time the gyro is being started, get the zero calibration
   if (!firstRun) {
     gyroState = GYROSTATE_WAITING_FOR_ZERO;
-    // TODO: Check for button press
-    // TODO: If pressed, call the initial calibration method
+    lcd_two_line_write("Put gyro down", "and hit SW0");
+    while (!GPIO_ReadOutputDataBit(GPIOB, 0x0)) { //TODO: Implement a proper debouncing
+      __asm("nop");
+    }
+    gyr_calibrate(GYROCAL_STARTUP);
   }
 
   TIM_Cmd(TIM6, ENABLE); // Start the timer

@@ -26,12 +26,11 @@
  * @retval 16-bit unsigned voltage in mV
  */
 
-uint16_t ats_getVoltage(void) {
-  uint16_t ADCVoltage;
+float ats_getVoltage(void) {
+  float ADCVoltage;
   uint16_t data = ADCData[0];
 
-  data = (data * 10000 * 3.3) / 4096;
-  ADCVoltage = data / 10;
+  ADCVoltage = (data * 10000 * 3.3) / 40960;
 
   return ADCVoltage;
 }
@@ -39,22 +38,20 @@ uint16_t ats_getVoltage(void) {
 /**
  * @brief Get data from the ADC via ats_getVoltage() and convert to temperature
  * @param None
- * @retval 16-bit unsigned temperature in degrees C TODO: Should consider doing this in m deg C
+ * @retval 16-bit unsigned temperature in milli-degrees C
  */
 
-uint16_t ats_getTemp(void) {
-  uint16_t arrTemp[20];
-  uint16_t temp;
+uint32_t ats_getTemp(void) {
+  uint32_t temp;
   uint8_t icount;
-  uint16_t voltsSum;
-  voltsSum = 0;
+  float sum = 0;
 
-  for (icount = 0; icount < 20; ++icount) {  //averages out the sensor readings
-    arrTemp[icount] = ats_getVoltage()/10;
-    voltsSum = voltsSum + arrTemp[icount];
+  for (icount = 0; icount < 20; ++icount) {  // Averages out multiple sensor readings
+    sum = sum + ats_getVoltage();
+    delay(100); // Just to give it a break you know
   }
 
-  temp = voltsSum/20;
+  temp = sum / 2;
 
   return temp;
 }
@@ -65,15 +62,15 @@ uint16_t ats_getTemp(void) {
  * @retval None
  */
 
-void ats_tempDisplay(void) {
+void ats_displayTemp(void) {
   char resultLine1[16];
   char resultLine2[16];
 
   uint16_t voltage = ats_getVoltage(); // Get the data
-  uint16_t temp = ats_getTemp();
+  uint32_t temp = ats_getTemp();
 
-  sprintf(resultLine1, "mV:%d", voltage); // Format the strings for output
-  sprintf(resultLine2, "T:%d", temp);
+  sprintf(resultLine1, "mV:%u", voltage); // Format the strings for output
+  sprintf(resultLine2, "T:%u", temp);
 
   lcd_command(LCD_CLEAR_DISPLAY); // Write to the LCD
   lcd_string(resultLine1);
