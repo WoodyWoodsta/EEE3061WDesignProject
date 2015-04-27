@@ -41,7 +41,7 @@
 #define VELOCITY_THRESHOLD 1 // +-dps
 #define READ_INTERVAL 5000 // us
 #define CALIBRATE_INTERVAL 2000 // Reads
-#define DISPLAY_INTERVAL 20 // Reads
+#define DISPLAY_INTERVAL 10 // Reads
 
 typedef enum { // Use to determine which state the gyro is in
   GYROSTATE_OFF,
@@ -53,8 +53,15 @@ typedef enum { // Use to determine which state the gyro is in
 
 typedef enum {
   GYROCAL_FULL,
-  GYROCAL_INTERVAL
+  GYROCAL_INTERVAL,
+  GYROCAL_PLAIN_ZERO
 } gyr_calType_t;
+
+typedef enum {
+  GYROAXIS_X,
+  GYROAXIS_Y,
+  GYROAXIS_Z
+} gyr_gyroAxis_t;
 
 // == Global Variables ==
 float gyro_velocityData[3];
@@ -77,6 +84,7 @@ void gyr_setupRegisters(void);
 void gyr_getGyro(float* out);
 void gyr_prettyTraceGyroVelocity(float *input);
 void gyr_prettyLCDGyroVelocity(float *gyro);
+void gyr_prettyLCDAxis(float *velocity, float *angle, gyr_gyroAxis_t axis);
 void gyr_checkSPIResponse(void);
 void gyr_gyroStart(void);
 void gyr_calibrate(gyr_calType_t calibrationType);

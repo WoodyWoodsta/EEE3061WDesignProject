@@ -57,17 +57,16 @@ int main(int argc, char* argv[]) {
   ats_tempSenseInit();
   gyr_SPIInit();
   gyr_setupRegisters();
-
   gyr_opInit();
-
-  char angleString[16];
 
   // Start the gyro (which includes the first run calibration)
   gyr_gyroStart();
 
   uint16_t gyroCountCalibrate = 0;
   uint16_t gyroCountDisplay = 0;
+  uint8_t isZero = FALSE;
   float lastAngle = gyro_angleData[2];
+  gyr_prettyLCDAxis(gyro_velocityData, gyro_angleData, GYROAXIS_Z);
 
   for (;;) {
     if(gyroState == GYROSTATE_RUNNING) {
@@ -83,10 +82,15 @@ int main(int argc, char* argv[]) {
       }
 
       if ((gyroCountDisplay > DISPLAY_INTERVAL) && (gyro_angleData[2] != lastAngle)) { // Check to see if the LCD needs to be updated
-        // TODO: Add code here to display the angle
         lastAngle = gyro_angleData[2];
-        gyr_prettyLCDGyroVelocity(gyro_velocityData);
+        gyr_prettyLCDAxis(gyro_velocityData, gyro_angleData, GYROAXIS_Z);
         gyroCountDisplay = 0;
+        isZero = FALSE;
+      } else if ((gyroCountDisplay > DISPLAY_INTERVAL) && (!isZero)) {
+        lcd_command(LCD_CURSOR_HOME);
+        lcd_command(LCD_GOTO_LINE_2);
+        lcd_string("V = 0.0     ");
+        isZero = TRUE;
       }
     }
   }

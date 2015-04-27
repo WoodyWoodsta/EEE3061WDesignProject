@@ -116,8 +116,8 @@ void gyr_setupRegisters(void) {
   // Write config to slave registers
   gyr_writeSPIgyro(0x21, 0b00101001); // Set a high-range high-pass filter (to counter drift)
   gyr_writeSPIgyro(0x23, 0b10010000); // Set the BDU to enabled and FS to 500dps
-  gyr_writeSPIgyro(0x24, 0b00010011); // Enable high-pass and low pass filter
-  gyr_writeSPIgyro(0x20, 0b10110111); // Enable all axes and set ODR to 380Hz
+  gyr_writeSPIgyro(0x24, 0b00000011); // Enable high-pass and low pass filter
+  gyr_writeSPIgyro(0x20, 0b10100111); // Enable all axes, set ODR to 380Hz and LP2 to 50Hz
 }
 
 /**
@@ -195,25 +195,28 @@ void gyr_calibrate(gyr_calType_t calibrationType) {
     }
 
     initialTemp = currentTemp; // Set the new "bias-temperature" for the next calibration
+
     break;
+
+    case GYROCAL_PLAIN_ZERO:
+      // Zero the angle data
+      gyro_angleData[0] = 0;
+      gyro_angleData[1] = 0;
+      gyro_angleData[2] = 0;
+
+      break;
   }
   gyroState = GYROSTATE_RUNNING;
 }
 
 /**
  * @brief Collect data from the gyro and call a 2s compliment conversion
+ * @note This cannot be read from too fast, although it's unlikely to be read from too fast, so yeah...
  * @param out: Float pointer to output variable
  * @retval None
  */
 
 void gyr_getGyro(float* out) {
-//  uint8_t status = gyr_writeSPIgyro(0xA7, 0x00);
-//  while (((status & 0b1000) == 0) || ((status & 0b10000000) == 1)) {
-//    delay(50);
-//    uint8_t status = gyr_writeSPIgyro(0xA7, 0x00);
-//    // Wait for data to become available
-//  }
-
   uint8_t gyroXL = gyr_writeSPIgyro(0xA8, 0x0);
   uint8_t gyroXH = gyr_writeSPIgyro(0xA9, 0x0);
   uint8_t gyroYL = gyr_writeSPIgyro(0xAA, 0x0);
@@ -292,7 +295,7 @@ void gyr_prettyTraceGyroVelocity(float *input) {
 }
 
 /**
- * @brief Convert the float input, truncate to 4 decimal places and print to screen
+ * @brief Convert the float input, truncate to 3 decimal places and print to screen
  * @param input: Float array of gyro values obtained using getGyro();
  * @retval None
  */
@@ -334,6 +337,41 @@ void gyr_prettyLCDGyroVelocity(float *input) {
   sprintf(resultLine2, "Y:%d.%d", Yint_d, Yfrac_d);
 
   lcd_two_line_write(resultLine1, resultLine2);
+}
+
+/**
+ * @brief Convert the float velocity and angle inputs, truncate to 3 decimal places and print to screen
+ * @param velocity: Float array of velocity values obtained using getGyro();
+ *        angle: Float array of angle values obtained using getAngle();
+ *        axis: Axis desired of @ref gyr_gyroAxis_t
+ * @retval None
+ */
+
+void gyr_prettyLCDAxis(float *velocity, float *angle, gyr_gyroAxis_t axis) {
+  char velocityString[16];
+  char angleString[16];
+  float value;
+  int32_t int_d;
+  int32_t frac_d;
+  float frac_f;
+
+  // Format the velocity
+  value = velocity[axis];
+  int_d = value;
+  frac_f = value - int_d;
+  frac_d = fabs(trunc(frac_f * 1000));
+
+  sprintf(velocityString, "V = %d.%d", int_d, frac_d);
+
+  // Format the angle
+  value = angle[axis];
+  int_d = value;
+  frac_f = value - int_d;
+  frac_d = fabs(trunc(frac_f * 1000));
+
+  sprintf(angleString, "A = %d.%d", int_d, frac_d);
+
+  lcd_two_line_write(angleString, velocityString);
 }
 
 /**
@@ -468,6 +506,8 @@ void gyr_checkSPIResponse(void) {
 
 void gyr_gyroStart(void) {
   static uint8_t firstRun = TRUE;
+  uint16_t gyroReg1 = gyr_writeSPIgyro(0xA0, 0x0); // Check the gyro control register 1
+  gyr_writeSPIgyro(0x20, (gyroReg1 | (1 << 3))); // Bring the gyro out of power down mode
   // If this is the first time the gyro is being started, get the zero calibration
   if (firstRun) {
     gyroState = GYROSTATE_WAITING_FOR_ZERO;
@@ -481,8 +521,6 @@ void gyr_gyroStart(void) {
     gyr_calibrate(GYROCAL_INTERVAL);
   }
 
-  uint16_t gyroReg1 = gyr_writeSPIgyro(0xA0, 0x0); // Check the gyro control register 1
-  gyr_writeSPIgyro(0x20, (gyroReg1 | (1 << 3))); // Bring the gyro out of power down mode
   TIM_Cmd(TIM6, ENABLE); // Start the timer
 
   gyroState = GYROSTATE_RUNNING;
