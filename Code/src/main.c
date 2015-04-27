@@ -22,6 +22,7 @@
 #include "spiGyro_lib.h"
 #include "adcTempSense_lib.h"
 #include "ledGPIOB_lib.h"
+#include "pbGPIOA_lib.h"
 #include "diag/Trace.h" // Trace output via STDOUT
 
 // == Defines ==
@@ -51,23 +52,42 @@ int main(int argc, char* argv[]) {
   lcd_init();
   lcd_command(LCD_CLEAR_DISPLAY);
   lcd_two_line_write("L3GD20 YAW-DUDE", "      V2.0"); // Hehehe
+  pb_pbGPIOAInit();
   led_init();
   ats_tempSenseInit();
   gyr_SPIInit();
   gyr_setupRegisters();
 
-//  gyr_opInit();
+  gyr_opInit();
 
   char angleString[16];
 
   // Start the gyro (which includes the first run calibration)
   gyr_gyroStart();
 
+  uint16_t gyroCountCalibrate = 0;
+  uint16_t gyroCountDisplay = 0;
+  float lastAngle = gyro_angleData[2];
+
   for (;;) {
     if(gyroState == GYROSTATE_RUNNING) {
-      gyr_getGyro(gyro_velocityData);
-      gyr_prettyLCDGyroVelocity(gyro_velocityData);
-      delay(100000);
+      if(gyroCountCalibrate < CALIBRATE_INTERVAL) { // Check whether we need to calibrate again
+        delay(READ_INTERVAL); // Make sure that the reads happen under the gyro ODR frequency
+        gyr_getAngle(gyro_angleData);
+        gyroCountCalibrate++;
+        gyroCountDisplay++;
+
+      } else {
+        gyr_calibrate(GYROCAL_INTERVAL);
+        gyroCountCalibrate = 0;
+      }
+
+      if ((gyroCountDisplay > DISPLAY_INTERVAL) && (gyro_angleData[2] != lastAngle)) { // Check to see if the LCD needs to be updated
+        // TODO: Add code here to display the angle
+        lastAngle = gyro_angleData[2];
+        gyr_prettyLCDGyroVelocity(gyro_velocityData);
+        gyroCountDisplay = 0;
+      }
     }
   }
 

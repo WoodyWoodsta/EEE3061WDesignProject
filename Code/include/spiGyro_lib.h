@@ -38,7 +38,10 @@
 #define TRUE 1
 
 #define BIAS_SAMPLE_WIDTH 100 // samples
-#define VELOCITY_THRESHOLD 2 // +-dps
+#define VELOCITY_THRESHOLD 1 // +-dps
+#define READ_INTERVAL 5000 // us
+#define CALIBRATE_INTERVAL 2000 // Reads
+#define DISPLAY_INTERVAL 20 // Reads
 
 typedef enum { // Use to determine which state the gyro is in
   GYROSTATE_OFF,
@@ -59,7 +62,6 @@ float gyro_angleData[3];
 gyr_gyroState_t gyroState;
 
 float zeroBias[3];
-uint32_t initialTemp;
 float senseConst;
 uint8_t gyroFSReg;
 
