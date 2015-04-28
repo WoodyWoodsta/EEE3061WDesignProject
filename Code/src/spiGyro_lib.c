@@ -170,6 +170,9 @@ void gyr_calibrate(gyr_calType_t calibrationType) {
     gyro_angleData[1] = 0;
     gyro_angleData[2] = 0;
 
+    // Reset the timer, just in case the timer was already running
+    TIM_SetCounter(TIM6, 0);
+
     break;
 
   case GYROCAL_INTERVAL:
@@ -203,6 +206,9 @@ void gyr_calibrate(gyr_calType_t calibrationType) {
       gyro_angleData[0] = 0;
       gyro_angleData[1] = 0;
       gyro_angleData[2] = 0;
+
+      // Reset the timer
+      TIM_SetCounter(TIM6, 0);
 
       break;
   }

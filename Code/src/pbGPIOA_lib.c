@@ -44,5 +44,27 @@ void pb_pbGPIOAInit(void) {
   GPIO_Init(GPIOA, &GPIOInitStructure);
 }
 
+/**
+ * @brief Handle pressing of SW0, specifically to zero the gyro
+ * @param None
+ * @retval result: result of the button press (0 = no press, 1 = one second press)
+ */
+
+uint8_t pb_zeroButtonHandler(void) {
+  uint8_t result = 0;
+
+  // Check for an actual button press
+  if (!GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0)) {
+    result = 1;
+    delay(1000000); // Wait for 1 second
+  }
+
+  // Check to see if the button is still pressed after 1 second
+  if ((result == 1) && (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0))) {
+    result = 0;
+  }
+
+  return result;
+}
 
 

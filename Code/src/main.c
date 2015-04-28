@@ -24,6 +24,7 @@
 #include "ledGPIOB_lib.h"
 #include "pbGPIOA_lib.h"
 #include "diag/Trace.h" // Trace output via STDOUT
+#include "serialTerminal_lib.h"
 
 // == Defines ==
 
@@ -69,6 +70,15 @@ int main(int argc, char* argv[]) {
   gyr_prettyLCDAxis(gyro_velocityData, gyro_angleData, GYROAXIS_Z);
 
   for (;;) {
+    if(!GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0)) {
+      lcd_two_line_write("Hold for zero", "");
+      if (pb_zeroButtonHandler()) {
+        // At the moment, zeroing the gyro simply resets the angle, no
+        // other calibrations are done
+        gyr_calibrate(GYROCAL_PLAIN_ZERO);
+      }
+    }
+
     if(gyroState == GYROSTATE_RUNNING) {
       if(gyroCountCalibrate < CALIBRATE_INTERVAL) { // Check whether we need to calibrate again
         delay(READ_INTERVAL); // Make sure that the reads happen under the gyro ODR frequency
