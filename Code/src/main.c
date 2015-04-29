@@ -59,6 +59,7 @@ int main(int argc, char* argv[]) {
   gyr_SPIInit();
   gyr_setupRegisters();
   gyr_opInit();
+  srl_serialTerminalInit();
 
   // Start the gyro (which includes the first run calibration)
   gyr_gyroStart();
@@ -66,17 +67,23 @@ int main(int argc, char* argv[]) {
   uint16_t gyroCountCalibrate = 0;
   uint16_t gyroCountDisplay = 0;
   uint8_t isZero = FALSE;
+  uint8_t hasZeroButtonPressed = FALSE;
   float lastAngle = gyro_angleData[2];
   gyr_prettyLCDAxis(gyro_velocityData, gyro_angleData, GYROAXIS_Z);
+  printf("%d\r\n", (int8_t) 100); // This is just a test for now
 
   for (;;) {
-    if(!GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0)) {
+    if(!GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) && (!hasZeroButtonPressed)) { // Check to see if the button is being pressed and was not pressed previously
       lcd_two_line_write("Hold for zero", "");
       if (pb_zeroButtonHandler()) {
         // At the moment, zeroing the gyro simply resets the angle, no
         // other calibrations are done
         gyr_calibrate(GYROCAL_PLAIN_ZERO);
+        hasZeroButtonPressed = TRUE;
+        gyr_prettyLCDAxis(gyro_velocityData, gyro_angleData, GYROAXIS_Z); // Update the display after the zero
       }
+    } else if (hasZeroButtonPressed && (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0))) { // Acknowledge the button not being pressed anymore
+      hasZeroButtonPressed = FALSE;
     }
 
     if(gyroState == GYROSTATE_RUNNING) {
@@ -96,7 +103,7 @@ int main(int argc, char* argv[]) {
         gyr_prettyLCDAxis(gyro_velocityData, gyro_angleData, GYROAXIS_Z);
         gyroCountDisplay = 0;
         isZero = FALSE;
-      } else if ((gyroCountDisplay > DISPLAY_INTERVAL) && (!isZero)) {
+      } else if ((gyroCountDisplay > DISPLAY_INTERVAL) && (!isZero)) { // Update the velocity if it is zero
         lcd_command(LCD_CURSOR_HOME);
         lcd_command(LCD_GOTO_LINE_2);
         lcd_string("V = 0.0     ");

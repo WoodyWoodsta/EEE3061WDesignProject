@@ -47,6 +47,8 @@ int _write(int file, const char *ptr, int len) {
   return len;
 }
 
+
+// We already have this
 //void *_sbrk(int incr) {
 //  extern char _ebss;           /* Defined by the linker */
 //  extern char _heap_end;
