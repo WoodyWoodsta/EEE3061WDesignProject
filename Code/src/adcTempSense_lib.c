@@ -20,40 +20,74 @@
 // == Includes ==
 #include "adcTempSense_lib.h"
 
-void ats_tempDisplay (void) {
+/**
+ * @brief Get data from the ADC and convert to voltage
+ * @param None
+ * @retval 16-bit unsigned voltage in mV
+ */
+
+float ats_getVoltage(void) {
+  float ADCVoltage;
+  uint16_t data = ADCData[0];
+
+  ADCVoltage = (data * 1000 * 3.3) / 4096;
+
+  return ADCVoltage;
+}
+
+/**
+ * @brief Get data from the ADC via ats_getVoltage() and convert to temperature
+ * @param None
+ * @retval 16-bit unsigned temperature in milli C
+ */
+
+uint32_t ats_getTemp(void) {
+  uint32_t temp;
+  uint8_t icount;
+  float sum = 0;
+
+  for (icount = 0; icount < 20; ++icount) {  // Averages out multiple sensor readings
+    sum = sum + ats_getVoltage();
+    delay(100); // Just to give it a break you know
+  }
+
+  temp = sum*5;
+
+  return temp;
+}
+
+/**
+ * @brief Get temp and voltage data and convert and print to the LCD
+ * @param None
+ * @retval None
+ */
+
+void ats_displayTemp(void) {
   char resultLine1[16];
   char resultLine2[16];
-  lcd_command(LCD_CLEAR_DISPLAY);
-  val0 = RegularConvData_Tab[0];
-//  val1 = 2.361341+0.083664*val0;
 
-  val1=3.2377937194828+0.08493537368387*val0;
+  uint16_t voltage = ats_getVoltage(); // Get the data
+  uint32_t temp = ats_getTemp();
 
-  sprintf(resultLine1, "T:%d", val0);
-  sprintf(resultLine2, "T:%d", val1);
+  sprintf(resultLine1, "mV:%u", voltage); // Format the strings for output
+  sprintf(resultLine2, "T:%u", temp);
+
+  lcd_command(LCD_CLEAR_DISPLAY); // Write to the LCD
   lcd_string(resultLine1);
   lcd_command(LCD_GOTO_LINE_2);
   lcd_string(resultLine2);
+
+#ifdef CAPTURE
+  trace_puts(resultLine1);
+  trace_puts(resultLine2);
+#endif
 }
 
-uint16_t ats_getVoltage (void){
-
- val0=RegularConvData_Tab[0];
- val0=(val0*10000*3.3)/4096;
- ADC_Voltage = val0/10;
-
-return ADC_Voltage;
-
-}
-
-void ats_tempDisplayNewMethod (void) {
-  char resultLine1[16];
-  uint16_t temp;
-  lcd_command(LCD_CLEAR_DISPLAY);
-  temp = ats_getVoltage();
-  sprintf(resultLine1, "mV:%d", temp);
-  lcd_string(resultLine1);
-}
+/**
+ * @brief Initialise the temp sensor (ADC)
+ * @param None
+ * @retval None
+ */
 
 void ats_tempSenseInit(void) {
   ats_DMAInit();
@@ -63,11 +97,11 @@ void ats_tempSenseInit(void) {
 
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7; // Enable the two pins
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6; // Enable the two pins
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN; // Set to analogue mode
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 
   RCC_ADCCLKConfig(RCC_ADCCLK_HSI14);
@@ -90,14 +124,20 @@ void ats_tempSenseInit(void) {
 
   ADC_DMARequestModeConfig(ADC1, ADC_DMAMode_Circular); // Link it to the DMA
 
-  ADC_GetCalibrationFactor(ADC1);
+  ADC_GetCalibrationFactor(ADC1); // Calibrate the ADC
 
-  ADC_Cmd(ADC1, ENABLE);
-  ADC_DMACmd(ADC1, ENABLE);
+  ADC_Cmd(ADC1, ENABLE); // Enable the ADC
+  ADC_DMACmd(ADC1, ENABLE); // Enable the DMA
   while (!ADC_GetFlagStatus(ADC1, ADC_FLAG_ADEN))
     ;
   ADC_StartOfConversion(ADC1);
 }
+
+/**
+ * @brief Initialise the DMA for use with the temp sensor (ADC)
+ * @param None
+ * @retval None
+ */
 
 void ats_DMAInit(void) {
   DMA_InitTypeDef DMA_InitStructure;
@@ -105,7 +145,7 @@ void ats_DMAInit(void) {
 
   DMA_DeInit(DMA1_Channel1);
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) (&(ADC1->DR)); // The address of the ADC
-  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t) RegularConvData_Tab; // Where the data is stored
+  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t) ADCData; // Where the data is stored
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
   DMA_InitStructure.DMA_BufferSize = 2; // Linked to two ADC channels
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
