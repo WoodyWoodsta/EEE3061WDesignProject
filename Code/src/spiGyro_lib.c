@@ -142,13 +142,13 @@ void gyr_calibrate(gyr_calType_t calibrationType) {
     // Calculate the sensitivity coefficient before any reads are done
     switch (gyroFSReg) {
     case 0x00: // 250 dps
-      senseConst = 8.575 + 0.000028*((float) initialTemp);
+      senseConst = 8.575 + 0.0000028*((float) currentTemp);
       break;
     case 0x10: // 500 dps
-      senseConst = 16.625 + 0.000014*((float) initialTemp);
+      senseConst = 17.50 + 0.0000056*0.25*((float) currentTemp); // Was wrong before (this should be the one we use)
       break;
     case 0x20: // 2000 dps
-      senseConst = 68.6 + 0.0000224*((float) initialTemp);
+      senseConst = 68.6 + 0.0000224*((float) currentTemp);
       break;
     }
 
@@ -181,21 +181,21 @@ void gyr_calibrate(gyr_calType_t calibrationType) {
     // Calculate the sensitivity coefficient before any reads are done
     switch (gyroFSReg) {
     case 0x00: // 250 dps
-      senseConst = 8.575 + 0.000028*((float) currentTemp);
+      senseConst = 8.575 + 0.0000028*((float) currentTemp);
       break;
     case 0x10: // 500 dps
-      senseConst = 16.625 + 0.000014*((float) currentTemp);
+      senseConst = 17.50 + 0.0000056*0.25*((float) currentTemp); // Was wrong before (this should be the one we use)
       break;
     case 0x20: // 2000 dps
       senseConst = 68.6 + 0.0000224*((float) currentTemp);
       break;
     }
 
-    // Adjust the bias based on the change in temp
-    float biasDrift = ((int32_t)(currentTemp - initialTemp))*0.00003; // Taken from the 250dps scale value (this is so tiny)
-    for(i = 0; i < 3; i++) {
-      zeroBias[i] += biasDrift;
-    }
+//    // Adjust the bias based on the change in temp
+//    float biasDrift = ((int32_t)(currentTemp - initialTemp))*0.00003; // Taken from the 250dps scale value (this is so tiny)
+//    for(i = 0; i < 3; i++) {
+//      zeroBias[i] -= biasDrift;
+//    }
 
     initialTemp = currentTemp; // Set the new "bias-temperature" for the next calibration
 
@@ -218,7 +218,7 @@ void gyr_calibrate(gyr_calType_t calibrationType) {
 /**
  * @brief Collect data from the gyro and call a 2s compliment conversion
  * @note This cannot be read from too fast, although it's unlikely to be read from too fast, so yeah...
- * @param out: Float pointer to output variable
+ * @param out: Float pointer to output variable (degrees/s)
  * @retval None
  */
 

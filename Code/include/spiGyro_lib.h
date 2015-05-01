@@ -40,8 +40,9 @@
 #define BIAS_SAMPLE_WIDTH 100 // samples
 #define VELOCITY_THRESHOLD 1 // +-dps
 #define READ_INTERVAL 5000 // us
-#define CALIBRATE_INTERVAL 2000 // Reads
+#define CALIBRATE_INTERVAL 300 // Reads
 #define DISPLAY_INTERVAL 10 // Reads
+#define DATA_SEND_INTERVAL 5 // Reads
 
 typedef enum { // Use to determine which state the gyro is in
   GYROSTATE_OFF,

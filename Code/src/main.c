@@ -27,6 +27,7 @@
 #include "serialTerminal_lib.h"
 
 // == Defines ==
+#define SERIAL_SEND
 
 // Sample pragmas to cope with warnings. Please note the related line at
 // the end of this function, used to pop the compiler diagnostics status.
@@ -59,18 +60,22 @@ int main(int argc, char* argv[]) {
   gyr_SPIInit();
   gyr_setupRegisters();
   gyr_opInit();
+
+#ifdef SERIAL_SEND
   srl_serialTerminalInit();
+#endif
 
   // Start the gyro (which includes the first run calibration)
   gyr_gyroStart();
 
   uint16_t gyroCountCalibrate = 0;
   uint16_t gyroCountDisplay = 0;
+  uint16_t uartCountDataSend = 0;
+  uint16_t uartData = 0;
   uint8_t isZero = FALSE;
   uint8_t hasZeroButtonPressed = FALSE;
   float lastAngle = gyro_angleData[2];
   gyr_prettyLCDAxis(gyro_velocityData, gyro_angleData, GYROAXIS_Z);
-  printf("%d\r\n", (int8_t) 100); // This is just a test for now
 
   for (;;) {
     if(!GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) && (!hasZeroButtonPressed)) { // Check to see if the button is being pressed and was not pressed previously
@@ -92,11 +97,29 @@ int main(int argc, char* argv[]) {
         gyr_getAngle(gyro_angleData);
         gyroCountCalibrate++;
         gyroCountDisplay++;
+        uartCountDataSend++;
 
       } else {
         gyr_calibrate(GYROCAL_INTERVAL);
         gyroCountCalibrate = 0;
       }
+
+#ifdef SERIAL_SEND
+      if (uartCountDataSend > DATA_SEND_INTERVAL) {
+        uint32_t temperature = ats_getTemp();
+        int16_t gyro_angleXInt = gyro_angleData[0];
+        int16_t gyro_angleYInt = gyro_angleData[1];
+        int16_t gyro_angleZInt = gyro_angleData[2];
+        printf("%d;%d;%d;%d;%d;%d;%d;\r\n",  (int16_t) gyro_angleData[0],
+                                             (int16_t) gyro_angleData[1],
+                                             (int16_t) gyro_angleData[2],
+                                             (int16_t) gyro_velocityData[0],
+                                             (int16_t) gyro_velocityData[1],
+                                             (int16_t) gyro_velocityData[2],
+                                             (uint32_t) temperature);
+        uartCountDataSend = 0;
+      }
+#endif
 
       if ((gyroCountDisplay > DISPLAY_INTERVAL) && (gyro_angleData[2] != lastAngle)) { // Check to see if the LCD needs to be updated
         lastAngle = gyro_angleData[2];

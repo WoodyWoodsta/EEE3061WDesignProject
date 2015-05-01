@@ -30,7 +30,7 @@ float ats_getVoltage(void) {
   float ADCVoltage;
   uint16_t data = ADCData[0];
 
-  ADCVoltage = (data * 10000 * 3.3) / 40960;
+  ADCVoltage = (data * 1000 * 3.3) / 4096;
 
   return ADCVoltage;
 }
@@ -38,7 +38,7 @@ float ats_getVoltage(void) {
 /**
  * @brief Get data from the ADC via ats_getVoltage() and convert to temperature
  * @param None
- * @retval 16-bit unsigned temperature in milli-degrees C
+ * @retval 16-bit unsigned temperature in milli C
  */
 
 uint32_t ats_getTemp(void) {
@@ -51,7 +51,7 @@ uint32_t ats_getTemp(void) {
     delay(100); // Just to give it a break you know
   }
 
-  temp = sum / 2;
+  temp = sum*5;
 
   return temp;
 }
@@ -97,11 +97,11 @@ void ats_tempSenseInit(void) {
 
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7; // Enable the two pins
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6; // Enable the two pins
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN; // Set to analogue mode
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 
   RCC_ADCCLKConfig(RCC_ADCCLK_HSI14);
