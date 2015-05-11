@@ -1,0 +1,24 @@
+Field=Comment~String~Comment~100|Field=Description~String~Description~100|Field=Designator~String~Designator~100|Field=Footprint~String~Footprint~100|Field=LibRef~String~LibRef~100|Field=Quantity~Integer~Quantity~100|ReportField=Currency~<none>|ReportField=ProductionQuantity~1|ReportField=ProjectFileName~EEE3061WDesignProject_ControllerBoard.PrjPCB|ReportField=ProjectFullPath~D:\ITDev\Projects\EEE3061WDesignProject\Circuits\EEE3061WDesignProject_ControllerBoard\EEE3061WDesignProject_ControllerBoard.PrjPCB|ReportField=Title~Bill of Materials For PCB Document [ControllerBoardPCB.PcbDoc]|ReportField=TotalQuantity~38|ReportField=ReportTime~09:14:02 PM|ReportField=ReportDate~2015-05-11|ReportField=ReportDateTime~2015-05-11 09:14:02 PM|ReportField=OutputName~Bill of Materials|ReportField=OutputType~BOM_PartType|ReportField=GeneratorName~BOM|ReportField=GeneratorDescription~Bill of Materials|ReportField=VariantName~None|ReportField=DataSourceFileName~ControllerBoardPCB.PcbDoc|ReportField=DataSourceFullPath~D:\ITDev\Projects\EEE3061WDesignProject\Circuits\EEE3061WDesignProject_ControllerBoard\ControllerBoardPCB.PcbDoc
+100n|Capacitor Ceramic 220nF 10% 50V X7R radial 5mm lead spacing|C1, C2, C3, C4|CAPC500P450250X550_2.5mm|CAPR_220n_Radial_5mm|4
+10uF|Capacitor THT Alum Elec 470uF 20% 16V|C5|CAPE10.0MM_Rad_10x14mm|CAPE_470u_16V_THT|1
+1uF|Capacitor Ceramic 220nF 10% 50V X7R radial 5mm lead spacing|C6, C7, C11|CAPC500P450250X550_2.5mm|CAPR_220n_Radial_5mm|3
+1uF|Capacitor THT Alum Elec 470uF 20% 16V|C8|CAPE10.0MM_Rad_10x14mm|CAPE_470u_16V_THT|1
+10pF|Capacitor Ceramic 220nF 10% 50V X7R radial 5mm lead spacing|C9, C10|CAPC500P450250X550_2.5mm|CAPR_220n_Radial_5mm|2
+LED1|Typical RED GaAs LED|D1, D3, D4|LED-1|LED1|3
+USB-B - UART|Connector THT Type B USB connector|J1, J2|USB_TypeB_Tyco|USB_TypeB|2
+POWER_HEADER|Header, 2-Pin, Dual row|P1|HDR2X2|Header 2X2|1
+MCPUSBUART_HEADER|Header, 5-Pin, Dual row|P2|HDR2X5|Header 5X2|1
+BREAKOUT_HEADER_LEFT|Header, 24-Pin|P3|HDR1X24|Header 24|1
+BREAKOUT_HEADER_RIGHT|Header, 24-Pin|P4|HDR1X24|Header 24|1
+GYRO_HEADER|Header, 9-Pin|P5|HDR1X9|Header 9|1
+LIGHTSENSOR_HEADER|Header, 2-Pin|P6|HDR1X2|Header 2|1
+V_EXT_CONNECTOR|Header, 2-Pin|P7|HDR1X2|Header 2|1
+POWERBOARD_HEADER|Header, 7-Pin|P8|HDR1X7|Header 7|1
+Carbon Film|Resistor THD Axial 1k Ohm 0.25W 5% Carbon Film|R1, R2, R4, R5, R7|RESTH_AXIAL-0.4|RES_1K_Axial_0.25W_5%|5
+SW_THT_PB_7.0mm|Switch, tact, 7.0mm stem|S0, S1, S2|TACT-SWITCH-TS1170|SW_THT_PB_7.0mm|3
+STM32F051C6 Breakout Board||U1|STM32F051C6BreakoutBoard|STM32F051C6Brk|1
+3V3LinReg|MCP|U2|TO-92Wide|VREG5V|1
+STM32F0DebuggerHdr||U3|STM32F051C6_DbgrHdr|STM32F0DebuggerHdr|1
+LM35WidePin||U4|TO-92Wide|LM35Big|1
+5VLinReg|MCP|U5|TO-92Wide|VREG5V|1
+8MHz|Crystal Oscillator|Y1|8MHZOSC|XTAL|1
