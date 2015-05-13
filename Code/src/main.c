@@ -27,7 +27,7 @@
 #include "serialTerminal_lib.h"
 
 // == Defines ==
-#define SERIAL_SEND
+//#define SERIAL_SEND
 
 // Sample pragmas to cope with warnings. Please note the related line at
 // the end of this function, used to pop the compiler diagnostics status.
