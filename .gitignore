@@ -177,6 +177,7 @@ Desktop.ini
 *.jpg
 *.sublime-workspace
 *.sublime-project
+*.xlsx
 Models/
 Data/real_time_data_serial.zip
 Docs/

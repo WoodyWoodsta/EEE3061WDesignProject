@@ -27,7 +27,7 @@
 #include "serialTerminal_lib.h"
 
 // == Defines ==
-#define SERIAL_SEND
+//#define SERIAL_SEND
 
 // Sample pragmas to cope with warnings. Please note the related line at
 // the end of this function, used to pop the compiler diagnostics status.
@@ -51,9 +51,6 @@ int main(int argc, char* argv[]) {
     ;
 
   // Initializations
-  lcd_init();
-  lcd_command(LCD_CLEAR_DISPLAY);
-  lcd_two_line_write("L3GD20 YAW-DUDE", "      V2.0"); // Hehehe
   pb_pbGPIOAInit();
   led_init();
   ats_tempSenseInit();
@@ -75,17 +72,14 @@ int main(int argc, char* argv[]) {
   uint8_t isZero = FALSE;
   uint8_t hasZeroButtonPressed = FALSE;
   float lastAngle = gyro_angleData[2];
-  gyr_prettyLCDAxis(gyro_velocityData, gyro_angleData, GYROAXIS_Z);
 
   for (;;) {
     if(!GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) && (!hasZeroButtonPressed)) { // Check to see if the button is being pressed and was not pressed previously
-      lcd_two_line_write("Hold for zero", "");
       if (pb_zeroButtonHandler()) {
         // At the moment, zeroing the gyro simply resets the angle, no
         // other calibrations are done
         gyr_calibrate(GYROCAL_PLAIN_ZERO);
         hasZeroButtonPressed = TRUE;
-        gyr_prettyLCDAxis(gyro_velocityData, gyro_angleData, GYROAXIS_Z); // Update the display after the zero
       }
     } else if (hasZeroButtonPressed && (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0))) { // Acknowledge the button not being pressed anymore
       hasZeroButtonPressed = FALSE;
@@ -121,17 +115,6 @@ int main(int argc, char* argv[]) {
       }
 #endif
 
-      if ((gyroCountDisplay > DISPLAY_INTERVAL) && (gyro_angleData[2] != lastAngle)) { // Check to see if the LCD needs to be updated
-        lastAngle = gyro_angleData[2];
-        gyr_prettyLCDAxis(gyro_velocityData, gyro_angleData, GYROAXIS_Z);
-        gyroCountDisplay = 0;
-        isZero = FALSE;
-      } else if ((gyroCountDisplay > DISPLAY_INTERVAL) && (!isZero)) { // Update the velocity if it is zero
-        lcd_command(LCD_CURSOR_HOME);
-        lcd_command(LCD_GOTO_LINE_2);
-        lcd_string("V = 0.0     ");
-        isZero = TRUE;
-      }
     }
   }
 

@@ -28,7 +28,6 @@
 #include "stm32f0xx_rcc.h"
 #include "stm32f0xx_gpio.h"
 #include "stm32f0xx_tim.h"
-#include "lcd_stm32f0.h"
 #include "adcTempSense_lib.h"
 
 // == Defines ==
@@ -78,8 +77,6 @@ void gyr_SPIInit(void);
 void gyr_opInit(void);
 void gyroChipSelect();
 void gyroChipDeselect(void);
-void EEPROMChipSelect(void);
-void EEPROMChipDeselect(void);
 uint8_t gyr_writeSPIgyro(uint8_t regAdr, uint8_t data);
 void gyr_setupRegisters(void);
 void gyr_getGyro(float* out);
