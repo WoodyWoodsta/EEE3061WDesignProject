@@ -60,25 +60,20 @@ int main(int argc, char* argv[]) {
   gyr_opInit();
   mtr_motorTimInit();
 
-  TIM_Cmd(TIM1, ENABLE);
+#ifdef SERIAL_SEND
+  srl_serialTerminalInit();
+#endif
+
 
   while(TRUE) {
-    TIM_SetCompare1(TIM1, 250);
-    for (delay_counter = 0; delay_counter < 655350; delay_counter++)
-      ; // Start up delay - Not entirely sure why we need this?
-    TIM_SetCompare1(TIM1, 500);
-    for (delay_counter = 0; delay_counter < 655350; delay_counter++)
-      ;
-    TIM_SetCompare1(TIM1, 750);
-    for (delay_counter = 0; delay_counter < 655350; delay_counter++)
-      ;
-
+    mtr_stop();
+    mtr_setSpeed(MTR_FORWARD, 75, 75);
+//    mtr_stop();
+    mtr_setSpeed(MTR_FORWARD, 80, 100);
+    mtr_stop();
   }
 
-//#ifdef SERIAL_SEND
-//  srl_serialTerminalInit();
-//#endif
-//
+
 //  // Start the gyro (which includes the first run calibration)
 //  gyr_gyroStart();
 //
