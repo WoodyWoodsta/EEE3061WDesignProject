@@ -144,11 +144,20 @@ void mtr_rightEnable(void) {
 
 void mtr_rightDisable(void) {
   GPIO_ResetBits(GPIOB, GPIO_Pin_7);
-
 }
 
+/**
+ * @brief Bring the motors to the speed specified and cater for large changes in speed
+ * @param direction: Which direction the motor should be driven
+ *        leftSpeed: Speed of the left motor
+ *        rightSpeed: Speed of the right motor
+ * @retval None
+ */
 
 void mtr_setSpeed(mtr_motorOpState_t direction, uint16_t leftSpeed, uint16_t rightSpeed) {
+  int16_t leftSpeedDiff = 0;
+  int16_t rightSpeedDiff = 0;
+
   switch (direction) {
   case MTR_FORWARD:
     if (mtr_motorOpState != MTR_FORWARD) {
@@ -159,15 +168,16 @@ void mtr_setSpeed(mtr_motorOpState_t direction, uint16_t leftSpeed, uint16_t rig
       mtr_motorOpState = MTR_FORWARD;
     }
 
-    if ((leftSpeed - mtr_motorLCrtSpd >= MOTOR_ATTACK_THRESHOLD) || (rightSpeed - mtr_motorRCrtSpd >= MOTOR_ATTACK_THRESHOLD)) {
-      uint16_t leftSpeedDiff = leftSpeed - mtr_motorLCrtSpd;
-      uint16_t rightSpeedDiff = rightSpeed - mtr_motorRCrtSpd;
+    leftSpeedDiff = leftSpeed - mtr_motorLCrtSpd;
+    rightSpeedDiff = rightSpeed - mtr_motorRCrtSpd;
+
+    if ((abs(leftSpeedDiff) >= MOTOR_ATTACK_THRESHOLD) || (abs(rightSpeedDiff) >= MOTOR_ATTACK_THRESHOLD)) {
       uint16_t changeTime = 0; // In 10 ms
       float leftSpeedAttack = 0;
       float rightSpeedAttack = 0;
       // Check to see which motor is the master motor (which is changing the most and will sit at the attack maximum
-      if (leftSpeedDiff >= rightSpeedDiff) {
-        changeTime = leftSpeedDiff/MOTOR_ATTACK; // Calculate how long the change will be given the attack
+      if (abs(leftSpeedDiff) >= abs(rightSpeedDiff)) {
+        changeTime = abs(leftSpeedDiff)/MOTOR_ATTACK; // Calculate how long the change will be given the attack
         leftSpeedAttack = MOTOR_ATTACK; // Left motor will be the master change
         rightSpeedAttack = rightSpeedDiff/changeTime; // Calculate the right speed attack given the calculated time of change
 
@@ -183,7 +193,7 @@ void mtr_setSpeed(mtr_motorOpState_t direction, uint16_t leftSpeed, uint16_t rig
           delay(10000); // Delay for 10ms
         }
       } else { // Master motor must be the other one
-        changeTime = rightSpeedDiff/MOTOR_ATTACK; // Calculate how long the change will be given the attack
+        changeTime = abs(rightSpeedDiff)/MOTOR_ATTACK; // Calculate how long the change will be given the attack
         rightSpeedAttack = MOTOR_ATTACK; // Left motor will be the master change
         leftSpeedAttack = leftSpeedDiff/changeTime; // Calculate the right speed attack given the calculated time of change
 
@@ -203,8 +213,198 @@ void mtr_setSpeed(mtr_motorOpState_t direction, uint16_t leftSpeed, uint16_t rig
       setLF(leftSpeed);
       setRF(rightSpeed);
     }
+    break;
+
+  case MTR_REVERSE:
+    if (mtr_motorOpState != MTR_REVERSE) {
+      mtr_stop(); // This will set everything to zero (including the CC)
+      mtr_leftEnable();
+      mtr_rightEnable();
+      TIM_Cmd(TIM15, ENABLE);
+      mtr_motorOpState = MTR_REVERSE;
+    }
+
+    leftSpeedDiff = leftSpeed - mtr_motorLCrtSpd;
+    rightSpeedDiff = rightSpeed - mtr_motorRCrtSpd;
+
+    if ((abs(leftSpeedDiff) >= MOTOR_ATTACK_THRESHOLD) || (abs(rightSpeedDiff) >= MOTOR_ATTACK_THRESHOLD)) {
+      uint16_t changeTime = 0; // In 10 ms
+      float leftSpeedAttack = 0;
+      float rightSpeedAttack = 0;
+      // Check to see which motor is the master motor (which is changing the most and will sit at the attack maximum
+      if (abs(leftSpeedDiff) >= abs(rightSpeedDiff)) {
+        changeTime = abs(leftSpeedDiff)/MOTOR_ATTACK; // Calculate how long the change will be given the attack
+        leftSpeedAttack = MOTOR_ATTACK; // Left motor will be the master change
+        rightSpeedAttack = rightSpeedDiff/changeTime; // Calculate the right speed attack given the calculated time of change
+
+        uint16_t rightSpeedInt = 0;
+        uint16_t changeCount = 0;
+        uint16_t leftSpeedInitial = mtr_motorLCrtSpd;
+        uint16_t rightSpeedInitial = mtr_motorRCrtSpd;
+        // Make the change!
+        for (changeCount = 0; changeCount < changeTime; changeCount++) {
+          setLR(leftSpeedInitial + (changeCount*leftSpeedAttack)); // Set the left speed to the new value
+          rightSpeedInt = rightSpeedInitial + (changeCount*rightSpeedAttack); // Convert to an int because is won't initially be
+          setRR(rightSpeedInt); // Set the right speed to the new value
+          delay(10000); // Delay for 10ms
+        }
+      } else { // Master motor must be the other one
+        changeTime = abs(rightSpeedDiff)/MOTOR_ATTACK; // Calculate how long the change will be given the attack
+        rightSpeedAttack = MOTOR_ATTACK; // Left motor will be the master change
+        leftSpeedAttack = leftSpeedDiff/changeTime; // Calculate the right speed attack given the calculated time of change
+
+        uint16_t leftSpeedInt = 0;
+        uint16_t changeCount = 0;
+        uint16_t leftSpeedInitial = mtr_motorLCrtSpd;
+        uint16_t rightSpeedInitial = mtr_motorRCrtSpd;
+        // Make the change!
+        for (changeCount = 0; changeCount < changeTime; changeCount++) {
+          setRR(rightSpeedInitial + (changeCount*rightSpeedAttack)); // Set the left speed to the new value
+          leftSpeedInt = leftSpeedInitial + (changeCount*leftSpeedAttack); // Convert to an int because is won't initially be
+          setLR(leftSpeedInt); // Set the right speed to the new value
+          delay(10000); // Delay for 10ms
+        }
+      }
+    } else { // Or just change the value
+      setLR(leftSpeed);
+      setRR(rightSpeed);
+    }
+    break;
+  default:
+    mtr_stop();
   }
 }
+
+void mtr_rotate(mtr_motorOpState_t direction, uint16_t angle, uint16_t speed) {
+  int16_t leftSpeedDiff = 0;
+  int16_t rightSpeedDiff = 0;
+
+  switch (direction) {
+  case MTR_ROTATECW:
+    if (mtr_motorOpState != MTR_ROTATECW) {
+      mtr_stop(); // This will set everything to zero (including the CC)
+      mtr_leftEnable();
+      mtr_rightEnable();
+      TIM_Cmd(TIM1, ENABLE);
+      delay(10000); // Allow for any noise, spikes etc
+      TIM_Cmd(TIM15, ENABLE);
+      mtr_motorOpState = MTR_ROTATECW;
+    }
+
+    while(gyro_angleData(2) != angle) {
+
+      leftSpeedDiff = speed - mtr_motorLCrtSpd;
+      rightSpeedDiff = speed - mtr_motorRCrtSpd;
+
+      if ((abs(leftSpeedDiff) >= MOTOR_ATTACK_THRESHOLD) || (abs(rightSpeedDiff) >= MOTOR_ATTACK_THRESHOLD)) {
+        uint16_t changeTime = 0; // In 10 ms
+        float leftSpeedAttack = 0;
+        float rightSpeedAttack = 0;
+        // Check to see which motor is the master motor (which is changing the most and will sit at the attack maximum
+        if (abs(leftSpeedDiff) >= abs(rightSpeedDiff)) {
+          changeTime = abs(leftSpeedDiff)/MOTOR_ATTACK; // Calculate how long the change will be given the attack
+          leftSpeedAttack = MOTOR_ATTACK; // Left motor will be the master change
+          rightSpeedAttack = rightSpeedDiff/changeTime; // Calculate the right speed attack given the calculated time of change
+
+          uint16_t rightSpeedInt = 0;
+          uint16_t changeCount = 0;
+          uint16_t leftSpeedInitial = mtr_motorLCrtSpd;
+          uint16_t rightSpeedInitial = mtr_motorRCrtSpd;
+          // Make the change!
+          for (changeCount = 0; changeCount < changeTime; changeCount++) {
+            setLF(leftSpeedInitial + (changeCount*leftSpeedAttack)); // Set the left speed to the new value
+            rightSpeedInt = rightSpeedInitial + (changeCount*rightSpeedAttack); // Convert to an int because is won't initially be
+            setRR(rightSpeedInt); // Set the right speed to the new value
+            delay(10000); // Delay for 10ms
+          }
+        } else { // Master motor must be the other one
+          changeTime = abs(rightSpeedDiff)/MOTOR_ATTACK; // Calculate how long the change will be given the attack
+          rightSpeedAttack = MOTOR_ATTACK; // Left motor will be the master change
+          leftSpeedAttack = leftSpeedDiff/changeTime; // Calculate the right speed attack given the calculated time of change
+
+          uint16_t leftSpeedInt = 0;
+          uint16_t changeCount = 0;
+          uint16_t leftSpeedInitial = mtr_motorLCrtSpd;
+          uint16_t rightSpeedInitial = mtr_motorRCrtSpd;
+          // Make the change!
+          for (changeCount = 0; changeCount < changeTime; changeCount++) {
+            setRR(rightSpeedInitial + (changeCount*rightSpeedAttack)); // Set the left speed to the new value
+            leftSpeedInt = leftSpeedInitial + (changeCount*leftSpeedAttack); // Convert to an int because is won't initially be
+            setLF(leftSpeedInt); // Set the right speed to the new value
+            delay(10000); // Delay for 10ms
+          }
+        }
+      } else { // Or just change the value
+        setLF(speed);
+        setRR(speed);
+      }
+    }
+    break;
+
+  case MTR_ROTATECCW:
+    if (mtr_motorOpState != MTR_ROTATECCW) {
+      mtr_stop(); // This will set everything to zero (including the CC)
+      mtr_leftEnable();
+      mtr_rightEnable();
+      TIM_Cmd(TIM1, ENABLE);
+      delay(10000); // Allow for any noise, spikes etc
+      TIM_Cmd(TIM15, ENABLE);
+      mtr_motorOpState = MTR_ROTATECCW;
+    }
+
+    while(gyro_angleData(2) != angle) {
+      leftSpeedDiff = speed - mtr_motorLCrtSpd;
+      rightSpeedDiff = speed - mtr_motorRCrtSpd;
+
+      if ((abs(leftSpeedDiff) >= MOTOR_ATTACK_THRESHOLD) || (abs(rightSpeedDiff) >= MOTOR_ATTACK_THRESHOLD)) {
+        uint16_t changeTime = 0; // In 10 ms
+        float leftSpeedAttack = 0;
+        float rightSpeedAttack = 0;
+        // Check to see which motor is the master motor (which is changing the most and will sit at the attack maximum
+        if (abs(leftSpeedDiff) >= abs(rightSpeedDiff)) {
+          changeTime = abs(leftSpeedDiff)/MOTOR_ATTACK; // Calculate how long the change will be given the attack
+          leftSpeedAttack = MOTOR_ATTACK; // Left motor will be the master change
+          rightSpeedAttack = rightSpeedDiff/changeTime; // Calculate the right speed attack given the calculated time of change
+
+          uint16_t rightSpeedInt = 0;
+          uint16_t changeCount = 0;
+          uint16_t leftSpeedInitial = mtr_motorLCrtSpd;
+          uint16_t rightSpeedInitial = mtr_motorRCrtSpd;
+          // Make the change!
+          for (changeCount = 0; changeCount < changeTime; changeCount++) {
+            setLR(leftSpeedInitial + (changeCount*leftSpeedAttack)); // Set the left speed to the new value
+            rightSpeedInt = rightSpeedInitial + (changeCount*rightSpeedAttack); // Convert to an int because is won't initially be
+            setRF(rightSpeedInt); // Set the right speed to the new value
+            delay(10000); // Delay for 10ms
+          }
+        } else { // Master motor must be the other one
+          changeTime = abs(rightSpeedDiff)/MOTOR_ATTACK; // Calculate how long the change will be given the attack
+          rightSpeedAttack = MOTOR_ATTACK; // Left motor will be the master change
+          leftSpeedAttack = leftSpeedDiff/changeTime; // Calculate the right speed attack given the calculated time of change
+
+          uint16_t leftSpeedInt = 0;
+          uint16_t changeCount = 0;
+          uint16_t leftSpeedInitial = mtr_motorLCrtSpd;
+          uint16_t rightSpeedInitial = mtr_motorRCrtSpd;
+          // Make the change!
+          for (changeCount = 0; changeCount < changeTime; changeCount++) {
+            setRF(rightSpeedInitial + (changeCount*rightSpeedAttack)); // Set the left speed to the new value
+            leftSpeedInt = leftSpeedInitial + (changeCount*leftSpeedAttack); // Convert to an int because is won't initially be
+            setLR(leftSpeedInt); // Set the right speed to the new value
+            delay(10000); // Delay for 10ms
+          }
+        }
+      } else { // Or just change the value
+        setLR(speed);
+        setRF(speed);
+      }
+    }
+    break;
+  default:
+    mtr_stop();
+  }
+}
+
 
 /**
  * @brief Set the duty cycle of the PWM output to the Right Motor Forward Direction pin

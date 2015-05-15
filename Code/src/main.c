@@ -67,9 +67,9 @@ int main(int argc, char* argv[]) {
 
   while(TRUE) {
     mtr_stop();
-    mtr_setSpeed(MTR_FORWARD, 75, 75);
+    mtr_rotate(MTR_ROTATECW, 75, 75);
 //    mtr_stop();
-    mtr_setSpeed(MTR_FORWARD, 80, 100);
+    mtr_rotate(MTR_ROTATECCW, 10, 30);
     mtr_stop();
   }
 

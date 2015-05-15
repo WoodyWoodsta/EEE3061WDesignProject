@@ -49,6 +49,11 @@ typedef enum {
   MTR_ROTATECCW // Both timers enabled
 } mtr_motorOpState_t;
 
+typedef enum {
+  MTR_CHANGEDIR_UP,
+  MTR_CHANGEDIR_DOWN
+} mtr_motorChangeDirection_t;
+
 // == Global Variables ==
 mtr_motorENState_t mtr_motorENState; // Will be disabled by default
 mtr_motorOpState_t mtr_motorOpState; // Will be still by default
