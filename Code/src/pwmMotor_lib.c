@@ -50,6 +50,7 @@ void mtr_motorTimInit(void) {
 
   mtr_motorENState = MTR_DISABLED;
   mtr_motorOpState = MTR_STOPPED;
+  mtr_motorLibraryState = MTR_LIB_DISABLED;
 
   // Gather the RCC clocks for the timers we need
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
@@ -69,7 +70,6 @@ void mtr_motorTimInit(void) {
   controlTimerBaseInitStructure.TIM_Period = 0xFFFF; // Set the ARR to 100              | This gives us a max time of 65.535 sec
   controlTimerBaseInitStructure.TIM_Prescaler = 0xBB80; // Set the prescaler to 48000   | and a time-base of 1ms per LSB
   TIM_TimeBaseInit(TIM6, &controlTimerBaseInitStructure);
-
 
   TIM_DeInit(TIM1);
   TIM_DeInit(TIM15);

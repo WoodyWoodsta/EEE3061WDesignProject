@@ -32,7 +32,7 @@
 #define FULL_SPEED 100 // Percentage duty cycle which will be full speed
 #define ANGLE_OUTOFBOUND_THRESHOLD 40 // Degrees
 #define CORRECTION_GAIN
-#define MOTOR_ATTACK 1 // How fast should the motors accelerate (% per 10 ms) NB! If a value too low is causing stalling - just increase
+#define MOTOR_ATTACK 5 // How fast should the motors accelerate (% per 10 ms) NB! If a value too low is causing stalling - just increase
 #define MOTOR_ATTACK_THRESHOLD 20 // When should the motors start attacking
 
 #define PID_PROPORTIONAL_GAIN 1
@@ -56,15 +56,16 @@ typedef enum {
 } mtr_motorOpState_t;
 
 typedef enum {
-  MTR_CHANGEDIR_UP,
-  MTR_CHANGEDIR_DOWN
-} mtr_motorChangeDirection_t;
+  MTR_LIB_DISABLED,
+  MTR_LIB_ENABLED
+} mtr_libState_t;
 
 // == Global Variables ==
 mtr_motorENState_t mtr_motorENState; // Will be disabled by default
 mtr_motorOpState_t mtr_motorOpState; // Will be still by default
 int16_t mtr_motorRCrtSpd; // Speed from 0-100 (duty cycle)
 int16_t mtr_motorLCrtSpd; // Speed from 0-100 (duty cycle)
+mtr_libState_t mtr_motorLibraryState;
 
 // == Prototypes ==
 
