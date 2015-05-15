@@ -73,6 +73,50 @@ int main(int argc, char* argv[]) {
     mtr_stop();
   }
 
+  // Control
+  float motorPIDIntegral = 0; // Initial conditions
+  float motorPIDDerivative = 0; // Instantaneous derivative
+  int16_t prevError = 0; // Previous and current errors to calculate derivative and integral
+  int16_t curError = 0;
+  TIM_Cmd(TIM7, ENABLE);
+  TIM_SetCounter(TIM7, 0); // Enable and zero the controlCounter
+
+  // In the loop
+  gyr_getAngle(gyro_angleData);
+  curError = ANGLE_SET_POINT;
+  // Check if we are too angled, and stop and rotate to correct before driving out of the track
+  if (abs(curError) >= ANGLE_OUTOFBOUND_THRESHOLD) {
+    if (curError > 0) {
+      mtr_rotate(MTR_ROTATECW, curError, 90);
+    } else if (curError < 0) {
+      mtr_rotate(MTR_ROTATECCW, abs(curError), 90);
+    }
+    // Then reset the PID system
+    motorPIDIntegral = 0;
+    prevError = 0;
+
+    // However, if we are over the threshold, implement some PID
+  } else if (abs(curError) > PID_THRESHOLD){
+    uint32_t elapsedTime = TIM_GetCounter(TIM7);
+    TIM_SetCounter(TIM7, 0);
+    motorPIDDerivative = (curError-prevError)/elapsedTime; // Calculate the derivative
+    motorPIDIntegral = motorPIDIntegral + (curError-prevError); // Calculate and update the integral
+
+    if (curError < 0) { // If we need to correct to the left, then make the correction
+      uint16_t newLeftSpeed = FULL_SPEED + (curError*(PID_PROPORTIONAL_GAIN +
+                                            (PID_DERIVATIVE_GAIN*motorPIDDerivative) +
+                                            (PID_INTEGRAL_GAIN*motorPIDIntegral)));
+      mtr_setSpeed(MTR_FORWARD, newLeftSpeed, FULL_SPEED);
+    } else if (curError > 0) { // If we need to move to the right, then make the correction
+      uint16_t newRightSpeed = FULL_SPEED - (curError*(PID_PROPORTIONAL_GAIN +
+                                            (PID_DERIVATIVE_GAIN*motorPIDDerivative) +
+                                            (PID_INTEGRAL_GAIN*motorPIDIntegral)));
+      mtr_setSpeed(MTR_FORWARD, FULL_SPEED, newRightSpeed);
+
+    }
+
+  }
+
 
 //  // Start the gyro (which includes the first run calibration)
 //  gyr_gyroStart();

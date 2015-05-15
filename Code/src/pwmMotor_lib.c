@@ -57,6 +57,20 @@ void mtr_motorTimInit(void) {
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM15, ENABLE);
 
+  // Setup TIM7 as controlTimer to be used for PID control
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM7, ENABLE); // Enable the RCC clock for TIM6
+  TIM_TimeBaseInitTypeDef controlTimerBaseInitStructure;
+
+  TIM_Cmd(TIM7, DISABLE);
+  TIM_DeInit(TIM7); // Reset the timer to default values
+  TIM_TimeBaseStructInit(&controlTimerBaseInitStructure);
+
+  controlTimerBaseInitStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  controlTimerBaseInitStructure.TIM_Period = 0xFFFF; // Set the ARR to 100              | This gives us a max time of 65.535 sec
+  controlTimerBaseInitStructure.TIM_Prescaler = 0xBB80; // Set the prescaler to 48000   | and a time-base of 1ms per LSB
+  TIM_TimeBaseInit(TIM6, &controlTimerBaseInitStructure);
+
+
   TIM_DeInit(TIM1);
   TIM_DeInit(TIM15);
 

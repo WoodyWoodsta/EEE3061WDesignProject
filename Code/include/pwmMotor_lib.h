@@ -29,10 +29,16 @@
 #include "stm32f0xx_tim.h"
 
 // == Defines ==
-#define ANGLE_OUTOFBOUND_THRESHOLD
+#define FULL_SPEED 100 // Percentage duty cycle which will be full speed
+#define ANGLE_OUTOFBOUND_THRESHOLD 40 // Degrees
 #define CORRECTION_GAIN
 #define MOTOR_ATTACK 1 // How fast should the motors accelerate (% per 10 ms) NB! If a value too low is causing stalling - just increase
 #define MOTOR_ATTACK_THRESHOLD 20 // When should the motors start attacking
+
+#define PID_PROPORTIONAL_GAIN 1
+#define PID_DERIVATIVE_GAIN 1
+#define PID_INTEGRAL_GAIN 1
+#define PID_THRESHOLD 2
 
 // == Declarations ==
 
