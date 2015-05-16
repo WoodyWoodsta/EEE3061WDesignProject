@@ -43,8 +43,6 @@
 #define DISPLAY_INTERVAL 10 // Reads
 #define DATA_SEND_INTERVAL 5 // Reads
 
-#define ANGLE_SET_POINT 0 // Reference angle for PID control
-
 typedef enum { // Use to determine which state the gyro is in
   GYROSTATE_OFF,
   GYROSTATE_WAITING_FOR_ZERO,
@@ -69,6 +67,7 @@ typedef enum {
 float gyro_velocityData[3];
 float gyro_angleData[3];
 gyr_gyroState_t gyroState;
+uint16_t gyr_angleSetPoint;
 
 float zeroBias[3];
 float senseConst;

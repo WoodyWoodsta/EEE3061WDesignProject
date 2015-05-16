@@ -95,14 +95,22 @@ void ats_tempSenseInit(void) {
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE); // Enable the clocks
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
 
-  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitTypeDef GPIO_PA5InitStructure;
+  GPIO_InitTypeDef GPIO_PA6InitStructure;
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6; // Enable the two pins
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN; // Set to analogue mode
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  GPIO_PA5InitStructure.GPIO_Pin = GPIO_Pin_5; // Enable the two pins
+  GPIO_PA5InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_PA5InitStructure.GPIO_Mode = GPIO_Mode_AN; // Set to analogue mode
+  GPIO_PA5InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_PA5InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(GPIOA, &GPIO_PA5InitStructure);
+
+  GPIO_PA6InitStructure.GPIO_Pin = GPIO_Pin_6; // Enable the two pins
+  GPIO_PA6InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_PA6InitStructure.GPIO_Mode = GPIO_Mode_AN; // Set to analogue mode
+  GPIO_PA6InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_PA6InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOA, &GPIO_PA6InitStructure);
 
   RCC_ADCCLKConfig(RCC_ADCCLK_HSI14);
   RCC_HSI14Cmd(ENABLE);

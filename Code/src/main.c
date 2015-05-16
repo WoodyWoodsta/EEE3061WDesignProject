@@ -40,7 +40,7 @@
 
 // == Defines ==
 //#define SERIAL_SEND
-#define GREEN_LIGHT_THRESHOLD 600 // mV
+#define GREEN_LIGHT_THRESHOLD 1700 // mV
 
 // Sample pragmas to cope with warnings. Please note the related line at
 // the end of this function, used to pop the compiler diagnostics status.
@@ -64,8 +64,10 @@ int main(int argc, char* argv[]) {
     ;
 
   // Initializations
-  pb_pbGPIOAInit();
   led_init();
+  led_0On();
+  led_1On();
+  pb_pbGPIOAInit();
   ats_tempSenseInit();
   gyr_SPIInit();
   gyr_setupRegisters();
@@ -76,7 +78,16 @@ int main(int argc, char* argv[]) {
   srl_serialTerminalInit();
 #endif
 
+//  while(TRUE) {
+//    mtr_setSpeed(MTR_REVERSE, 95, 95);
+////    mtr_setSpeed(MTR_REVERSE, 90, 90);
+//    mtr_stop();
+//  }
+
+
   // Start the gyro (which includes the first run calibration)
+  led_0Off();
+  led_1Off();
   gyr_gyroStart();
   // Gyro vars
   uint16_t gyroCountCalibrate = 0;
@@ -84,17 +95,16 @@ int main(int argc, char* argv[]) {
   uint16_t uartCountDataSend = 0;
   uint16_t ledCountStandby = 0;
   uint16_t uartData = 0;
+  gyr_angleSetPoint = 0;
   uint8_t isZero = FALSE;
   uint8_t hasZeroButtonPressed = FALSE;
-  float lastAngle = gyro_angleData[2];
+  float lastAngle = gyro_angleData[GYROAXIS_Z];
 
   // PID Vars
   float motorPIDIntegral = 0; // Initial conditions
   float motorPIDDerivative = 0; // Instantaneous derivative
   int16_t prevError = 0; // Previous and current errors to calculate derivative and integral
   int16_t curError = 0;
-  TIM_Cmd(TIM7, ENABLE);
-  TIM_SetCounter(TIM7, 0); // Enable and zero the controlCounter
 
   for (;;) {
     if(!GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0) && (!hasZeroButtonPressed)) { // Check to see if the button is being pressed and was not pressed previously
@@ -120,20 +130,7 @@ int main(int argc, char* argv[]) {
         gyr_calibrate(GYROCAL_INTERVAL);
         gyroCountCalibrate = 0;
       }
-    } else {
-      // Indicate when we are waiting for a zero press
-      if (ledCountStandby == 200) {
-        led_1On();
-        led_0Off();
-        ledCountStandby = 0;
-      } else if (ledCountStandby == 100) {
-        led_1On();
-        led_0Off();
-        ledCountStandby++;
-      } else {
-        ledCountStandby++;
-      }
-
+    }
 
 #ifdef SERIAL_SEND
       if (uartCountDataSend > DATA_SEND_INTERVAL) {
@@ -152,47 +149,57 @@ int main(int argc, char* argv[]) {
       }
 #endif
 
-
-    }
-
-    if(mtr_motorLibraryState == MTR_LIB_ENABLED) {
-      gyr_getAngle(gyro_angleData); // Might want to get rid of this (redundancy)
-      curError = ANGLE_SET_POINT;
-      // Check if we are too angled, and stop and rotate to correct before driving out of the track
-      if (abs(curError) >= ANGLE_OUTOFBOUND_THRESHOLD) {
-        if (curError > 0) {
-          mtr_rotate(MTR_ROTATECW, curError, 90);
-        } else if (curError < 0) {
-          mtr_rotate(MTR_ROTATECCW, abs(curError), 90);
+      if (mtr_motorLibraryState == MTR_LIB_STANDBY) {
+        uint16_t mtrLibStandbyCount = 0;
+        float lightSensorADC = ADCData[1];
+        float lightSensorVoltage = (lightSensorADC/4096)*3300; // Convert the ADC on PA6 to voltage
+        // Sit here while we wait for the green light
+        if (lightSensorVoltage > GREEN_LIGHT_THRESHOLD) {
+          mtr_motorLibraryState = MTR_LIB_ENABLED;
+          led_1On();
         }
-        // Then reset the PID system
-        motorPIDIntegral = 0;
-        prevError = 0;
 
-        // However, if we are over the threshold, implement some PID
-      } else if (abs(curError) > PID_THRESHOLD){
-        uint32_t elapsedTime = TIM_GetCounter(TIM7);
-        TIM_SetCounter(TIM7, 0);
-        motorPIDDerivative = (curError-prevError)/elapsedTime; // Calculate the derivative
-        motorPIDIntegral = motorPIDIntegral + (curError-prevError); // Calculate and update the integral
-
-        if (curError < 0) { // If we need to correct to the left, then make the correction
-          uint16_t newLeftSpeed = FULL_SPEED + (curError*(PID_PROPORTIONAL_GAIN +
-                                                (PID_DERIVATIVE_GAIN*motorPIDDerivative) +
-                                                (PID_INTEGRAL_GAIN*motorPIDIntegral)));
-          mtr_setSpeed(MTR_FORWARD, newLeftSpeed, FULL_SPEED);
-        } else if (curError > 0) { // If we need to move to the right, then make the correction
-          uint16_t newRightSpeed = FULL_SPEED - (curError*(PID_PROPORTIONAL_GAIN +
-                                                (PID_DERIVATIVE_GAIN*motorPIDDerivative) +
-                                                (PID_INTEGRAL_GAIN*motorPIDIntegral)));
-          mtr_setSpeed(MTR_FORWARD, FULL_SPEED, newRightSpeed);
-
-        }
+        TIM_Cmd(TIM7, ENABLE);
+        TIM_SetCounter(TIM7, 0); // Enable and zero the controlCounter
 
       }
 
+      if(mtr_motorLibraryState == MTR_LIB_ENABLED) {
+        gyr_getAngle(gyro_angleData); // Might want to get rid of this (redundancy)
+        curError = gyr_angleSetPoint - gyro_angleData[GYROAXIS_Z];
+        // Check if we are too angled, and stop and rotate to correct before driving out of the track
+        if (abs(curError) >= ANGLE_OUTOFBOUND_THRESHOLD) {
+          if (curError > 0) {
+            mtr_rotate(MTR_ROTATECW, abs(curError), MOTOR_ROTATE_SPEED);
+          } else if (curError < 0) {
+            mtr_rotate(MTR_ROTATECCW, abs(curError), MOTOR_ROTATE_SPEED);
+          }
+          // Then reset the PID system
+          motorPIDIntegral = 0;
+          prevError = 0;
+
+          // However, if we are over the threshold, implement some PID
+        } else if (abs(curError) > PID_THRESHOLD){
+          uint32_t elapsedTime = TIM_GetCounter(TIM7);
+          TIM_SetCounter(TIM7, 0);
+          motorPIDDerivative = (curError-prevError)/elapsedTime; // Calculate the derivative
+          motorPIDIntegral = motorPIDIntegral + (curError-prevError); // Calculate and update the integral
+
+          if (curError < 0) { // If we need to correct to the left, then make the correction
+            uint16_t newLeftSpeed = FULL_SPEED + (curError*(PID_PROPORTIONAL_GAIN +
+                                                  (PID_DERIVATIVE_GAIN*motorPIDDerivative) +
+                                                  (PID_INTEGRAL_GAIN*motorPIDIntegral)));
+            mtr_setSpeed(MTR_FORWARD, newLeftSpeed, FULL_SPEED);
+          } else if (curError > 0) { // If we need to move to the right, then make the correction
+            uint16_t newRightSpeed = FULL_SPEED - (curError*(PID_PROPORTIONAL_GAIN +
+                                                  (PID_DERIVATIVE_GAIN*motorPIDDerivative) +
+                                                  (PID_INTEGRAL_GAIN*motorPIDIntegral)));
+            mtr_setSpeed(MTR_FORWARD, FULL_SPEED, newRightSpeed);
+
+          }
+        }
+      }
     }
-  }
 
   return 0;
 }

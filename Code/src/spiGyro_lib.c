@@ -20,6 +20,7 @@
 
 // == Includes ==
 #include "spiGyro_lib.h"
+#include "pwmMotor_lib.h"
 
 // == Defines ==
 
@@ -488,11 +489,24 @@ void gyr_gyroStart(void) {
   // If this is the first time the gyro is being started, get the zero calibration
   if (firstRun) {
     gyroState = GYROSTATE_WAITING_FOR_ZERO;
-    lcd_two_line_write("Keep gyro still", "and hit SW0");
+    uint32_t ledCountStandby = 0;
     while (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0)) { // Wait for the pushbutton press
-      __asm("nop");
+      // Indicate when we are waiting for a zero press
+      if (ledCountStandby == 600000) {
+        led_1On();
+        ledCountStandby = 0;
+      } else if (ledCountStandby == 10000) {
+        led_1Off();
+        ledCountStandby++;
+      } else {
+        ledCountStandby++;
+      }
     }
+    led_0On();
+    led_1On();
     gyr_calibrate(GYROCAL_FULL);
+    led_0Off();
+    led_1Off();
     firstRun = FALSE;
   } else {
     gyr_calibrate(GYROCAL_INTERVAL);
@@ -501,9 +515,11 @@ void gyr_gyroStart(void) {
   TIM_Cmd(TIM6, ENABLE); // Start the timer
 
   gyroState = GYROSTATE_RUNNING;
+  mtr_motorLibraryState = MTR_LIB_STANDBY;
 }
 
 void gyr_getAngle(float *out) {
+  led_0On();
   uint8_t axis;
   gyr_getGyro(gyro_velocityData);
   uint32_t timestep = TIM_GetCounter(TIM6); // Grab the elapsed time since the last read
@@ -515,5 +531,6 @@ void gyr_getAngle(float *out) {
     }
   }
 
+  led_0Off();
 }
 

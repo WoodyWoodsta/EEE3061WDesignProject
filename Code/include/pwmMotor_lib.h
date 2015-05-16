@@ -29,11 +29,11 @@
 #include "stm32f0xx_tim.h"
 
 // == Defines ==
-#define FULL_SPEED 100 // Percentage duty cycle which will be full speed
+#define FULL_SPEED 95 // Percentage duty cycle which will be full speed
 #define ANGLE_OUTOFBOUND_THRESHOLD 40 // Degrees
-#define CORRECTION_GAIN
 #define MOTOR_ATTACK 5 // How fast should the motors accelerate (% per 10 ms) NB! If a value too low is causing stalling - just increase
-#define MOTOR_ATTACK_THRESHOLD 20 // When should the motors start attacking
+#define MOTOR_ATTACK_THRESHOLD 100 // When should the motors start attacking (100 will make it never attack)
+#define MOTOR_ROTATE_SPEED 90
 
 #define PID_PROPORTIONAL_GAIN 1
 #define PID_DERIVATIVE_GAIN 1
@@ -57,6 +57,7 @@ typedef enum {
 
 typedef enum {
   MTR_LIB_DISABLED,
+  MTR_LIB_STANDBY,
   MTR_LIB_ENABLED
 } mtr_libState_t;
 

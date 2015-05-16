@@ -68,8 +68,8 @@ void led_init(void) {
   led_LEDStripTIMOCInitStruct.TIM_OCMode = TIM_OCMode_PWM1; // With upcounting, this gives positive leading pulse and directly proportional duty cycle
   led_LEDStripTIMOCInitStruct.TIM_OutputState = TIM_OutputState_Enable; // Enable the output?
 
-  TIM_OC2Init(TIM16, &led_LEDStripTIMOCInitStruct); // TIM16 Channel 2 output compare init
-  TIM_SetCompare2(TIM16, 0); // Turn the LED Strip off
+  TIM_OC1Init(TIM16, &led_LEDStripTIMOCInitStruct); // TIM16 Channel 2 output compare init
+  TIM_SetCompare1(TIM16, 0); // Turn the LED Strip off
   // Enable the capture compare on TIM16
   TIM_CtrlPWMOutputs(TIM16, ENABLE);
   TIM_CCxCmd(TIM16, TIM_Channel_2, TIM_CCx_Enable);
