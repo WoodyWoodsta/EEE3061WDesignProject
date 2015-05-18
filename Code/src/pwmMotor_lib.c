@@ -305,8 +305,8 @@ void mtr_rotate(mtr_motorOpState_t direction, uint16_t angle, uint16_t speed) {
       mtr_motorOpState = MTR_ROTATECW;
     }
 
-    while(gyro_angleData(2) != angle) {
-
+    while(gyro_angleData[GYROAXIS_Z] != angle) {
+      gyr_getAngle(gyro_angleData);
       leftSpeedDiff = speed - mtr_motorLCrtSpd;
       rightSpeedDiff = speed - mtr_motorRCrtSpd;
 
@@ -366,7 +366,8 @@ void mtr_rotate(mtr_motorOpState_t direction, uint16_t angle, uint16_t speed) {
       mtr_motorOpState = MTR_ROTATECCW;
     }
 
-    while(gyro_angleData(2) != angle) {
+    while(gyro_angleData[GYROAXIS_Z] != angle) {
+      gyr_getAngle(gyro_angleData);
       leftSpeedDiff = speed - mtr_motorLCrtSpd;
       rightSpeedDiff = speed - mtr_motorRCrtSpd;
 

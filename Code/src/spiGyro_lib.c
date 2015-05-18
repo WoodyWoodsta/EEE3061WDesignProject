@@ -21,10 +21,13 @@
 // == Includes ==
 #include "spiGyro_lib.h"
 #include "pwmMotor_lib.h"
+#include "ledGPIOB_lib.h"
 
 // == Defines ==
 
 // == Declarations ==
+uint32_t ledStripCount = 0;
+uint32_t ledStripPWMValue = 1000;
 
 /**
  * @brief Initialise the SPI2 peripheral for use with the L3GD20
@@ -507,6 +510,15 @@ void gyr_gyroStart(void) {
     gyr_calibrate(GYROCAL_FULL);
     led_0Off();
     led_1Off();
+    uint32_t ledStripCount = 0;
+    uint32_t ledStripPWMValue = 1000;
+    while (ledStripCount < 600) {
+      delay(4000);
+      ledStripCount++;
+      ledStripPWMValue--;
+      TIM_SetCompare1(TIM16, ledStripPWMValue);
+    }
+
     firstRun = FALSE;
   } else {
     gyr_calibrate(GYROCAL_INTERVAL);

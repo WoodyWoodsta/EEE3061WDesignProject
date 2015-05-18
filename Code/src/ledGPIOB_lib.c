@@ -58,7 +58,7 @@ void led_init(void) {
   TIM_TimeBaseInitTypeDef led_LEDStripTIMTimebaseInitStruct;
   TIM_TimeBaseStructInit(&led_LEDStripTIMTimebaseInitStruct); // Get the structure ready for init
   led_LEDStripTIMTimebaseInitStruct.TIM_CounterMode = TIM_CounterMode_Up;
-  led_LEDStripTIMTimebaseInitStruct.TIM_Prescaler = 48; // Will give 1Mhz base
+  led_LEDStripTIMTimebaseInitStruct.TIM_Prescaler = 480; // Will give 1Mhz base
   led_LEDStripTIMTimebaseInitStruct.TIM_Period = 1000; // 1KHz PWM frequency
   TIM_TimeBaseInit(TIM16, &led_LEDStripTIMTimebaseInitStruct);
 
