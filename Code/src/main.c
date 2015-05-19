@@ -35,7 +35,6 @@
 #include "ledGPIOB_lib.h"
 #include "pbGPIOA_lib.h"
 #include "pwmMotor_lib.h"
-#include "diag/Trace.h" // Trace output via STDOUT
 #include "serialTerminal_lib.h"
 
 // == Defines ==
@@ -125,6 +124,7 @@ int main(int argc, char* argv[]) {
   uint16_t gyroCountDisplay = 0;
   uint16_t uartCountDataSend = 0;
   uint16_t ledCountStandby = 0;
+  uint32_t ledStripStrobeCount = 0;
   uint16_t uartData = 0;
   gyr_angleSetPoint = 0;
   uint8_t isZero = FALSE;
@@ -137,7 +137,7 @@ int main(int argc, char* argv[]) {
   float motorPIDIntegral = 0; // Initial conditions
   float motorPIDDerivative = 0; // Instantaneous derivative
   int16_t prevError = 0; // Previous and current errors to calculate derivative and integral
-  int16_t curError = 0;
+  int32_t curError = 0;
 
   for (;;) {
 
@@ -175,12 +175,9 @@ int main(int argc, char* argv[]) {
       int16_t gyro_angleYInt = gyro_angleData[1];
       int16_t gyro_angleZInt = gyro_angleData[2];
       printf("%d;%d;%d;%d;%d;%d;%d;\r\n", (int16_t) gyro_angleData[0],
-          (int16_t) gyro_angleData[1],
-          (int16_t) gyro_angleData[2],
-          (int16_t) gyro_velocityData[0],
-          (int16_t) gyro_velocityData[1],
-          (int16_t) gyro_velocityData[2],
-          (uint32_t) temperature);
+          (int16_t) gyro_angleData[1], (int16_t) gyro_angleData[2],
+          (int16_t) gyro_velocityData[0], (int16_t) gyro_velocityData[1],
+          (int16_t) gyro_velocityData[2], (uint32_t) temperature);
       uartCountDataSend = 0;
     }
 #endif
@@ -190,7 +187,7 @@ int main(int argc, char* argv[]) {
       uint16_t mtrLibStandbyCount = 0;
       uint32_t lightSensorDischarge = 0;
       GPIO_SetBits(GPIOA, GPIO_Pin_6);
-//      delay(10000);
+      delay(10000);
       // Sit here while we wait for the green light
       TIM_SetCounter(TIM2, 0); // Reset the timer
       GPIOA->MODER &= ~GPIO_MODER_MODER6; // Switch it to an input
@@ -200,16 +197,18 @@ int main(int argc, char* argv[]) {
       }
 
       lightSensorDischarge = TIM_GetCounter(TIM2); // Get the discharge
+      uint32_t dummyVar = 1;
 
 #ifdef SERIAL_SEND_LEDDISCHARGE
-        printf("%d;\r\n", (uint32_t) lightSensorDischarge);
+      printf("%d;\r\n", (uint32_t) lightSensorDischarge);
 #endif
 
       if (!hasAmbientChecked) {
         ambientDischargeTime = lightSensorDischarge;
-        hasAmbientChecked = TRUE;
+        hasAmbientChecked = TRUE; // TODO: Change this to TRUE
         // Else, check to see if the discharge time has been decreased to 90% of he original value
-      } else if (lightSensorDischarge < (ambientDischargeTime - (0.1*ambientDischargeTime))) {
+      } else if (lightSensorDischarge
+          < (ambientDischargeTime - (0.5 * ambientDischargeTime))) {
         led_0On();
         mtr_motorLibraryState = MTR_LIB_ENABLED;
         mtr_setSpeed(MTR_FORWARD, FULL_SPEED, FULL_SPEED);
@@ -227,42 +226,44 @@ int main(int argc, char* argv[]) {
 //      gyr_getAngle(gyro_angleData); // Might want to get rid of this (redundancy)
       curError = gyr_angleSetPoint - gyro_angleData[GYROAXIS_Z];
       // Check if we are too angled, and stop and rotate to correct before driving out of the track
-      TIM_SetCompare1(TIM16, 1000); // Flash the LED Strips
-      if (abs(curError) >= ANGLE_OUTOFBOUND_THRESHOLD) {
-        if (curError > 0) {
-          mtr_rotate(MTR_ROTATECW, abs(curError), MOTOR_ROTATE_SPEED);
-        } else if (curError < 0) {
-          mtr_rotate(MTR_ROTATECCW, abs(curError), MOTOR_ROTATE_SPEED);
-        }
-        // Then reset the PID system
-        motorPIDIntegral = 0;
-        prevError = 0;
+      TIM_SetCompare1(TIM16, 1000);
+//      if (abs(curError) >= ANGLE_OUTOFBOUND_THRESHOLD) {
+//        if (curError > 0) {
+//          mtr_rotate(MTR_ROTATECW, abs(curError), MOTOR_ROTATE_SPEED);
+//        } else if (curError < 0) {
+//          mtr_rotate(MTR_ROTATECCW, abs(curError), MOTOR_ROTATE_SPEED);
+//        }
+//        // Then reset the PID system
+//        motorPIDIntegral = 0;
+//        prevError = 0;
+//
+//        // However, if we are over the threshold, implement some PID
+//      } else
 
-        // However, if we are over the threshold, implement some PID
-      } else if (abs(curError) > PID_THRESHOLD) {
-        uint32_t elapsedTime = TIM_GetCounter(TIM7);
-        TIM_SetCounter(TIM7, 0);
-        motorPIDDerivative = (curError - prevError) / elapsedTime; // Calculate the derivative
-        motorPIDIntegral = motorPIDIntegral + (curError - prevError); // Calculate and update the integral
+      if (abs(curError) > PID_THRESHOLD) {
+//        uint32_t elapsedTime = TIM_GetCounter(TIM7);
+//        TIM_SetCounter(TIM7, 0);
+//        motorPIDDerivative = (curError - prevError) / elapsedTime; // Calculate the derivative
+//        motorPIDIntegral = motorPIDIntegral + (curError - prevError); // Calculate and update the integral
 
-        if (curError > 0) { // If we need to correct to the left, then make the correction
-          uint16_t newLeftSpeed = FULL_SPEED
+        if (curError < 0) { // If we need to correct to the left, then make the correction
+          int16_t newLeftSpeed = FULL_SPEED
               - (abs(curError)
-                  * (PID_PROPORTIONAL_GAIN
-                      + (PID_DERIVATIVE_GAIN * motorPIDDerivative)
-                      + (PID_INTEGRAL_GAIN * motorPIDIntegral)));
+                  * (PID_PROPORTIONAL_GAIN));
+          if (newLeftSpeed < 0) {
+            newLeftSpeed = 0;
+          }
           mtr_setSpeed(MTR_FORWARD, newLeftSpeed, FULL_SPEED);
-        } else if (curError < 0) { // If we need to move to the right, then make the correction
-          uint16_t newRightSpeed = FULL_SPEED
+        } else if (curError > 0) { // If we need to move to the right, then make the correction
+          int16_t newRightSpeed = FULL_SPEED
               - (abs(curError)
-                  * (PID_PROPORTIONAL_GAIN
-                      + (PID_DERIVATIVE_GAIN * motorPIDDerivative)
-                      + (PID_INTEGRAL_GAIN * motorPIDIntegral)));
+                  * (PID_PROPORTIONAL_GAIN));
+          if (newRightSpeed < 0) {
+            newRightSpeed = 0;
+          }
           mtr_setSpeed(MTR_FORWARD, FULL_SPEED, newRightSpeed);
-
         }
       }
-      TIM_SetCompare1(TIM16, 400);
     }
   }
 

@@ -22,7 +22,6 @@
 // == Includes ==
 #include <stdint.h>
 #include "math.h"
-#include "diag/Trace.h" // Trace output via STDOUT
 #include "stm32f0xx.h"
 #include "stm32f0xx_rcc.h"
 #include "stm32f0xx_gpio.h"
@@ -30,9 +29,9 @@
 #include "spiGyro_lib.h"
 
 // == Defines ==
-#define FULL_SPEED 95 // Percentage duty cycle which will be full speed
+#define FULL_SPEED 98 // Percentage duty cycle which will be full speed
 #define ANGLE_OUTOFBOUND_THRESHOLD 360 // Degrees
-#define MOTOR_ATTACK 5 // How fast should the motors accelerate (% per 10 ms) NB! If a value too low is causing stalling - just increase
+#define MOTOR_ATTACK 4 // How fast should the motors accelerate (% per 10 ms) NB! If a value too low is causing stalling - just increase
 #define MOTOR_ATTACK_THRESHOLD 100 // When should the motors start attacking (100 will make it never attack)
 #define MOTOR_ROTATE_SPEED 90
 

@@ -22,7 +22,6 @@
 // == Includes ==
 #include <stdint.h>
 #include "math.h"
-#include "diag/Trace.h" // Trace output via STDOUT
 #include "stm32f0xx.h"
 #include "stm32f0xx_spi.h"
 #include "stm32f0xx_rcc.h"

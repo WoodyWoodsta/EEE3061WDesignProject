@@ -512,8 +512,8 @@ void gyr_gyroStart(void) {
     led_1Off();
     uint32_t ledStripCount = 0;
     uint32_t ledStripPWMValue = 1000;
-    while (ledStripCount < 600) {
-      delay(4000);
+    while (ledStripCount < 850) {
+      delay(600);
       ledStripCount++;
       ledStripPWMValue--;
       TIM_SetCompare1(TIM16, ledStripPWMValue);
