@@ -10,9 +10,6 @@
  *
  * This header file for the spiGyro_lib.c library
  *
- * Traces can be output using trace_puts() for strings or trace_printf() for
- * formatted strings
- *
  * ============================================================================
  */
 
@@ -22,13 +19,11 @@
 // == Includes ==
 #include <stdint.h>
 #include "math.h"
-#include "diag/Trace.h" // Trace output via STDOUT
 #include "stm32f0xx.h"
 #include "stm32f0xx_spi.h"
 #include "stm32f0xx_rcc.h"
 #include "stm32f0xx_gpio.h"
 #include "stm32f0xx_tim.h"
-#include "lcd_stm32f0.h"
 #include "adcTempSense_lib.h"
 
 // == Defines ==
@@ -68,6 +63,7 @@ typedef enum {
 float gyro_velocityData[3];
 float gyro_angleData[3];
 gyr_gyroState_t gyroState;
+uint16_t gyr_angleSetPoint;
 
 float zeroBias[3];
 float senseConst;
@@ -78,8 +74,6 @@ void gyr_SPIInit(void);
 void gyr_opInit(void);
 void gyroChipSelect();
 void gyroChipDeselect(void);
-void EEPROMChipSelect(void);
-void EEPROMChipDeselect(void);
 uint8_t gyr_writeSPIgyro(uint8_t regAdr, uint8_t data);
 void gyr_setupRegisters(void);
 void gyr_getGyro(float* out);

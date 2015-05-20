@@ -95,14 +95,14 @@ void ats_tempSenseInit(void) {
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE); // Enable the clocks
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
 
-  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitTypeDef GPIO_PA5InitStructure;
 
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6; // Enable the two pins
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN; // Set to analogue mode
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  GPIO_PA5InitStructure.GPIO_Pin = GPIO_Pin_5; // Enable the two pins
+  GPIO_PA5InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_PA5InitStructure.GPIO_Mode = GPIO_Mode_AN; // Set to analogue mode
+  GPIO_PA5InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_PA5InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(GPIOA, &GPIO_PA5InitStructure);
 
   RCC_ADCCLKConfig(RCC_ADCCLK_HSI14);
   RCC_HSI14Cmd(ENABLE);
@@ -119,7 +119,7 @@ void ats_tempSenseInit(void) {
   ADC1struct.ADC_ScanDirection = ADC_ScanDirection_Upward;
   ADC_Init(ADC1, &ADC1struct);
 
-  ADC_ChannelConfig(ADC1, ADC_Channel_6, ADC_SampleTime_55_5Cycles); // Set up the ADC channels
+//  ADC_ChannelConfig(ADC1, ADC_Channel_6, ADC_SampleTime_55_5Cycles); // Set up the ADC channels
   ADC_ChannelConfig(ADC1, ADC_Channel_5, ADC_SampleTime_55_5Cycles);
 
   ADC_DMARequestModeConfig(ADC1, ADC_DMAMode_Circular); // Link it to the DMA

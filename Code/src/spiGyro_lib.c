@@ -20,10 +20,14 @@
 
 // == Includes ==
 #include "spiGyro_lib.h"
+#include "pwmMotor_lib.h"
+#include "ledGPIOB_lib.h"
 
 // == Defines ==
 
 // == Declarations ==
+uint32_t ledStripCount = 0;
+uint32_t ledStripPWMValue = 1000;
 
 /**
  * @brief Initialise the SPI2 peripheral for use with the L3GD20
@@ -38,15 +42,7 @@ void gyr_SPIInit(void) {
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB | RCC_AHBPeriph_GPIOA, ENABLE);
 
-  // CS: Gyro chip select pin (PA8) which simply outputs 1 to disable chip and 0 to enable chip
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8; // CSN = PA8
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-  // CS: EEPROM Chip select pin (PB12) which simply outputs 1 to disable chip and 0 to enable chip
+  // CS: GYRO Chip select pin (PB12) which simply outputs 1 to disable chip and 0 to enable chip
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12; // CSN = PB12
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -54,7 +50,6 @@ void gyr_SPIInit(void) {
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-  EEPROMChipDeselect();
   gyroChipDeselect();
 
   // SPI Pins: PB13 - SCK, PB14 - MISO (SDO), PB15 - MOSI (SDI/SDA)
@@ -387,7 +382,7 @@ void gyr_prettyLCDAxis(float *velocity, float *angle, gyr_gyroAxis_t axis) {
  */
 
 void gyroChipSelect(void) {
-  GPIO_ResetBits(GPIOA, GPIO_Pin_8);
+  GPIO_ResetBits(GPIOB, GPIO_Pin_12);
 }
 
 /**
@@ -397,26 +392,6 @@ void gyroChipSelect(void) {
  */
 
 void gyroChipDeselect(void) {
-  GPIO_SetBits(GPIOA, GPIO_Pin_8);
-}
-
-/**
- * @brief Select the EEPROM slave chip to start communication
- * @param None
- * @retval None
- */
-
-void EEPROMChipSelect(void) {
-  GPIO_ResetBits(GPIOB, GPIO_Pin_12);
-}
-
-/**
- * @brief Deselect the EEPROM slave chip to start communication
- * @param None
- * @retval None
- */
-
-void EEPROMChipDeselect(void) {
   GPIO_SetBits(GPIOB, GPIO_Pin_12);
 }
 
@@ -517,11 +492,33 @@ void gyr_gyroStart(void) {
   // If this is the first time the gyro is being started, get the zero calibration
   if (firstRun) {
     gyroState = GYROSTATE_WAITING_FOR_ZERO;
-    lcd_two_line_write("Keep gyro still", "and hit SW0");
+    uint32_t ledCountStandby = 0;
     while (GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_0)) { // Wait for the pushbutton press
-      __asm("nop");
+      // Indicate when we are waiting for a zero press
+      if (ledCountStandby == 600000) {
+        led_1On();
+        ledCountStandby = 0;
+      } else if (ledCountStandby == 10000) {
+        led_1Off();
+        ledCountStandby++;
+      } else {
+        ledCountStandby++;
+      }
     }
+    led_0On();
+    led_1On();
     gyr_calibrate(GYROCAL_FULL);
+    led_0Off();
+    led_1Off();
+    uint32_t ledStripCount = 0;
+    uint32_t ledStripPWMValue = 1000;
+    while (ledStripCount < 850) {
+      delay(600);
+      ledStripCount++;
+      ledStripPWMValue--;
+      TIM_SetCompare1(TIM16, ledStripPWMValue);
+    }
+
     firstRun = FALSE;
   } else {
     gyr_calibrate(GYROCAL_INTERVAL);
@@ -530,9 +527,17 @@ void gyr_gyroStart(void) {
   TIM_Cmd(TIM6, ENABLE); // Start the timer
 
   gyroState = GYROSTATE_RUNNING;
+  mtr_motorLibraryState = MTR_LIB_STANDBY;
 }
 
+/**
+ * @brief Get the current angle from the zero reference
+ * @param Float pointer to where the angle will be saved
+ * @retval None
+ */
+
 void gyr_getAngle(float *out) {
+  led_0On();
   uint8_t axis;
   gyr_getGyro(gyro_velocityData);
   uint32_t timestep = TIM_GetCounter(TIM6); // Grab the elapsed time since the last read
@@ -544,5 +549,6 @@ void gyr_getAngle(float *out) {
     }
   }
 
+  led_0Off();
 }
 

@@ -37,9 +37,7 @@ void pb_pbGPIOAInit(void) {
   GPIOInitStructure.GPIO_PuPd = GPIO_PuPd_UP; // Pullup for the buttons
   GPIOInitStructure.GPIO_Speed = GPIO_Speed_50MHz; // Fastest speed, cos faster is always better
   GPIOInitStructure.GPIO_Pin =   (GPIO_PinSource0 |
-                                  GPIO_PinSource1 |
-                                  GPIO_PinSource2 |
-                                  GPIO_PinSource3); // All the pushbuttons
+                                  GPIO_PinSource1); // All the pushbuttons
 
   GPIO_Init(GPIOA, &GPIOInitStructure);
 }

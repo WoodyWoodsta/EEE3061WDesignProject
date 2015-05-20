@@ -1,0 +1,8 @@
+Field=Comment~String~Comment~100|Field=Description~String~Description~100|Field=Designator~String~Designator~100|Field=Footprint~String~Footprint~100|Field=LibRef~String~LibRef~100|Field=Quantity~Integer~Quantity~100|ReportField=Currency~<none>|ReportField=ProductionQuantity~1|ReportField=ProjectFileName~EEE3061WDesignProject_PowerBoard.PrjPcb|ReportField=ProjectFullPath~D:\ITDev\Projects\EEE3061WDesignProject\Circuits\EEE3061WDesignProject_PowerBoard\EEE3061WDesignProject_PowerBoard.PrjPcb|ReportField=Title~Bill of Materials For PCB Document [PowerBoardPCBRev1.PcbDoc]|ReportField=TotalQuantity~8|ReportField=ReportTime~09:39:03 PM|ReportField=ReportDate~2015-05-11|ReportField=ReportDateTime~2015-05-11 09:39:03 PM|ReportField=OutputName~Bill of Materials|ReportField=OutputType~BOM_PartType|ReportField=GeneratorName~BOM|ReportField=GeneratorDescription~Bill of Materials|ReportField=VariantName~None|ReportField=DataSourceFileName~PowerBoardPCBRev1.PcbDoc|ReportField=DataSourceFullPath~D:\ITDev\Projects\EEE3061WDesignProject\Circuits\EEE3061WDesignProject_PowerBoard\PowerBoardPCBRev1.PcbDoc
+0.1uF|Capacitor|C2, C3|CAPR5-4X5|Cap2|2
+POWERBOARDHEADER|Header, 7-Pin|P1|HDR1X7|Header 7|1
+LEFT_MOTOR_CONNECTOR|Header, 2-Pin|P2|HDR1X2|Header 2|1
+RIGHT_MOTOR_CONNECTOR|Header, 2-Pin|P3|HDR1X2|Header 2|1
+V_EXT_CONNECTOR|Header, 2-Pin|P4|HDR1X2|Header 2|1
+BAT_CONNECTOR|Header, 2-Pin|P5|HDR1X2|Header 2|1
+L293DNE Motor Driver|TI L293DNE Quad H-bridge Motor Driver|U1|DIP16 (NE)|L293DNE|1
