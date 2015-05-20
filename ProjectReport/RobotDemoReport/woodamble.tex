@@ -1,0 +1,108 @@
+%TODO! - Proper citations
+
+%----------------------------------------------------------------------------------------
+% PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[a4paper]{article}
+
+\usepackage[autostyle]{csquotes}
+
+% == Package includes
+\usepackage[backend=biber, style=ieee]{biblatex}              % Biblatex with IEEE Config
+  \addbibresource{references.bib}
+\usepackage{booktabs}                                                    % Table support|
+\usepackage[table]{xcolor}                                               %              |
+%\usepackage[a4paper,bindingoffset=-0.1in,left=1in,right=1in,top=1in,bottom=1in,footskip=1in]{geometry}
+\usepackage{fancyhdr}                                       % Required for custom headers
+\usepackage{lastpage}                % Required to determine the last page for the footer
+\usepackage{extramarks}                                % Required for headers and footers
+\usepackage{graphicx}                                         % Required to insert images
+\usepackage{lipsum}       % Used for inserting dummy 'Lorem ipsum' text into the template
+\usepackage[english]{babel}                                % English language/hyphenation
+\usepackage{mathtools}                                                    % Math packages
+\usepackage{mathabx}
+%\usepackage{amsmath,amsfonts,amsthm}                        % Math packages (deprecated)
+\usepackage{float}                                              % Images and other floats
+\usepackage[section]{placeins}                                      % Placement of floats
+\usepackage{listings}                                              % Code snippet support
+\usepackage{color}                                                       % Colour support
+\usepackage{tikz}
+\usepackage{pgfplots}
+  \pgfplotsset{compat=1.11}
+\usepackage{chngcntr}                                           % Figure counter settings
+\usepackage[hidelinks]{hyperref}                                             % Hyperlinks
+\usepackage{epstopdf}                                               % EPS graphic support
+
+% == Colour Definitions
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+% == Code Snippet Config
+\lstset{frame=tb,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true
+  tabsize=3
+}
+
+\providecommand{\e}[1]{\ensuremath{\times 10^{#1}}}                % Scientific Notation!
+\providecommand{\eoc}{\(_{\slash \slash \slash}\)}           % End of Calculation Symbol!
+%\flushbottom
+
+%----------------------------------------------------------------------------------------
+% DOCUMENT STRUCTURE COMMANDS
+%----------------------------------------------------------------------------------------
+
+% == Margins
+\topmargin=-0.45in                                   % Deprecated due to geometry package
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=10in
+\headsep=0.25in 
+\setlength\parindent{0pt}                       % Removes all indentation from paragraphs
+\linespread{1.1}                                                           % Line spacing
+
+% == Header and Footer
+\pagestyle{fancy}
+\lhead{\footnotesize\hmwkAuthorName}                                    % Top left header
+\chead{}                                                              % Top center header
+\rhead{\firstxmark\hmwkClass\ | \hmwkTitle}                      % Top right header\first
+\lfoot{\lastxmark}                                                   % Bottom left footer
+\cfoot{}                                                           % Bottom center footer
+\rfoot{Page\ \thepage}                                              % Bottom right footer
+\renewcommand\headrulewidth{0.4pt}                              % Size of the header rule
+\renewcommand\footrulewidth{0.3pt}                              % Size of the footer rule
+
+\setcounter{secnumdepth}{0}                             % Removes default section numbers
+\newcounter{homeworkProblemCounter}                                  % Number of sections
+\counterwithin{figure}{homeworkProblemCounter}                % Sublevel figure numbering
+
+\newcommand{\homeworkProblemName}{}
+\newenvironment{homeworkProblem}[1][Problem \arabic{homeworkProblemCounter}]{ % Makes a new environment called homeworkProblem which takes 1 argument (custom name) but the default is "Problem #"
+\stepcounter{homeworkProblemCounter} % Increase counter for number of problems
+\renewcommand{\homeworkProblemName}{#1} % Assign \homeworkProblemName the name of the problem
+\section{\homeworkProblemName} % Make a section in the document with the custom problem count
+}
+
+\newcommand{\problemAnswer}[1]{ % Defines the problem answer command with the content as the only argument
+\noindent{\begin{minipage}{0.98\columnwidth}#1\end{minipage}} % Makes the box around the problem answer and puts the content inside
+}
+
+\newcommand{\homeworkSectionName}{}
+\newenvironment{homeworkSection}[1]{ % New environment for sections within homework problems, takes 1 argument - the name of the section
+\renewcommand{\homeworkSectionName}{#1} % Assign \homeworkSectionName to the name of the section from the environment argument
+\subsection{\homeworkSectionName} % Make a subsection with the custom name of the subsection
+}
+

@@ -162,7 +162,7 @@ void mtr_rightDisable(void) {
 
 /**
  * @brief Bring the motors to the speed specified and cater for large changes in speed
- * @param direction: Which direction the motor should be driven
+ * @param direction: Which direction both motors should be driven
  *        leftSpeed: Speed of the left motor
  *        rightSpeed: Speed of the right motor
  * @retval None
@@ -288,6 +288,15 @@ void mtr_setSpeed(mtr_motorOpState_t direction, uint16_t leftSpeed, uint16_t rig
     mtr_stop();
   }
 }
+
+/**
+ * @brief Bring the motors to the required opposing speeds until the required rotation
+ *  is carried out and cater for large changes in speed
+ * @param direction: Which direction the robot should rotate
+ *        angle: Angle to rotate
+ *        speed: Speed of the motors during rotation
+ * @retval None
+ */
 
 void mtr_rotate(mtr_motorOpState_t direction, uint16_t angle, uint16_t speed) {
   int16_t leftSpeedDiff = 0;

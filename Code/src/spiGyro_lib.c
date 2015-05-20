@@ -530,6 +530,12 @@ void gyr_gyroStart(void) {
   mtr_motorLibraryState = MTR_LIB_STANDBY;
 }
 
+/**
+ * @brief Get the current angle from the zero reference
+ * @param Float pointer to where the angle will be saved
+ * @retval None
+ */
+
 void gyr_getAngle(float *out) {
   led_0On();
   uint8_t axis;

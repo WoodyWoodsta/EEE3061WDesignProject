@@ -10,9 +10,6 @@
  *
  * This header file for the spiGyro_lib.c library
  *
- * Traces can be output using trace_puts() for strings or trace_printf() for
- * formatted strings
- *
  * ============================================================================
  */
 
