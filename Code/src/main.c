@@ -40,7 +40,7 @@
 
 // == Defines ==
 //#define SERIAL_SEND
-//#define SERIAL_SEND_LEDDISCHARGE
+#define SERIAL_SEND_LEDDISCHARGE
 #define EVER ;;
 
 // Sample pragmas to cope with warnings. Please note the related line at
@@ -184,7 +184,7 @@ int main(int argc, char* argv[]) {
       } else if (lightSensorDischarge
           < (ambientDischargeTime - (0.5 * ambientDischargeTime))) {
         led_0On();
-        mtr_motorLibraryState = MTR_LIB_ENABLED;
+//        mtr_motorLibraryState = MTR_LIB_ENABLED;
         mtr_setSpeed(MTR_FORWARD, FULL_SPEED, FULL_SPEED);
 
         TIM_Cmd(TIM7, ENABLE);
