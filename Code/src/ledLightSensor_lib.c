@@ -63,6 +63,7 @@ uint32_t lls_getLight(void) {
   // Start the charge-up (should have been set last time the function was called)
   GPIO_SetBits(GPIOA, GPIO_Pin_6);
   // TODO: May need to add a delay here
+  delay(200000);
 
   TIM_SetCounter(TIM2, 0); // Reset the timer
   GPIOA->MODER &= ~GPIO_MODER_MODER6; // Switch it to an input
