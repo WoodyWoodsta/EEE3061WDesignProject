@@ -3,7 +3,7 @@
 % NAME AND CLASS SECTION
 %----------------------------------------------------------------------------------------
 
-\newcommand{\hmwkTitle}{Final Report} % Assignment title
+\newcommand{\hmwkTitle}{Conceptual Design Report} % Assignment title
 \newcommand{\hmwkDueDate}{Wednesday,\ September\ 03,\ 2014}                    % Due date
 \newcommand{\hmwkClass}{EEE3061W - Mechatronics Design}                    % Course/class
 \newcommand{\hmwkClassTime}{10:30am}                                 % Class/lecture time
@@ -43,122 +43,106 @@
 %----------------------------------------------------------------------------------------
 \setcounter{tocdepth}{2}                                                      % ToC Depth
 
-\begin{abstract}
-This report covers the conceptualization, design and building stages of an autonomous bi-athletic robot for the EEE3061W Mechatronics Design Project 2015.  This robot is to partake in a sprint as well as throw a weighted ping-pong ball after maneuvering with an end-goal intention. % Add some more stuff here
+% \begin{abstract}
+% This preliminary report covers the conceptual design stage of the EEE3061W Mechatronics Design 2015 project involving the design and manufacture of a bi-athletic robot.  This robot is to partake in a sprint as well as throw a weighted ping-pong ball.
 
-\end{abstract}
-\newpage
+% \end{abstract}
+% \newpage
 
-% ----------------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------------
 % TABLE OF CONTENTS
-% ----------------------------------------------------------------------------------------
-
-\clearpage
-
-\tableofcontents
-
-% ----- Report Layout Plan -----
-% - Abstract
-% - Introduction
-%   - Sprinter Introduction
-%   - Launcher Introduction
-%
-% Sprinter Stuff
-% - Sprinter Design Concepts
-%   - Design Concept 1
-%   - Design Concept 2
-%   - Design Concept 3
-% - Sprinter Final Concept
-% - Sprinter Preliminary Calculations
-% - Sprinter Mechanical Design
-% - Sprinter Electronic Design
-%   - Core electronics (Controller board)
-%   - Peripheral electronics (Power board, LEDs, Sensors etc)
-% - Sprinter Control and Software
-%   - Control Principles
-%   - Software structure choice
-%   - Other details like gyro etc
-% - Sprinter Build, Testing and Calibration
-% - Sprinter Results and Conclusions
-%
-% Launcher Stuff
-% - Launcher Design Concepts
-%   - Design Concept 1
-%   - Design Concept 2
-%   - Design Concept 3
-% - Launcher Final Concept
-% - Launcher Preliminary Calculations
-% - Launcher Mechanical Design
-% - Launcher Electronic Design
-%   - Core electronics (Controller board)
-%   - Peripheral electronics (Power board, LEDs, Sensors etc)
-% - Launcher Control and Software
-%   - Control principles
-%   - Software structure choice and a note on RTOS
-%   - Other details
-% - Launcher Build, Testing and Calibration
-% - Launcher Results and Conclusions
-%
-% - Final Conclusion
-% - APPENDICES
-
-\clearpage
-
-\listoffigures
-\listoftables
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% NOMENCLATURE
 %----------------------------------------------------------------------------------------
 
-\begin{homeworkProblem}[{Nomenclature}]
-\textbf{Constants}
+% \clearpage
 
-\(V_{LINE}\) - Nominal Line Voltage\\
-\(A_v\) - Operational Amplifier Gain\\
-\(db_{SPL}\) - Sound Pressure Level\\
-\(\theta_S\) - Phase Shift
+% \tableofcontents
 
-\end{homeworkProblem}
+% \clearpage
+
+% \listoffigures
+% \listoftables
+
+% \clearpage
+
+% %----------------------------------------------------------------------------------------
+% % NOMENCLATURE
+% %----------------------------------------------------------------------------------------
+
+% \begin{homeworkProblem}[{Nomenclature}]
+% \textbf{Constants}
+
+% \(V_{LINE}\) - Nominal Line Voltage\\
+% \(A_v\) - Operational Amplifier Gain\\
+% \(db_{SPL}\) - Sound Pressure Level\\
+% \(\theta_S\) - Phase Shift
+
+% \end{homeworkProblem}
 
 %----------------------------------------------------------------------------------------
 % INTRODUCTION
 %----------------------------------------------------------------------------------------
 \begin{homeworkProblem}[{Introduction}]
-This report covers the complete design process for EEE3061W Mechatronics Design Project for 2015.  The project involves the design, manufacture and testing of a legged, autonomous, bi-athletic robot that will be able to partake in a 5m sprint and then throw a weighted ping-pong ball.  The robot is to adhere to a set of specifications as provided by the course management. \\
+This preliminary report and reports hereafter together cover the complete design process for EEE3061W Mechatronics Design Project for 2015.  The project involves the design, manufacture and testing of a legged, autonomous, bi-athletic robot that will be able to partake in a 5m sprint and then throw a weighted ping-pong ball.  The robot is to adhere to a set of specifications as provided by the course management. \\
 
-The entire project is split into two sections, each covering the semester's task.  The first section involved the sprinting aspect of the robot, and the second involved line following and launching.  The relevant sections are named accordingly.
+This report covers purely the initial stage of the design process, that being conceptual designs which are candidates for the final design.  The concepts have been split into logical aspects of the robot itself.
 
-  \begin{homeworkSection}{Sprinter Introduction}
-    In summary, the sprinting robot was to make use of a digital 3-axis gyroscope in an attempt to sprint 5m as fast as possible within a fixed-width lane (maintain fixed heading).  The robot was also specified to start the sprint when green light from a set of three lights was detected, signaling the beginning of the race. \\
+% \begin{homeworkSection}{Project Specifications}
+% The project specifications are as follows:
 
-    The locomotion design was constrained to the use of legs, making use of a mechanical linkage-type system to convert rotational motion from the provided motors into linear motion to move forward.  Other restrictions included the dimensions of the entire robot and out-of-pocket components budget.
-  \end{homeworkSection}
+% \begin{itemize}
+%   \item Robot will compete in a timed event
+%   \item Each robot must start after detecting the green light
+%   \item The robot must run in a straight line till it reaches the end - and stay within a 30 cm lane
+%   \item The track will contain randomly placed pieces of transparency paper
+%   \item It does not need to sense the end of the race
+%   \item The robot must only use the two motors provided
+%   \item The robot must fit in a volume of 100$\times$150$\times$75 mm
+%   \item The robot must be self powered (battery)
+%   \item The robot must be autonomous and use the STM32F0xx
+%   \item The robot must make provision for a launcher (2nd semester) plus a 50g ping-pong ball
+%   \item Definition of legs:
+%   \begin{itemize}
+%     \item All legs must operate in a cyclic fashion
+%     \item No wheels or rotary wheel-like appendages will be permitted for locomotion
+%     \item If the drive motor continuously rotates in one direction, leg motion must oscillate back and forth through some form of a cam and/or mechanical linkage
+%     \item The entire weight of the robot must be completely supported by the robot's legs
+%     \item All legs must separate (lift/hop/move) off the ground at some point during each walk/step cycle (i.e. they cannot slide/roll across the ground)
+%   \end{itemize}
+%   \item Provided:
+%   \begin{itemize}
+%     \item 1 A4 sheet of 3mm perspex
+%     \item 1 A4 sheet of 3mm hardboard
+%   \end{itemize}
+%   \item Other allowed items are:
+%   \begin{itemize}
+%     \item Steel pins
+%     \item Rivets
+%     \item Glue
+%     \item Screws
+%     \item String
+%     \item Nuts and bolts
+%   \end{itemize}
+%   \item Max ``out of pocket'' for other components is R100.00
+% \end{itemize}
 
-  \begin{homeworkSection}{Launcher Introduction}
-    The second stage of the project required the robot to first navigate along a line (autonomously) into a box and then throw a weighted ping-pong ball as far as possible. The launching mechanism was limited to the use of a lever system, driven by a DC motor provided.  The rest of the restrictions follow from the Sprinter as well. \\
-  \end{homeworkSection}
-
-The development of both robots followed the same design process whereby 3 conceptual designs were proposed and one final design (or a combination of ideas from more than one) was developed upon further after having drawn up a pros and cons comparison.  The final design was, at this stage, separated into the electronic and mechanical aspects.  As such, they are discussed separately.  Mechanical designs were modelled using 3D CAD (either SolidWorks or AutoDesk Inventor) and electronics were drawn up in Altium Designer.
+% \end{homeworkSection}
 \end{homeworkProblem}
 
 %----------------------------------------------------------------------------------------
-% SPRINTER DESIGN CONCEPTS
+% DESIGN CONCEPTS
 %----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Sprinter Design Concepts}]
+\begin{homeworkProblem}[{Design Concepts}]
 \begin{homeworkSection}{Design Concept 1}
 
 \begin{figure}[H]
-\label{3dConcept1}
   \begin{center}
     \includegraphics[width=0.8\columnwidth]{DesignConcept1RenderCropped}
-    \caption{3D Render of Sprinter Design Concept 1}
+    \caption{3D Render of Design Concept 1}
+    \label{3dConcept1}
   \end{center}
 \end{figure}
 
-The first sprinter design concept is one which incorporates the Klann Linkage system in the leg design. This allows direct conversion of rotary motion from the motors to linear motion in the legs. The body design, which is somewhat complex, is octagonal in shape, with the angled panels fastened using internal brackets bolted onto the inside. This design is aesthetically appealing however, may make it difficult to access the internal components once the design is completed.  Also, the body restricts the height of the gearing system within. The leg system is a standard Klann Linkage with 8 legs. The legs are connected in pairs, situated on each side of the body, which are run by the same gear (i.e. each motor controls one side each of the leg system).  The main advantage of the extra 4 legs is to provide improved stability. Definitive of the Klann Linkage system, each stride lasts for 180 degrees of each revolution, and so having two legs per revolution, the leg group is able to provide at least one leg for the full revolution. This means there will be 4 legs on the ground at all times during the robot's motion. Although not shown in the rendering, the gearing system would have the final output on the outside of the main body, with the gears placed between the rotating disks. This prevents physical interference at any point during the leg cycles.\\
+Our first design concept is one which incorporates the Klann Linkage system in the leg design. This allows direct conversion of rotary motion from the motors to linear motion in the legs. The body design, which is somewhat complex, is octagonal in shape, with the angled panels fastened using internal brackets bolted onto the inside. This design is aesthetically appealing however, may make it difficult to access the internal components once the design is completed.  Also, the body restricts the height of the gearing system within. The leg system is a standard Klann Linkage with 8 legs. The legs are connected in pairs, situated on each side of the body, which are run by the same gear (i.e. each motor controls one side each of the leg system).  The main advantage of the extra 4 legs is to provide improved stability. Definitive of the Klann Linkage system, each stride lasts for 180 degrees of each revolution, and so having two legs per revolution, the leg group is able to provide at least one leg for the full revolution. This means there will be 4 legs on the ground at all times during the robot's motion. Although not shown in the rendering, the gearing system would have the final output on the outside of the main body, with the gears placed between the rotating disks. This prevents physical interference at any point during the leg cycles.\\
 
 The rendering is not necessarily to scale or proportion.  Due to restrictions in volume and dimensions, the legs would be shorter and body closer to the ground.
 \end{homeworkSection}
@@ -187,18 +171,14 @@ The second design concept is somewhat similar to the previous one, but with one 
   \end{center}
 \end{figure}
 
-The third and final design again employs the Klann Linkage system. The primary difference is that the legs are now placed closer towards the front and back of the main body rather than on the sides. The general body shape is box-like as this will be most efficient to accommodate this particular leg system. The motor and gear placement would also be different: they would be placed on the front and back, with the circuitry and control system placed more centrally. The 8-piece Klann Linkage legs would be most stable in this orientation and allow greater body width. This implementation, however, will result in an overall loss in body length.
+The third and final design again employs the Klann Linkage system. The primary difference is that the legs are now placed closer towards the front and back of the main body rather than on the sides. The general body shape is box-like as this will be most efficient to accommodate this particular leg system. The motor and gear placement would also be different: they would be placed on the front and back, with the circuitry and control system placed more centrally. The 8-piece Klann Linkage legs would be most stable in this orientation and allow greater body width. This implementation, however, will result in an overall loss in body length. 
 
 \end{homeworkSection}
 \end{homeworkProblem}
 
 \clearpage
 
-%----------------------------------------------------------------------------------------
-% SPRINTER FINAL CONCEPT
-%----------------------------------------------------------------------------------------
-
-\begin{homeworkProblem}[{Sprinter Final Concept}]
+\begin{homeworkProblem}[{Final Concept}]
 The following table (Table \ref{comparison1}1) compares the pros and cons of each design concept in order to analyze the merits and shortfalls of each concept.
 
 \begin{table}[h]
@@ -250,9 +230,9 @@ As mentioned above, the legs should be shortened and widened, offering more heig
 \end{homeworkProblem}
 
 %----------------------------------------------------------------------------------------
-% SPRINTER PRELIMINARY CALCULATIONS
+% PRELIMINARY CALCULATIONS
 %----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Sprinter Preliminary Calculations}]
+\begin{homeworkProblem}[{Preliminary Calculations}]
 \begin{homeworkSection}{Gear Ratio}
 
 The gear ratio is entirely dependent of the minimum torque that would be required per leg in order to move the robot forward. As per the specifications, the output rpm of the motors is too high to directly drive the legs whilst providing enough torque to overcome the inertia of the body. An initial calculation for the minimum torque would be enough to determine the best gear ratio.\\
@@ -282,7 +262,7 @@ Given that the ratio of the input and output torque would be the same as the gea
 \end{split}
 \end{equation*}
 
-The gear arrangement can be seen in Fig. 3.1.
+The gear arrangement can be seen in Fig. 3.1. 
 
 \end{homeworkSection}
 
@@ -292,7 +272,7 @@ The gear arrangement can be seen in Fig. 3.1.
 \centering
 \begin{tabular}{|c|c|}
 \hline
-\rowcolor[HTML]{D9D9D9}
+\rowcolor[HTML]{D9D9D9} 
 \textbf{Item/Material}                                                        & \textbf{Mass (g)} \\ \hline
 Gears/sprockets                                                               & 50                \\ \hline
 Nuts and Bolts                                                                & 30                \\ \hline
@@ -302,7 +282,7 @@ Rubber Feet                                                                   & 
 \begin{tabular}[c]{@{}c@{}}Body/Casing \\ (Perspex and Wood)\end{tabular}     & 135               \\ \hline
 \begin{tabular}[c]{@{}c@{}}PCB (including components\\ and wire)\end{tabular} & 175               \\ \hline
 Battery                                                                       & 20                \\ \hline
-\rowcolor[HTML]{D9FFA4}
+\rowcolor[HTML]{D9FFA4} 
 \multicolumn{1}{|r|}{\cellcolor[HTML]{D9FFA4}\textbf{TOTAL}}                  & 510               \\ \hline
 \end{tabular}
 
@@ -312,153 +292,6 @@ Battery                                                                       & 
 
 \end{homeworkSection}
 \end{homeworkProblem}
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% SPRINTER MECHANICAL DESIGN
-%----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Sprinter Mechanical Design}]
-
-\end{homeworkProblem}
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% SPRINTER ELECTRONIC DESIGN
-%----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Sprinter Electronic Design}]
-
-\end{homeworkProblem}
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% SPRINTER CONTROL AND SOFTWARE
-%----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Sprinter Control and Software}]
-
-\end{homeworkProblem}
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% SPRINTER BUILD, TESTING AND CALIBRATION
-%----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Sprinter Build, Testing and Calibration}]
-
-\end{homeworkProblem}
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% SPRINTER RESULTS AND CONCLUSIONS
-%----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Sprinter Results and Conclusions}]
-
-\end{homeworkProblem}
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% LAUNCHER DESIGN CONCEPTS
-%----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Launcher Design Concepts}]
-  \begin{homeworkSection}{Design Concept 1}
-
-  \end{homeworkSection}
-  \begin{homeworkSection}{Design Concept 2}
-
-  \end{homeworkSection}
-  \begin{homeworkSection}{Design Concept 3}
-
-  \end{homeworkSection}
-
-\end{homeworkProblem}
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% LAUNCHER FINAL CONCEPT
-%----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Launcher Final Concept}]
-
-\end{homeworkProblem}
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% LAUNCHER PRELIMINARY CALCULATIONS
-%----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Launcher Preliminary Calculations}]
-
-\end{homeworkProblem}
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% LAUNCHER MECHANICAL DESIGN
-%----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Launcher Mechanical Design}]
-
-\end{homeworkProblem}
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% LAUNCHER ELECTRONIC DESIGN
-%----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Launcher Electronic Design}]
-
-\end{homeworkProblem}
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% LAUNCHER CONTROL AND SOFTWARE
-%----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Launcher Control and Software}]
-
-\end{homeworkProblem}
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% LAUNCHER BUILD, TESTING AND CALIBRATION
-%----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Launcher Build, Testing and Calibration}]
-
-\end{homeworkProblem}
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% LAUNCHER RESULTS AND CONCLUSIONS
-%----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Launcher Results and Conclusions}]
-
-\end{homeworkProblem}
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% FINAL CONCLUSION
-%----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Final Conclusion}]
-
-\end{homeworkProblem}
-
-\clearpage
-
-%----------------------------------------------------------------------------------------
-% APPENDICES
-%----------------------------------------------------------------------------------------
-\begin{homeworkProblem}[{Appendix}]
-
-\end{homeworkProblem}
-
-\clearpage
-
 
 \end{document}
 %----------------------------------------------------------------------------------------
@@ -530,13 +363,13 @@ Battery                                                                       & 
 %       (27,13.78)
 %     };
 %     \addlegendentry{Gauge}
-
+    
 %     \addplot[color=blue, dashed, smooth] coordinates {
 %       (22,22)
 %       (27,27)
 %     };
 %     \addlegendentry{Known weight}
-
+    
 %     \end{axis}
 %   \end{tikzpicture}
 %   \caption{Dead weight tester and gauge measurements}

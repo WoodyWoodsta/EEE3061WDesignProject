@@ -1,0 +1,371 @@
+\input{woodamble}                                                       % Custom preamble
+%----------------------------------------------------------------------------------------
+% NAME AND CLASS SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\hmwkTitle}{Conceptual Design Report} % Assignment title
+\newcommand{\hmwkDueDate}{Wednesday,\ September\ 03,\ 2014}                    % Due date
+\newcommand{\hmwkClass}{EEE3061W - Mechatronics Design}                    % Course/class
+\newcommand{\hmwkClassTime}{10:30am}                                 % Class/lecture time
+\newcommand{\hmwkClassInstructor}{Jones}                               % Teacher/lecturer
+\newcommand{\hmwkAuthorName}{Team 13}    % Your name
+\newcommand{\hmwkDepartment}{Department of Electrical Engineering}           % Department
+
+%----------------------------------------------------------------------------------------
+% TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title{
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.4\columnwidth]{uct-logo}
+  \end{center}
+\end{figure}
+\textmd{\Huge UNIVERSITY OF CAPETOWN \\ \LARGE \hmwkDepartment} \\
+\vspace{2in}
+\textmd{\textbf{\LARGE \hmwkClass \\ \Huge Biathlon Robot \\ \hmwkTitle \\ \vspace{1.5in} \Large Team 13 \\  WDXSEA003 \textbar\space PRSSAM004 \textbar\space RJDYAR001 \textbar\space STRIBR001}}\\
+%\normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate}\\
+%\vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}
+}
+
+\date{}
+
+%========================================================================================
+%========================================================================================
+
+\begin{document}
+
+\maketitle
+\clearpage
+
+%----------------------------------------------------------------------------------------
+% ABTRACT
+%----------------------------------------------------------------------------------------
+\setcounter{tocdepth}{2}                                                      % ToC Depth
+
+% \begin{abstract}
+% This preliminary report covers the conceptual design stage of the EEE3061W Mechatronics Design 2015 project involving the design and manufacture of a bi-athletic robot.  This robot is to partake in a sprint as well as throw a weighted ping-pong ball.
+
+% \end{abstract}
+% \newpage
+
+%----------------------------------------------------------------------------------------
+% TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+% \clearpage
+
+% \tableofcontents
+
+% \clearpage
+
+% \listoffigures
+% \listoftables
+
+% \clearpage
+
+% %----------------------------------------------------------------------------------------
+% % NOMENCLATURE
+% %----------------------------------------------------------------------------------------
+
+% \begin{homeworkProblem}[{Nomenclature}]
+% \textbf{Constants}
+
+% \(V_{LINE}\) - Nominal Line Voltage\\
+% \(A_v\) - Operational Amplifier Gain\\
+% \(db_{SPL}\) - Sound Pressure Level\\
+% \(\theta_S\) - Phase Shift
+
+
+% \end{homeworkProblem}
+
+%----------------------------------------------------------------------------------------
+% INTRODUCTION
+%----------------------------------------------------------------------------------------
+\begin{homeworkProblem}[{Introduction}]
+This preliminary report and reports hereafter together cover the complete design process for EEE3061W Mechatronics Design Project for 2015.  The project involves the design, manufacture and testing of a legged, autonomous, bi-athletic robot that will be able to partake in a 5m sprint and then throw a weighted ping-pong ball.  The robot is to adhere to a set of specifications as provided by the course management. \\
+
+The following report details the concepts and designs for the second stage of the project, namely the shotput challenge. In this stage, the primary requirements are for the robot to launch a ping pong ball as perpendicularly far as possible. The launcher should be attached to the same robot as the previous project. As well as this, the launcher should be self-reloadable and utilise the power of the given DC motor to achieve launching.
+
+\begin{homeworkSection}{Aim}
+To assess and compare conceptual designs of robot launchers and conclude which is the most feasible and viable for this application.
+\end{homeworkSection}
+
+\begin{homeworkSection}{Method}
+  \begin{itemize}
+    \item Generate designs
+    \item Detail and explain each concept
+    \item Compare and contrast each design
+    \item Decide on a final concept design
+    \item Generate conclusions based on the chosen design
+  \end{itemize}
+\end{homeworkSection}
+\end{homeworkProblem}
+
+%----------------------------------------------------------------------------------------
+% DESIGN CONCEPTS
+%----------------------------------------------------------------------------------------
+\begin{homeworkProblem}[{Design Concepts}]
+\begin{homeworkSection}{Design Concept 1}
+  \begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=0.8\columnwidth]{catapult_12_cropped}
+      \caption{3D Render of Design Concept 1}
+      \label{concept1}
+    \end{center}
+  \end{figure}
+
+The first design is clearly based on a standard catapult. This is the first concept chosen as it is the simplest and most common design. The function of the catapult is based loosely on a mousetrap and employs the same general idea of the trap's spring loaded release mechanism. The difference is that there is a stopper mid-way through the movement of the catapult arm which allows for a short impulse time during the release of the ping pong ball. For the reload mechanism, the motor is used to wind back the catapult arm until it hits a mechanical latch. This is achieved by the use of a high step down gearbox to generate enough torque in order to extend the springs. Once the the catapult is in position and the ball is placed on the launcher, the mechanical latch will then be released electronically which will then activate the catapult mechanism. \\
+
+Another possibility, which can be applied to all the subsequent designs in addition to this one, is to have the reload mechanism only activate once the ball is in the holder. This removes the need to have time delay between the reload and launch sequence, and reduces the overall amount of mechanisms and moving parts. This vould be achieved by using a light sensor to sense when the ball is in holder while it is in the upright position.
+\end{homeworkSection}
+
+\begin{homeworkSection}{Design Concept 2}
+  \begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=0.8\columnwidth]{racket_concept_cropped}
+      \caption{3D Render of Design Concept 2}
+      \label{concept2}
+    \end{center}
+  \end{figure}
+
+For this concept, a similar mechanism is used as in the previous one, but instead of a catapult - type launcher, it utilises a more direct “hit” impact on the ball. this is more in line with the nature of springy ping pong balls' projection. Similar to the previous concept, the lever arm is pulled back by using the motor and a series of gears. This is again held in place by a mechanical latch and is released again once a light sensor is triggered within the tube holder. The ball sits in the holder with approximately half of the ball jutting out where the paddle will hit the ball. The impact allows for a very short impulse time and a fast projection of the ping pong ball.
+
+\end{homeworkSection}
+
+\begin{homeworkSection}{Design Concept 3}
+  \begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=0.8\columnwidth]{ibu_ballista}
+      \caption{3D Render of Design Concept 3}
+      \label{concept3}
+    \end{center}
+  \end{figure}
+
+  The third and final concept design is based on a ballista/crossbow design. This allows for a potentially more stable arrangement as the only moving parts are the spring devices or elastic cables. this means there are no rigid components that have to move, which will reduce any uncertainty. The basic design uses a winch that pulls back the elastic band using the motor. A similar latch system is then used which will ultimately launch the ping pong ball. The motor ultimately engages and disengages the the latch and a light sensor will again detect the ball and trigger the motor to disengage the latch.
+
+\end{homeworkSection}
+\end{homeworkProblem}
+
+\clearpage
+
+\begin{homeworkProblem}[{Final Concept}]
+\begin{table}[H]
+\centering
+\caption{Design Concept Comparison Table}
+\label{comparisonTable}
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+\multicolumn{2}{c}{{\bf Design 1}} & \multicolumn{2}{c}{{\bf Design 2}} & \multicolumn{2}{c}{{\bf Design 3}} \\ \midrule
+{\bf Pros} & {\bf Cons} & {\bf Pros} & {\bf Cons} & {\bf Pros} & {\bf Cons} \\
+\begin{tabular}[c]{@{}c@{}}Simplest \\ mechanism\end{tabular} & \begin{tabular}[c]{@{}c@{}}May not be \\ suitable for \\ this projectile\end{tabular} & \begin{tabular}[c]{@{}c@{}}Relatively\\ simple\\ mechanism\end{tabular} & \begin{tabular}[c]{@{}c@{}}Difficult to\\ control\end{tabular} & \begin{tabular}[c]{@{}c@{}}Most stable\\ design\end{tabular} & \begin{tabular}[c]{@{}c@{}}May not be\\ suitable for this\\ projectile\end{tabular} \\
+\begin{tabular}[c]{@{}c@{}}Ease of\\ assembly\end{tabular} & \begin{tabular}[c]{@{}c@{}}Relatively\\ large\end{tabular} & \begin{tabular}[c]{@{}c@{}}Ease of\\ assembly\end{tabular} & \begin{tabular}[c]{@{}c@{}}Relatively\\ large\end{tabular} & \begin{tabular}[c]{@{}c@{}}Smallest\\ in size\end{tabular} & \begin{tabular}[c]{@{}c@{}}Difficult to\\ assemble\end{tabular} \\
+\begin{tabular}[c]{@{}c@{}}Uses\\ standard\\ parts\end{tabular} & \begin{tabular}[c]{@{}c@{}}Could\\ damage robot\\ due to sudden\\ stopping\end{tabular} & \begin{tabular}[c]{@{}c@{}}Uses\\ standard\\ parts\end{tabular} & \begin{tabular}[c]{@{}c@{}}Could damage\\ robot due to\\ impact stopping\end{tabular} & \begin{tabular}[c]{@{}c@{}}Sudden impact\\ would not\\ affect robot\end{tabular} & \begin{tabular}[c]{@{}c@{}}Some parts\\ may be\\ difficult to\\ create\end{tabular} \\ \bottomrule
+\end{tabular}
+\end{table}
+
+After considering the above table and other factors, Design concept 2 was chosen as the final concept. The deciding factor was that for a ball of this size, weight and springy nature, a sudden impact or hit imparted on the ball would be able to project the ball the furthest distance.
+
+\begin{homeworkSection}{Other Design Considerations and Potential Improvements}
+
+Although the current chosen design is simple, adding some degree of complexity could improve the overall performance. In particular, the use of a solenoid instead of a mechanical release would make the launch far more consistent and easier to time and predict (however, this is not a possibility due to project criteria and restrictions). \\
+
+From the above SolidWorks models, there is much to improve on in terms of sizing. These steps however can be taken further down the iterative optimisation path. The choice of material may also change as more convenient and less costly options are possibly discovered.
+\end{homeworkSection}
+
+\end{homeworkProblem}
+
+%----------------------------------------------------------------------------------------
+% PRELIMINARY CALCULATIONS
+%----------------------------------------------------------------------------------------
+\begin{homeworkProblem}[{Preliminary Calculations}]
+  \begin{table}[H]
+\centering
+\caption{Table of Constants}
+\label{constantsTable}
+\begin{tabular}{|l|l|}
+\hline
+Coefficient of restitution (\(e\)) & 0.90                \\ \hline
+Mass of table tennis ball (\(m_1\))  & 2.7 g               \\ \hline
+Voltage of motor (\(V\))           & 12 V                \\ \hline
+Current of motor (\(A\))           & 0.1 A               \\ \hline
+Angle of launch (\(\theta\))            & 45 degrees          \\ \hline
+Drag coefficient (\(Cd\))           & 0.5                 \\ \hline
+Density of air (\(\rho\))             & 1.274 kg/m\(^3\) \\ \hline
+Diameter of ball (\(d\))           & 40 mm               \\ \hline
+Mass of lever arm (\(m_2\))          & 17 g                \\ \hline
+Spring constant (\(k\))               & 3.45 N              \\ \hline
+Lever arm length (\(L\))           & 100 mm              \\ \hline
+\end{tabular}
+\end{table}
+
+\textbf{Assumptions Made:}
+\begin{itemize}
+  \item From extensive research the torque required to put a mousetrap spring down by 60 degrees is 0.212 Nm.
+  \item The height of the robot is ignored in distance calculations as it is only 150 mm of the ground.
+\end{itemize}
+
+\textbf{Torque Required:}
+\begin{equation}
+  \begin{split}
+    T &= 0.212 \text{Nm}\\
+    P &= VI = (12)(0.1)\\
+    P &= 1.2 \text{W}\\
+    P &= \omega T\\
+    \omega &= \frac{P}{T}\\
+    \omega &= 5.66 \text{ rad}^{-1}\\
+    \omega &= 612.61 \text{ rad}^{-1} \text{Output from motor at 12 V}\\
+    \text{motor step} &= \frac{612.61}{5.66} = 108
+  \end{split}
+\end{equation}
+
+This step can be achieved using a worm gear combined with a gear train.\\
+
+\textbf{Speed of ping pong ball:}
+
+Energy conservation:
+
+\begin{equation}
+  U = V + E_k + E_p
+\end{equation}
+
+\begin{equation}
+  \frac{k\theta^2}{2} = \frac{I\omega^2}{2} + \frac{m(\omega r)^2}{2} + mgh
+\end{equation}
+\begin{equation}
+  \frac{3.45(1.04)^2}{2} = \frac{(1.67 \e{-9})\omega^2}{2} + \frac{0.017(\omega \times 0.1)^2}{2} + 0.017(9.81)(0.1)
+\end{equation}
+\begin{equation}
+  1.89 - 0.0167 = 8.87 \e{-5} \omega^2
+\end{equation}
+\begin{equation}
+  \omega = 145.36 \text{ rad}^{-1}
+\end{equation}
+\begin{equation}
+  v = \omega r = 14.5 \text{m/s}^{-1}
+\end{equation}
+\begin{equation}
+  e m_1 v_1 = m_2 v_2
+\end{equation}
+\begin{equation}
+  v_2 = \frac{17}{2.7} \times 14.5 \times 0.90
+\end{equation}
+\begin{equation}
+  v_2 = 85.77 \text{m/s}^{-1}
+\end{equation}
+
+From dynamic calculations, given the launch angle and using an online ping pong ball calculator, the distance found was \textbf{21.4368 m}.
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.8\columnwidth]{ballspeed}
+    \caption{Ball Speed Calculator}
+    \label{ballspeed}
+  \end{center}
+\end{figure}
+
+\end{homeworkProblem}
+
+\end{document}
+%----------------------------------------------------------------------------------------
+% INSTRUCTIONS AND TEMPLATE COMPONENTS
+%----------------------------------------------------------------------------------------
+
+% Document is structured in --> [document]
+%                                 [homeworkProblem]
+%                                   [homeworkSection]
+%                                     [COMPONENTS]
+
+% Set space - \vspace{length}
+% Horizontal line - \hrule
+% Pagebreak - \clearpage or \newpage - they seem to do the same thing
+
+% Normal equation:
+% \begin{equation}
+%   p = \frac{p_g - k}{m}
+% \end{equation}
+
+% Aligned equation:
+% \begin{equation}
+%   \begin{split}
+%     \rho_5  & = -\frac{\left(1575-1900\right)}{g\left(105\e{-3}-70\e{-3}\right)}\\
+%             & = 946.56 \text{ kg/m\(^{-3}\)}\\
+%     \rho_6  & = -\frac{\left(1900-2150\right)}{g\left(70\e{-3}-42\e{-3}\right)}\\
+%             & = 910.15 \text{ kg/m\(^{-3}\)}\\
+%   \end{split}
+% \end{equation}
+
+% Table: Can get from the table site!
+% \begin{table}[h]
+% \centering
+% \begin{tabular}{cccc}
+% \multicolumn{4}{c}{\cellcolor[HTML]{EFEFEF}DATA MEASUREMENTS} \\ \hline
+% \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Known Weight \\ Pressure (Psi)\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Known Weight\\ Pressure (Bar)\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Gauge Pressure\\ (Psi)\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Gauge Pressure\\ (Bar)\end{tabular} \\ \hline
+% \multicolumn{1}{c|}{22} & \multicolumn{1}{c|}{1.52} & \multicolumn{1}{c|}{9.43} & 0.65 \\
+% \multicolumn{1}{c|}{\textbf{27}} & \multicolumn{1}{c|}{\textbf{1.86}} & \multicolumn{1}{c|}{\textbf{13.78}} & \textbf{0.95} \\
+% \multicolumn{1}{c|}{32} & \multicolumn{1}{c|}{2.21} & \multicolumn{1}{c|}{17.40} & 1.20 \\
+% \multicolumn{1}{c|}{37} & \multicolumn{1}{c|}{2.55} & \multicolumn{1}{c|}{21.76} & 1.50 \\
+% \multicolumn{1}{c|}{42} & \multicolumn{1}{c|}{2.90} & \multicolumn{1}{c|}{26.11} & 1.80 \\
+% \multicolumn{1}{c|}{47} & \multicolumn{1}{c|}{3.24} & \multicolumn{1}{c|}{29.01} & 2.00 \\
+% \multicolumn{1}{c|}{\textbf{52}} & \multicolumn{1}{c|}{\textbf{3.59}} & \multicolumn{1}{c|}{\textbf{33.36}} & \textbf{2.30} \\
+% \multicolumn{1}{c|}{57} & \multicolumn{1}{c|}{3.93} & \multicolumn{1}{c|}{37.71} & 2.60 \\ \hline
+% \end{tabular}
+% \caption{Dead weight tester and gauge measurements}
+% \label{gaugeMeasurements}
+% \end{table}
+
+% Picture:
+% \begin{figure}[H]
+%   \begin{center}
+%     \includegraphics[width=0.4\columnwidth]{MEC2022SLab1Exp1}
+%     \caption{Apparatus}
+%     \label{liquidDiagram}
+%   \end{center}
+% \end{figure}
+
+% Graph:
+% \begin{figure}[H]
+%   \centering
+%   \begin{tikzpicture}
+%     \begin{axis}[
+%       xlabel=Known Weight (Psi),
+%       ylabel=Reading (Psi),
+%       grid=major]
+%     \addplot[color=red, smooth] coordinates {
+%       (22,9.43)
+%       (27,13.78)
+%     };
+%     \addlegendentry{Gauge}
+
+%     \addplot[color=blue, dashed, smooth] coordinates {
+%       (22,22)
+%       (27,27)
+%     };
+%     \addlegendentry{Known weight}
+
+%     \end{axis}
+%   \end{tikzpicture}
+%   \caption{Dead weight tester and gauge measurements}
+%   \label{gaugePlot}
+% \end{figure}
+
+% Indented Text: (bit of a hacky way to do it)
+% \begin{quote}
+% where \(p_g\) is the gauge reading, \(m\) is the error coefficient, \(p\) is the known (``correct'') pressure and \(k\) is the error constant
+% \end{quote}
+
+% Code Snippet:
+% \begin{lstlisting}
+% .model AKM02 D(Is=1.5n Rs=.5 Cjo=80p M=0.3 Vj=1 nbv=3 bv=6.2 Ibv=1m Vpk=6.2 mfg=OnSemi type=zener)
+% \end{lstlisting}
+
+% Bibliography:
+% \begin{thebibliography}{99}
+%   \bibitem{itemname}
+%   Author,
+%   Date.
+%   \emph{Title}.
+%   Edition.
+%   Press.
+%   \url{http://web.iitd.ac.in/~shouri/eel201/tuts/diode_switch.pdf}
+% \end{thebibliography}
