@@ -28,7 +28,7 @@ PowerPortNamesTakePriority=0
 PushECOToAnnotationFile=1
 DItemRevisionGUID=
 ReportSuppressedErrorsInMessages=0
-OutputPath=
+OutputPath=Project Outputs for EEE3061WDesignProjectLineSensorBoard
 LogFolderPath=
 ManagedProjectGUID=
 
@@ -37,7 +37,24 @@ PrefsVaultGUID=
 PrefsRevisionGUID=
 
 [Document1]
-DocumentPath=LineSensorSchematic.SchDoc
+DocumentPath=EEE3061WDesignProjectLineSensorBoard.OutJob
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=1
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=
+
+[Document2]
+DocumentPath=LineSensorBoardSchematic.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
@@ -51,7 +68,41 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=QAHSAOFS
+DocumentUniqueId=OIWVHJES
+
+[Document3]
+DocumentPath=LineSensorComponents.SchLib
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=1
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=OMJWWYOY
+
+[Document4]
+DocumentPath=LineSensorComponents.PcbLib
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=1
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=AHRDLCSB
 
 [Configuration1]
 Name=Default Configuration
@@ -63,10 +114,49 @@ Variant=[No Variations]
 GenerateBOM=1
 OutputJobsCount=0
 
+[Generic_SmartPDF]
+AutoOpenFile=-1
+AutoOpenOutJob=0
+
+[Generic_SmartPDFSettings]
+ProjectMode=0
+ZoomPrecision=50
+AddNetsInformation=-1
+AddNetPins=-1
+AddNetNetLabels=-1
+AddNetPorts=-1
+ShowComponentParameters=-1
+GlobalBookmarks=0
+ExportBOM=0
+TemplateFilename=
+TemplateStoreRelative=-1
+PCB_PrintColor=1
+SCH_PrintColor=0
+PrintQuality=-3
+SCH_ShowNoErc=-1
+SCH_ShowParameter=-1
+SCH_ShowProbes=-1
+SCH_ShowBlankets=-1
+SCH_NoERCSymbolsToShow="Thin Cross","Thick Cross","Small Cross",Checkbox,Triangle
+SCH_ShowNote=-1
+SCH_ShowNoteCollapsed=-1
+SCH_ExpandLogicalToPhysical=0
+SCH_VariantName=[No Variations]
+SCH_ExpandComponentDesignators=-1
+SCH_ExpandNetlabels=0
+SCH_ExpandPorts=0
+SCH_ExpandSheetNumber=0
+SCH_ExpandDocumentNumber=0
+SCH_HasExpandLogicalToPhysicalSheets=-1
+SaveSettingsToOutJob=0
+
+[Generic_EDE]
+OutputDir=Project Outputs for EEE3061WDesignProjectLineSensorBoard
+
 [OutputGroup1]
 Name=Netlist Outputs
 Description=
-TargetPrinter=Foxit Reader PDF Printer
+TargetPrinter=PDFCreator
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=PCADNetlist
 OutputName1=PCAD Netlist
@@ -102,7 +192,7 @@ OutputDefault6=0
 [OutputGroup2]
 Name=Simulator Outputs
 Description=
-TargetPrinter=Foxit Reader PDF Printer
+TargetPrinter=PDFCreator
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=AdvSimNetlist
 OutputName1=Mixed Sim
@@ -123,7 +213,7 @@ OutputDefault3=0
 [OutputGroup3]
 Name=Documentation Outputs
 Description=
-TargetPrinter=Foxit Reader PDF Printer
+TargetPrinter=Virtual Printer
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=Assembler Source Print
 OutputName1=Assembler Source Prints
@@ -199,10 +289,12 @@ OutputDefault12=0
 PageOptions12=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=A4|PaperIndex=9
 OutputType13=Schematic Print
 OutputName13=Schematic Prints
-OutputDocumentPath13=
+OutputDocumentPath13=D:\_EmbeddedDev\Projects\EEE3061WDesignProject\Circuits\EEE3061WDesignProjectLineSensorBoard\LineSensorBoardSchematic.SchDoc
 OutputVariantName13=
 OutputDefault13=0
 PageOptions13=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=A4|PaperIndex=9
+Configuration13_Name1=OutputConfigurationParameter1
+Configuration13_Item1=Record=SchPrintView|ShowNoERC=True|ShowParamSet=True|ShowProbe=True|ShowBlanket=True|NoERCSymbolsToShow="Thin Cross","Thick Cross","Small Cross",Checkbox,Triangle|ShowNote=True|ShowNoteCollapsed=True|ExpandDesignator=True|ExpandNetLabel=False|ExpandPort=False|ExpandSheetNum=False|ExpandDocNum=False|PrintArea=0|PrintAreaRect.X1=0|PrintAreaRect.Y1=0|PrintAreaRect.X2=0|PrintAreaRect.Y2=0
 OutputType14=SimView Print
 OutputName14=SimView Prints
 OutputDocumentPath14=
@@ -231,7 +323,7 @@ PageOptions17=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|Print
 [OutputGroup4]
 Name=Assembly Outputs
 Description=
-TargetPrinter=Foxit Reader PDF Printer
+TargetPrinter=PDFCreator
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=Assembly
 OutputName1=Assembly Drawings
@@ -253,7 +345,7 @@ OutputDefault3=0
 [OutputGroup5]
 Name=Fabrication Outputs
 Description=
-TargetPrinter=Foxit Reader PDF Printer
+TargetPrinter=PDFCreator
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=Board Stack Report
 OutputName1=Report Board Stack
@@ -325,16 +417,14 @@ OutputDefault12=0
 [OutputGroup6]
 Name=Report Outputs
 Description=
-TargetPrinter=Foxit Reader PDF Printer
+TargetPrinter=PDFCreator
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=BOM_PartType
 OutputName1=Bill of Materials
 OutputDocumentPath1=
 OutputVariantName1=[No Variations]
 OutputDefault1=0
-PageOptions1=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=0|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=A4|PaperIndex=9
-Configuration1_Name1=ColumnNameFormat
-Configuration1_Item1=CaptionAsName
+PageOptions1=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=A4|PaperIndex=9
 OutputType2=ComponentCrossReference
 OutputName2=Component Cross Reference Report
 OutputDocumentPath2=
@@ -364,7 +454,7 @@ OutputDefault6=0
 [OutputGroup7]
 Name=Other Outputs
 Description=
-TargetPrinter=Foxit Reader PDF Printer
+TargetPrinter=PDFCreator
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=Text Print
 OutputName1=Text Print
@@ -544,7 +634,7 @@ PageOptions29=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|Print
 [OutputGroup8]
 Name=Validation Outputs
 Description=
-TargetPrinter=Foxit Reader PDF Printer
+TargetPrinter=PDFCreator
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=Component states check
 OutputName1=Vault's components states check
@@ -583,7 +673,7 @@ OutputDefault6=0
 [OutputGroup9]
 Name=Export Outputs
 Description=
-TargetPrinter=Foxit Reader PDF Printer
+TargetPrinter=PDFCreator
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=AutoCAD dwg/dxf PCB
 OutputName1=AutoCAD dwg/dxf File PCB
@@ -885,6 +975,72 @@ NetClassManualEnabled=1
 SelectedOnly=0
 UpdateVariants=1
 PartTypes=0
+ComponentLibIdentifierKind0=Library Name And Type
+ComponentLibraryIdentifier0=LineSensorComponents.SchLib
+ComponentDesignItemID0=IR_LED
+ComponentSymbolReference0=IR_LED
+ComponentUpdate0=1
+ComponentIsDeviceSheet0=0
+ComponentLibIdentifierKind1=Library Name And Type
+ComponentLibraryIdentifier1=LineSensorComponents.SchLib
+ComponentDesignItemID1=IR_NPN
+ComponentSymbolReference1=IR_NPN
+ComponentUpdate1=1
+ComponentIsDeviceSheet1=0
+ComponentLibIdentifierKind2=Library Name And Type
+ComponentLibraryIdentifier2=Miscellaneous Devices.IntLib
+ComponentDesignItemID2=NPN
+ComponentSymbolReference2=NPN
+ComponentUpdate2=1
+ComponentIsDeviceSheet2=0
+ComponentLibIdentifierKind3=Library Name And Type
+ComponentLibraryIdentifier3=Miscellaneous Devices.IntLib
+ComponentDesignItemID3=Photo NPN
+ComponentSymbolReference3=Photo NPN
+ComponentUpdate3=1
+ComponentIsDeviceSheet3=0
+ComponentLibIdentifierKind4=Library Name And Type
+ComponentLibraryIdentifier4=PBL - Capacitors.SCHLIB
+ComponentDesignItemID4=CAPC_1n8_50V_0805
+ComponentSymbolReference4=CAPC_1n8_50V_0805
+ComponentUpdate4=1
+ComponentIsDeviceSheet4=0
+ComponentLibIdentifierKind5=Library Name And Type
+ComponentLibraryIdentifier5=PBL - Resistors.SCHLIB
+ComponentDesignItemID5=RES_0R_1206
+ComponentSymbolReference5=RES_0R_1206
+ComponentUpdate5=1
+ComponentIsDeviceSheet5=0
+ComponentLibIdentifierKind6=Library Name And Type
+ComponentLibraryIdentifier6=PBL - Resistors.SCHLIB
+ComponentDesignItemID6=RES_150R_0805_5%
+ComponentSymbolReference6=RES_150R_0805_5%
+ComponentUpdate6=1
+ComponentIsDeviceSheet6=0
+ComponentLibIdentifierKind7=Library Name And Type
+ComponentLibraryIdentifier7=PBL - Resistors.SCHLIB
+ComponentDesignItemID7=RES_TRIMMER_10K_1T_THT
+ComponentSymbolReference7=RES_TRIMMER_10K_1T_THT
+ComponentUpdate7=1
+ComponentIsDeviceSheet7=0
+ComponentLibIdentifierKind8=Library Name And Type
+ComponentLibraryIdentifier8=STM32F051C6Breakout.SchLib
+ComponentDesignItemID8=VREG5V
+ComponentSymbolReference8=VREG5V
+ComponentUpdate8=1
+ComponentIsDeviceSheet8=0
+ComponentLibIdentifierKind9=Library Name Only
+ComponentLibraryIdentifier9=Altium Content Vault
+ComponentDesignItemID9=CMP-0056-00016-2
+ComponentSymbolReference9=AN-TIMER-LM555-8
+ComponentUpdate9=1
+ComponentIsDeviceSheet9=0
+ComponentLibIdentifierKind10=Library Name Only
+ComponentLibraryIdentifier10=Altium Content Vault
+ComponentDesignItemID10=CMP-0057-00046-2
+ComponentSymbolReference10=LO-DEC-LM567C-8
+ComponentUpdate10=1
+ComponentIsDeviceSheet10=0
 FullReplace=1
 UpdateDesignatorLock=1
 UpdatePartIDLock=1
@@ -898,6 +1054,122 @@ RemoveParameters=0
 AddModels=1
 RemoveModels=1
 UpdateCurrentModels=1
+ParameterName0=Code_JEDEC
+ParameterUpdate0=1
+ParameterName1=Comment
+ParameterUpdate1=1
+ParameterName2=Component Kind
+ParameterUpdate2=1
+ParameterName3=ComponentLink1Description
+ParameterUpdate3=1
+ParameterName4=ComponentLink1URL
+ParameterUpdate4=1
+ParameterName5=ComponentLink2Description
+ParameterUpdate5=1
+ParameterName6=ComponentLink2URL
+ParameterUpdate6=1
+ParameterName7=ComponentLink3Description
+ParameterUpdate7=1
+ParameterName8=ComponentLink3URL
+ParameterUpdate8=1
+ParameterName9=CompType
+ParameterUpdate9=1
+ParameterName10=DatasheetVersion
+ParameterUpdate10=1
+ParameterName11=Description
+ParameterUpdate11=1
+ParameterName12=LatestRevisionDate
+ParameterUpdate12=1
+ParameterName13=LatestRevisionNote
+ParameterUpdate13=1
+ParameterName14=Library Reference
+ParameterUpdate14=1
+ParameterName15=Manufacturer
+ParameterUpdate15=1
+ParameterName16=Manufacturer 1
+ParameterUpdate16=1
+ParameterName17=Manufacturer Part Number 1
+ParameterUpdate17=1
+ParameterName18=Material
+ParameterUpdate18=1
+ParameterName19=Operating Temperature
+ParameterUpdate19=1
+ParameterName20=Package / Case
+ParameterUpdate20=1
+ParameterName21=PackageDescription
+ParameterUpdate21=1
+ParameterName22=PackageReference
+ParameterUpdate22=1
+ParameterName23=PackageTopMarking
+ParameterUpdate23=1
+ParameterName24=PackageVersion
+ParameterUpdate24=1
+ParameterName25=PinCount
+ParameterUpdate25=1
+ParameterName26=PowerWise
+ParameterUpdate26=1
+ParameterName27=Published
+ParameterUpdate27=1
+ParameterName28=Publisher
+ParameterUpdate28=1
+ParameterName29=Ratings
+ParameterUpdate29=1
+ParameterName30=RevisionNote
+ParameterUpdate30=1
+ParameterName31=RoHS
+ParameterUpdate31=1
+ParameterName32=SCDType
+ParameterUpdate32=1
+ParameterName33=Supplier 1
+ParameterUpdate33=1
+ParameterName34=Supplier Part Number 1
+ParameterUpdate34=1
+ParameterName35=Tolerance
+ParameterUpdate35=1
+ParameterName36=Value
+ParameterUpdate36=1
+ModelTypeGroup0=PCBLIB
+ModelTypeUpdate0=1
+ModelType0=PCBLIB
+ModelName0=CAPC2012X135N
+ModelUpdate0=1
+ModelType1=PCBLIB
+ModelName1=IRNPN
+ModelUpdate1=1
+ModelType2=PCBLIB
+ModelName2=N08E
+ModelUpdate2=1
+ModelType3=PCBLIB
+ModelName3=POT_3306F
+ModelUpdate3=1
+ModelType4=PCBLIB
+ModelName4=RESC2012X70N
+ModelUpdate4=1
+ModelType5=PCBLIB
+ModelName5=RESC3216N_ZERO
+ModelUpdate5=1
+ModelType6=PCBLIB
+ModelName6=STDLED
+ModelUpdate6=1
+ModelType7=PCBLIB
+ModelName7=TO-220_A
+ModelUpdate7=1
+ModelType8=PCBLIB
+ModelName8=TO-226-AA
+ModelUpdate8=1
+ModelType9=PCBLIB
+ModelName9=TO-92Wide
+ModelUpdate9=1
+ModelTypeGroup1=SI
+ModelTypeUpdate1=1
+ModelType10=SI
+ModelName10=NPN
+ModelUpdate10=1
+ModelTypeGroup2=SIM
+ModelTypeUpdate2=1
+ModelType11=SIM
+ModelName11=NPN
+ModelUpdate11=1
 
 [DatabaseUpdateOptions]
 SelectedOnly=0
@@ -911,4 +1183,7 @@ ComparisonOptions2=Kind=Component Class|MinPercent=75|MinMatch=3|ShowMatch=-1|Co
 ComparisonOptions3=Kind=Rule|MinPercent=75|MinMatch=3|ShowMatch=-1|Confirm=-1|UseName=-1|InclAllRules=0
 ComparisonOptions4=Kind=Differential Pair|MinPercent=50|MinMatch=1|ShowMatch=0|Confirm=0|UseName=0|InclAllRules=0
 ComparisonOptions5=Kind=Code Memory|MinPercent=75|MinMatch=3|ShowMatch=-1|Confirm=-1|UseName=-1|InclAllRules=0
+
+[SmartPDF]
+PageOptions=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=A4|PaperIndex=9
 

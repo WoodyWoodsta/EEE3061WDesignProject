@@ -1,0 +1,80 @@
+<Layout Type="Stripboard" Width="17" Height="17" Project="LineSensorVeroBoardV2" Credits="">
+	<Text Value="5V" X1="-2" Y1="1" Name="A1"/>
+	<Text Value="GND" X1="-2" Y1="2" Name="A2"/>
+	<LineIC Value="5VREG" X1="2" Y1="1" X2="2" Y2="3" Name="5VREG"/>
+	<Capacitor Value="0.1uF" X1="1" Y1="2" X2="1" Y2="1" Name="C3"/>
+	<Text Value="Input" X1="-2" Y1="3" Name="A3"/>
+	<Capacitor Value="0.1uF" X1="3" Y1="3" X2="3" Y2="2" Name="C1"/>
+	<Cut X1="4" Y1="3" Name="X1"/>
+	<IC Value="LM555" X1="11" Y1="2" X2="14" Y2="5" Name="LM555"/>
+	<Cut X1="12" Y1="2" Name="X2"/>
+	<Cut X1="13" Y1="2" Name="X3"/>
+	<Cut X1="12" Y1="3" Name="X4"/>
+	<Cut X1="13" Y1="3" Name="X5"/>
+	<Cut X1="12" Y1="4" Name="X6"/>
+	<Cut X1="13" Y1="4" Name="X7"/>
+	<Cut X1="12" Y1="5" Name="X8"/>
+	<Cut X1="13" Y1="5" Name="X9"/>
+	<Cut X1="15" Y1="5" Name="X10"/>
+	<Cut X1="15" Y1="3" Name="X11"/>
+	<Wire Color="Red" Seed="915049657" X1="17" Y1="1" X2="17" Y2="2" Name="W1"/>
+	<Wire Color="Green" Seed="890359828" X1="10" Y1="3" X2="15" Y2="4" Name="W2"/>
+	<Wire Color="Red" Seed="222260576" X1="10" Y1="1" X2="10" Y2="5" Name="W3"/>
+	<Capacitor Value="1uF" X1="16" Y1="4" X2="16" Y2="2" Name="C2"/>
+	<Cut X1="9" Y1="3" Name="X12"/>
+	<Resistor Value="68R" X1="8" Y1="1" X2="8" Y2="3" Name="R1"/>
+	<Led Value="RED LED" X1="7" Y1="3" X2="7" Y2="4" Name="D1"/>
+	<Led Value="GREEN LED" X1="5" Y1="4" X2="5" Y2="5" Name="D2"/>
+	<Cut X1="8" Y1="5" Name="X13"/>
+	<Resistor Value="68R" X1="6" Y1="5" X2="6" Y2="2" Name="R2"/>
+	<Resistor Value="10K" X1="4" Y1="4" X2="4" Y2="7" Name="R3"/>
+	<Transistor Value="2N2222" X1="8" Y1="6" X2="8" Y2="8" Name="Q1"/>
+	<Resistor Value="10K" X1="9" Y1="5" X2="9" Y2="6" Name="R4"/>
+	<Wire Color="Black" Seed="796406422" X1="4" Y1="2" X2="4" Y2="8" Name="W4"/>
+	<Capacitor Value="0.1uF" X1="7" Y1="6" X2="7" Y2="8" Name="C4"/>
+	<Cut X1="9" Y1="7" Name="X14"/>
+	<Wire Color="Green" Seed="568525166" X1="10" Y1="7" X2="10" Y2="6" Name="W5"/>
+	<Cut X1="11" Y1="6" Name="X15"/>
+	<LineIC Value="3V3REG" X1="12" Y1="6" X2="12" Y2="8" Name="3V3REG"/>
+	<Capacitor Value="0.1uF" X1="13" Y1="6" X2="13" Y2="8" Name="C5"/>
+	<Text Value="Output" X1="18" Y1="6" Name="A4"/>
+	<IC Value="LM567" X1="4" Y1="10" X2="7" Y2="13" Name="LM567"/>
+	<Capacitor Value="1uF" X1="3" Y1="10" X2="3" Y2="8" Name="C6"/>
+	<Capacitor Value="0.47uF" X1="2" Y1="11" X2="2" Y2="8" Name="C7"/>
+	<Cut X1="5" Y1="10" Name="X16"/>
+	<Cut X1="6" Y1="10" Name="X17"/>
+	<Cut X1="5" Y1="11" Name="X18"/>
+	<Cut X1="6" Y1="11" Name="X19"/>
+	<Cut X1="5" Y1="12" Name="X20"/>
+	<Cut X1="6" Y1="12" Name="X21"/>
+	<Cut X1="5" Y1="13" Name="X22"/>
+	<Cut X1="6" Y1="13" Name="X23"/>
+	<Wire Color="Red" Seed="1576212885" X1="15" Y1="2" X2="15" Y2="17" Name="W6"/>
+	<Wire Color="Black" Seed="795937074" X1="1" Y1="8" X2="1" Y2="16" Name="W7"/>
+	<Wire Color="Red" Seed="429159780" X1="2" Y1="17" X2="2" Y2="13" Name="W8"/>
+	<Capacitor Value="0.1uF" X1="3" Y1="13" X2="3" Y2="16" Name="C8"/>
+	<Resistor Value="10K" X1="8" Y1="13" X2="8" Y2="12" Name="R5"/>
+	<Capacitor Value="0.1uF" X1="9" Y1="12" X2="9" Y2="11" Name="C9"/>
+	<Wire Color="Black" Seed="1675429838" X1="10" Y1="16" X2="10" Y2="11" Name="W9"/>
+	<Capacitor Value="0.1uF" X1="9" Y1="17" X2="9" Y2="16" Name="C10"/>
+	<Resistor Value="5.6K" X1="8" Y1="10" X2="8" Y2="9" Name="R6"/>
+	<Wire Color="Blue" Seed="116366223" X1="17" Y1="4" X2="9" Y2="9" Name="W10"/>
+	<Transistor Value="2N2222" X1="11" Y1="14" X2="11" Y2="16" Name="Q2"/>
+	<Resistor Value="3.8K" X1="12" Y1="15" X2="12" Y2="12" Name="R7"/>
+	<Cut X1="11" Y1="11" Name="X24"/>
+	<Cut X1="13" Y1="12" Name="X25"/>
+	<Cut X1="13" Y1="15" Name="X26"/>
+	<Resistor Value="100R" X1="14" Y1="17" X2="14" Y2="15" Name="R8"/>
+	<Led Value="IRTX" X1="15" Y1="15" X2="15" Y2="14" Name="IRTX"/>
+	<Cut X1="15" Y1="16" Name="X27"/>
+	<Led Value="IRRX" X1="16" Y1="17" X2="16" Y2="16" Name="IRRX"/>
+	<Cut X1="9" Y1="10" Name="X28"/>
+	<IC Value="10K" X1="14" Y1="9" X2="16" Y2="11" Name="REs"/>
+	<Capacitor Value="100nF" X1="13" Y1="10" X2="11" Y2="10" Name="C11"/>
+	<Cut X1="12" Y1="10" Name="X29"/>  <Wire Color="Green" Seed="614956084" X1="10" Y1="10" X2="3" Y2="12" Name="W11"/>
+  <Wire Color="Blue" Seed="1381539305" X1="17" Y1="16" X2="17" Y2="11" Name="W12"/>
+  <Wire Color="Black" Seed="668915928" X1="17" Y1="9" X2="17" Y2="8" Name="W13"/>
+  <Cut X1="15" Y1="9" Name="X30"/>
+  <Cut X1="15" Y1="10" Name="X31"/>
+  <Cut X1="15" Y1="11" Name="X32"/>
+</Layout>
