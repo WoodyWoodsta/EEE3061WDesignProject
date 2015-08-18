@@ -51,7 +51,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=
+DocumentUniqueId=AHRDLCSB
 
 [Document2]
 DocumentPath=..\EEE3061WDesignProjectLineSensorBoard\LineSensorComponents.SchLib
@@ -86,6 +86,23 @@ ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=JOIHVNWQ
+
+[Document4]
+DocumentPath=SensorModulePCB.PcbDoc
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=1
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=TQSQUAFX
 
 [Configuration1]
 Name=Default Configuration
@@ -157,7 +174,7 @@ OutputDefault3=0
 [OutputGroup3]
 Name=Documentation Outputs
 Description=
-TargetPrinter=PDFCreator
+TargetPrinter=Virtual Printer
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=Assembler Source Print
 OutputName1=Assembler Source Prints
@@ -917,6 +934,30 @@ NetClassManualEnabled=1
 SelectedOnly=0
 UpdateVariants=1
 PartTypes=0
+ComponentLibIdentifierKind0=Library Name And Type
+ComponentLibraryIdentifier0=LineSensorComponents.SchLib
+ComponentDesignItemID0=IR_LED
+ComponentSymbolReference0=IR_LED
+ComponentUpdate0=1
+ComponentIsDeviceSheet0=0
+ComponentLibIdentifierKind1=Library Name And Type
+ComponentLibraryIdentifier1=LineSensorComponents.SchLib
+ComponentDesignItemID1=IR_NPN
+ComponentSymbolReference1=IR_NPN
+ComponentUpdate1=1
+ComponentIsDeviceSheet1=0
+ComponentLibIdentifierKind2=Library Name And Type
+ComponentLibraryIdentifier2=Miscellaneous Connectors.IntLib
+ComponentDesignItemID2=Header 3
+ComponentSymbolReference2=Header 3
+ComponentUpdate2=1
+ComponentIsDeviceSheet2=0
+ComponentLibIdentifierKind3=Library Name And Type
+ComponentLibraryIdentifier3=PBL - Resistors.SCHLIB
+ComponentDesignItemID3=RES_0R_1206
+ComponentSymbolReference3=RES_0R_1206
+ComponentUpdate3=1
+ComponentIsDeviceSheet3=0
 FullReplace=1
 UpdateDesignatorLock=1
 UpdatePartIDLock=1
@@ -930,6 +971,57 @@ RemoveParameters=0
 AddModels=1
 RemoveModels=1
 UpdateCurrentModels=1
+ParameterName0=Comment
+ParameterUpdate0=1
+ParameterName1=Component Kind
+ParameterUpdate1=1
+ParameterName2=Description
+ParameterUpdate2=1
+ParameterName3=LatestRevisionDate
+ParameterUpdate3=1
+ParameterName4=LatestRevisionNote
+ParameterUpdate4=1
+ParameterName5=Library Reference
+ParameterUpdate5=1
+ParameterName6=Manufacturer 1
+ParameterUpdate6=1
+ParameterName7=Manufacturer Part Number 1
+ParameterUpdate7=1
+ParameterName8=Package / Case
+ParameterUpdate8=1
+ParameterName9=Publisher
+ParameterUpdate9=1
+ParameterName10=Ratings
+ParameterUpdate10=1
+ParameterName11=SCDType
+ParameterUpdate11=1
+ParameterName12=Supplier 1
+ParameterUpdate12=1
+ParameterName13=Supplier Part Number 1
+ParameterUpdate13=1
+ParameterName14=Tolerance
+ParameterUpdate14=1
+ParameterName15=Value
+ParameterUpdate15=1
+ModelTypeGroup0=PCBLIB
+ModelTypeUpdate0=1
+ModelType0=PCBLIB
+ModelName0=HDR1X3
+ModelUpdate0=1
+ModelType1=PCBLIB
+ModelName1=IRNPN
+ModelUpdate1=1
+ModelType2=PCBLIB
+ModelName2=RESC3216N_ZERO
+ModelUpdate2=1
+ModelType3=PCBLIB
+ModelName3=STDLED
+ModelUpdate3=1
+ModelTypeGroup1=SI
+ModelTypeUpdate1=1
+ModelType4=SI
+ModelName4=Connector
+ModelUpdate4=1
 
 [DatabaseUpdateOptions]
 SelectedOnly=0
@@ -943,4 +1035,7 @@ ComparisonOptions2=Kind=Component Class|MinPercent=75|MinMatch=3|ShowMatch=-1|Co
 ComparisonOptions3=Kind=Rule|MinPercent=75|MinMatch=3|ShowMatch=-1|Confirm=-1|UseName=-1|InclAllRules=0
 ComparisonOptions4=Kind=Differential Pair|MinPercent=50|MinMatch=1|ShowMatch=0|Confirm=0|UseName=0|InclAllRules=0
 ComparisonOptions5=Kind=Code Memory|MinPercent=75|MinMatch=3|ShowMatch=-1|Confirm=-1|UseName=-1|InclAllRules=0
+
+[SmartPDF]
+PageOptions=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintScale=1.00|XCorrection=1.00|YCorrection=1.00|PrintKind=1|BorderSize=5000000|LeftOffset=0|BottomOffset=0|Orientation=2|PaperLength=1000|PaperWidth=1000|Scale=100|PaperSource=7|PrintQuality=-3|MediaType=1|DitherType=10|PrintScaleMode=1|PaperKind=A4|PaperIndex=9
 
