@@ -1,4 +1,4 @@
-src/main.o: ../src/main.c \
+src/main.o: ../src/main.c ../include/hal_lib.h \
  ../lib/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h \
  ../include/stm32f0xx_hal_conf.h \
  ../lib/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_rcc.h \
@@ -44,7 +44,11 @@ src/main.o: ../src/main.c \
  ../lib/Middlewares/Third_Party/FreeRTOS/Source/include/semphr.h \
  ../lib/Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
  ../lib/Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h \
- ../lib/Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
+ ../lib/Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
+ ../include/userTasks_task.h ../include/genericMessaging_lib.h \
+ ../include/strings_res.h
+
+../include/hal_lib.h:
 
 ../lib/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal.h:
 
@@ -137,3 +141,9 @@ src/main.o: ../src/main.c \
 ../lib/Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h:
 
 ../lib/Middlewares/Third_Party/FreeRTOS/Source/include/timers.h:
+
+../include/userTasks_task.h:
+
+../include/genericMessaging_lib.h:
+
+../include/strings_res.h:

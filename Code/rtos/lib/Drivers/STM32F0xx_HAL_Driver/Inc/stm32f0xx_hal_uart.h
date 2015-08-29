@@ -204,6 +204,10 @@ typedef struct
 
   __IO uint32_t             ErrorCode;       /*!< UART Error code                    */
 
+  uint16_t                 RxXferMaxSize;    /* Maximum dynamic buffer to allocate per string rx (appended by Sean Wood)*/
+
+  uint8_t                  mSource;          /* Was the string malloced by software or defined at compile time (appended by Sean Wood)*/
+
 }UART_HandleTypeDef;
 
 /**
