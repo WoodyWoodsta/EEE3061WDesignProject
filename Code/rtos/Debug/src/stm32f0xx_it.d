@@ -5,9 +5,9 @@ src/stm32f0xx_it.o: ../src/stm32f0xx_it.c \
  ../lib/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h \
  ../lib/Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h \
  ../lib/Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f051x8.h \
- ../system/include/cmsis/core_cm0.h \
- ../system/include/cmsis/core_cmInstr.h \
- ../system/include/cmsis/core_cmFunc.h \
+ ../lib/Drivers/CMSIS/Include/core_cm0.h \
+ ../lib/Drivers/CMSIS/Include/core_cmInstr.h \
+ ../lib/Drivers/CMSIS/Include/core_cmFunc.h \
  ../lib/Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h \
  ../lib/Drivers/STM32F0xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h \
  ../lib/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_rcc_ex.h \
@@ -28,7 +28,7 @@ src/stm32f0xx_it.o: ../src/stm32f0xx_it.c \
  ../lib/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_tim_ex.h \
  ../lib/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h \
  ../lib/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h \
- ../include/stm32f0xx_it.h \
+ ../include/stm32f0xx_it.h ../include/hal_lib.h \
  ../lib/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h \
  ../lib/Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h \
  ../include/FreeRTOSConfig.h \
@@ -59,11 +59,11 @@ src/stm32f0xx_it.o: ../src/stm32f0xx_it.c \
 
 ../lib/Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f051x8.h:
 
-../system/include/cmsis/core_cm0.h:
+../lib/Drivers/CMSIS/Include/core_cm0.h:
 
-../system/include/cmsis/core_cmInstr.h:
+../lib/Drivers/CMSIS/Include/core_cmInstr.h:
 
-../system/include/cmsis/core_cmFunc.h:
+../lib/Drivers/CMSIS/Include/core_cmFunc.h:
 
 ../lib/Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h:
 
@@ -106,6 +106,8 @@ src/stm32f0xx_it.o: ../src/stm32f0xx_it.c \
 ../lib/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h:
 
 ../include/stm32f0xx_it.h:
+
+../include/hal_lib.h:
 
 ../lib/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h:
 

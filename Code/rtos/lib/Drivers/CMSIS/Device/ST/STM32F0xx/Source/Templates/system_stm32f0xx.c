@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    system_stm32f0xx.c
   * @author  MCD Application Team
-  * @version V2.2.2
-  * @date    26-June-2015
+  * @version V2.2.1
+  * @date    09-January-2015
   * @brief   CMSIS Cortex-M0 Device Peripheral Access Layer System Source File.
   *
   * 1. This file provides two functions and one global variable to be called from
@@ -289,9 +289,9 @@ void SystemCoreClockUpdate (void)
 #endif /* STM32F042x6 || STM32F048xx || STM32F072xB || STM32F078xx || STM32F091xC || STM32F098xx */
       else
       {
-#if defined(STM32F042x6) || defined(STM32F048xx)  || defined(STM32F070x6) \
- || defined(STM32F078xx) || defined(STM32F071xB)  || defined(STM32F072xB) \
- || defined(STM32F070xB) || defined(STM32F091xC) || defined(STM32F098xx)  || defined(STM32F030xC)
+#if defined(STM32F042x6) || defined(STM32F048xx)  || defined(STM32F070x6) || \
+    defined(STM32F078xx) || defined(STM32F071xB)  || defined(STM32F072xB) || defined(STM32F070xB) || \
+    defined(STM32F091xC) || defined(STM32F098xx)  || defined(STM32F030xC)
         /* HSI used as PLL clock source : SystemCoreClock = HSI/PREDIV * PLLMUL */
         SystemCoreClock = (HSI_VALUE/predivfactor) * pllmull;
 #else

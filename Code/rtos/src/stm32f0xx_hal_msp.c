@@ -196,11 +196,14 @@ void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef* htim_pwm)
   
     /**TIM1 GPIO Configuration    
     PA8     ------> TIM1_CH1
-    PA9     ------> TIM1_CH2
-    PA10     ------> TIM1_CH3
+    PA9     ------X TIM1_CH2      |__ Disabling these two so that we can use
+    PA10     ------X TIM1_CH3     |   USART1 on the pins for J.G Board
     PA11     ------> TIM1_CH4 
     */
-    GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11;
+    GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_11;
+#ifndef JG_BOARD // If we are not using James' Board
+    GPIO_InitStruct.Pin = GPIO_PIN_9|GPIO_PIN_10;
+#endif
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
@@ -272,11 +275,14 @@ void HAL_TIM_PWM_MspDeInit(TIM_HandleTypeDef* htim_pwm)
   
     /**TIM1 GPIO Configuration    
     PA8     ------> TIM1_CH1
-    PA9     ------> TIM1_CH2
-    PA10     ------> TIM1_CH3
+    PA9     ------X TIM1_CH2      |__ Disabling these two so that we can use
+    PA10     ------X TIM1_CH3     |   USART1 on the pins for J.G Board
     PA11     ------> TIM1_CH4 
     */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_11);
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_8|GPIO_PIN_11);
+#ifndef JG_BOARD // If we are not using James' boards
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_9|GPIO_PIN_10);
+#endif
 
   /* USER CODE BEGIN TIM1_MspDeInit 1 */
 
@@ -332,16 +338,34 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
     /* Peripheral clock enable */
     __USART1_CLK_ENABLE();
   
-    /**USART1 GPIO Configuration    
+    /**USART1 GPIO Configuration for the PCB
     PB6     ------> USART1_TX
     PB7     ------> USART1_RX 
     */
+
+    /**USART1 GPIO Configuration for JG Board
+    PA9     ------> USART1_TX
+    PA10    ------> USART1_RX
+    */
+
+#ifdef JG_BOARD // If we are using JG board
+    GPIO_InitStruct.Pin = GPIO_PIN_9|GPIO_PIN_10;
+#else
     GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7;
+#endif
+
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_PULLUP;
     GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+
+#ifdef JG_BOARD // If we are using JG board
+    // The alternate function is actually AF1, and we are on PA
+    GPIO_InitStruct.Alternate = GPIO_AF1_USART1;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+#else
     GPIO_InitStruct.Alternate = GPIO_AF0_USART1;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+#endif
 
   /* Peripheral interrupt init*/
     HAL_NVIC_SetPriority(USART1_IRQn, 3, 0);
@@ -390,11 +414,20 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
     /* Peripheral clock disable */
     __USART1_CLK_DISABLE();
   
-    /**USART1 GPIO Configuration    
+    /**USART1 GPIO Configuration for the PCB
     PB6     ------> USART1_TX
     PB7     ------> USART1_RX 
     */
+
+    /**USART1 GPIO Configuration for JG Board
+    PA9     ------> USART1_TX
+    PB10    ------> USART1_RX
+    */
+#ifdef JG_BOARD // If we are using JG_Board
+    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_9|GPIO_PIN_10);
+#else
     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_6|GPIO_PIN_7);
+#endif
 
     /* Peripheral interrupt DeInit*/
     HAL_NVIC_DisableIRQ(USART1_IRQn);

@@ -1,7 +1,7 @@
 lib/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.o: \
  ../lib/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.c \
  ../lib/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h \
- ../system/include/cmsis/core_cmFunc.h \
+ ../lib/Drivers/CMSIS/Include/core_cmFunc.h \
  ../lib/Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h \
  ../include/FreeRTOSConfig.h \
  ../lib/Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h \
@@ -21,7 +21,7 @@ lib/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.o: \
 
 ../lib/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h:
 
-../system/include/cmsis/core_cmFunc.h:
+../lib/Drivers/CMSIS/Include/core_cmFunc.h:
 
 ../lib/Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
 

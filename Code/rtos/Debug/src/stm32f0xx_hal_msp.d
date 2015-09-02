@@ -5,9 +5,9 @@ src/stm32f0xx_hal_msp.o: ../src/stm32f0xx_hal_msp.c \
  ../lib/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_def.h \
  ../lib/Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f0xx.h \
  ../lib/Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f051x8.h \
- ../system/include/cmsis/core_cm0.h \
- ../system/include/cmsis/core_cmInstr.h \
- ../system/include/cmsis/core_cmFunc.h \
+ ../lib/Drivers/CMSIS/Include/core_cm0.h \
+ ../lib/Drivers/CMSIS/Include/core_cmInstr.h \
+ ../lib/Drivers/CMSIS/Include/core_cmFunc.h \
  ../lib/Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h \
  ../lib/Drivers/STM32F0xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h \
  ../lib/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_rcc_ex.h \
@@ -41,11 +41,11 @@ src/stm32f0xx_hal_msp.o: ../src/stm32f0xx_hal_msp.c \
 
 ../lib/Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f051x8.h:
 
-../system/include/cmsis/core_cm0.h:
+../lib/Drivers/CMSIS/Include/core_cm0.h:
 
-../system/include/cmsis/core_cmInstr.h:
+../lib/Drivers/CMSIS/Include/core_cmInstr.h:
 
-../system/include/cmsis/core_cmFunc.h:
+../lib/Drivers/CMSIS/Include/core_cmFunc.h:
 
 ../lib/Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h:
 

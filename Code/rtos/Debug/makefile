@@ -10,7 +10,6 @@ RM := rm -rf
 -include sources.mk
 -include system/src/newlib/subdir.mk
 -include system/src/diag/subdir.mk
--include system/src/cortexm/subdir.mk
 -include src/subdir.mk
 -include lib/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/subdir.mk
 -include lib/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0/subdir.mk
@@ -65,7 +64,7 @@ all: EEE3061WDesignProjectCode-rtos.elf secondary-outputs
 EEE3061WDesignProjectCode-rtos.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cross ARM C++ Linker'
-	arm-none-eabi-g++ -mcpu=cortex-m0 -mthumb -Os -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra  -g3 -T mem.ld -T libs.ld -T sections.ld -nostartfiles -Xlinker --gc-sections -L"../ldscripts" -Wl,-Map,"EEE3061WDesignProjectCode-rtos.map" --specs=nano.specs -o "EEE3061WDesignProjectCode-rtos.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-g++ -mcpu=cortex-m0 -mthumb -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra  -g3 -T mem.ld -T libs.ld -T sections.ld -Xlinker --gc-sections -L"../ldscripts" -Wl,-Map,"EEE3061WDesignProjectCode-rtos.map" --specs=nano.specs -o "EEE3061WDesignProjectCode-rtos.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

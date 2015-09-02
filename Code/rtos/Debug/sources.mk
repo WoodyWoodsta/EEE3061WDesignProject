@@ -34,7 +34,6 @@ lib/Middlewares/Third_Party/FreeRTOS/Source \
 lib/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM0 \
 lib/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang \
 src \
-system/src/cortexm \
 system/src/diag \
 system/src/newlib \
 
