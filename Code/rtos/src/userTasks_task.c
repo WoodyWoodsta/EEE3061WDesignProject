@@ -14,9 +14,11 @@
 // == Exported Variables ==
 osThreadId bossTaskHandle;
 osThreadId USARTInTaskHandle;
-osThreadId USARTInBufferTaskHandle;
 osThreadId USARTOutTaskHandle;
+osThreadId motorTaskHandle;
+osThreadId lineSensorTaskHandle;
 globalFlags_t globalFlags;
+
 // USART In Task String Queue
 osMessageQId msgQUSARTIn;
 

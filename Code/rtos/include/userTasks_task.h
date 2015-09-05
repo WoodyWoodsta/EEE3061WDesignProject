@@ -37,6 +37,33 @@ typedef enum {
   COMM_STATE_MANUAL
 } commState_t;
 
+// States of the motor controllers (PWMs)
+typedef enum {
+  MTR_STATE_OFF,
+  MTR_STATE_STANDBY,
+  MTR_STATE_RUNNING
+} motorState_t;
+
+// Directions of the motors
+typedef enum {
+  MTR_DIR_DISABLED,
+  MTR_DIR_FWD,
+  MTR_DIR_REV
+} motorDir_t;
+
+// State of the line sensor algorithm
+typedef enum {
+  LNS_STATE_OFF,
+  LNS_STATE_ON
+} lineSensorState_t;
+
+// Positions of the line being sensed
+typedef enum {
+  LINE_POS_LEFT,
+  LINE_POS_CENTER,
+  LINE_POS_RIGHT
+} linePos_t;
+
 // Peripheral states - to be used for locking out peripherals during procedures etc.
 typedef enum {
   GEN_STATE_READY,
@@ -53,6 +80,19 @@ typedef enum {
   WIFI_PROC_START_SERVER
 } wifiProcedures_t;
 
+// Global motor control data
+typedef struct {
+  motorDir_t leftMotorDir;
+  motorDir_t rightMotorDir;
+  int8_t leftMotorSpeed;
+  int8_t rightMotorSpeed;
+} motorData_struct;
+
+// Global line sensor data
+typedef struct {
+  linePos_t linePos;
+} lineSensorData_struct;
+
 // Proceedure flags
 typedef struct {
   wifiProcedures_t wifiProcedures;
@@ -62,19 +102,29 @@ typedef struct {
 typedef struct {
   commState_t commState;
   genericStates_t wifiState; // Task level peripheral state flag (for task level locking)
+  motorState_t motorState;
+  lineSensorState_t lineSensorState;
 } globalStates_t;
+
+// Global data structs
+typedef struct {
+  motorData_struct motorData;
+  lineSensorData_struct lineSensorData;
+} globalData_t;
 
 // Global program flags
 typedef struct {
   globalStates_t states;
   globalProcedures_t procedures;
+  globalData_t data;
 } globalFlags_t;
 
 // == Exported Variables ==
 extern osThreadId bossTaskHandle;
 extern osThreadId USARTInTaskHandle;
-extern osThreadId USARTInBufferTaskHandle;
 extern osThreadId USARTOutTaskHandle;
+extern osThreadId motorTaskHandle;
+extern osThreadId lineSensorTaskHandle;
 extern globalFlags_t globalFlags;
 
 // USART In Task String Queue
@@ -92,5 +142,7 @@ void StartBossTask(void const * argument);
 void StartUSARTInTask(void const * argument);
 void StartUSARTInBufferTask(void const * argument);
 void StartUSARTOutTask(void const * argument);
+void StartMotorTask(void const * argument);
+void StartLineSensorTask(void const * argument);
 
 #endif /*USERTASKS_TASK_H*/

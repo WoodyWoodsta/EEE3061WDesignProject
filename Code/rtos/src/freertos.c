@@ -34,6 +34,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "FreeRTOS.h"
 #include "task.h"
+#include "hal_lib.h"
 
 /* USER CODE BEGIN Includes */     
 
@@ -83,6 +84,12 @@ void vApplicationMallocFailedHook(void)
    FreeRTOSConfig.h, and the xPortGetFreeHeapSize() API function can be used
    to query the size of free heap space that remains (although it does not
    provide information on how the remaining heap might be fragmented). */
+
+  while(1) {
+    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);
+    uint32_t i;
+    for (i = 0; i<10000; i++);
+  }
 }
 /* USER CODE END 5 */
 

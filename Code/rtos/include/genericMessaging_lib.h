@@ -18,7 +18,7 @@
 #define MRSP_NO_HANDLE 0 // Do not let the library handle the data memory
 #define MRSP_HANDLE 1 // Let the library handle the data memory
 
-#define GLOBAL_MESSAGE_MPOOL_SIZE   20 // Maximum number of messages that can exist in memory
+#define GLOBAL_MESSAGE_MPOOL_SIZE   30 // Maximum number of messages that can exist in memory
 #define STRING_BUFFER_MPOOL_SIZE    10 // Maximum number of string buffer pointer messages that can exist in memory
 
 // == Type Definitions ==
@@ -36,16 +36,18 @@ typedef enum {
   MSG_SRC_WIFI,
   MSG_SRC_USART_IN_TASK,
   MSG_SRC_USART_OUT_TASK,
-  MSG_SRC_BOSS_TASK
+  MSG_SRC_BOSS_TASK,
+  MSG_SRC_MOTOR_TASK,
+  MSG_SRC_LINE_SENSOR_TASK
 } msgSource_t;
 
 // Commands
 typedef enum {
   MSG_CMD_NO_CMD,
+  MSG_COMMAND_LED0_TOGGLE,
   MSG_CMD_WIFI_TEST_AT,
   MSG_CMD_WIFI_INIT,
   MSG_CMD_WIFI_CONNECT_AP,
-  MSG_COMMAND_LED0_TOGGLE,
   MSG_CMD_WIFI_TX_AT,
   MSG_CMD_WIFI_TX_ATE_0,
   MSG_CMD_WIFI_TX_CWMODE_3,

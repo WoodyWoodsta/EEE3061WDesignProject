@@ -35,10 +35,6 @@
 #include "cmsis_os.h"
 #include "userTasks_task.h"
 
-/* USER CODE BEGIN Includes */
-
-/* USER CODE END Includes */
-
 /* Private variables ---------------------------------------------------------*/
 
 // == Message Pools and Queues ==
@@ -67,16 +63,7 @@ osMessageQDef(msgQBoss, 5, msg_genericMessage_t);
 
 /* USER CODE END PFP */
 
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
 int main(void) {
-
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
   /* MCU Configuration----------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -98,8 +85,18 @@ int main(void) {
 
   // Initialise global flags
   globalFlags.states.commState = COMM_STATE_AUTO;
-  globalFlags.states.wifiState = GEN_STATE_READY; // Default to busy until initialised
+  globalFlags.states.wifiState = GEN_STATE_READY;
   globalFlags.procedures.wifiProcedures = WIFI_PROC_NONE;
+
+  globalFlags.states.motorState = MTR_STATE_OFF;
+  globalFlags.states.lineSensorState = LNS_STATE_OFF;
+
+  globalFlags.data.motorData.leftMotorDir = MTR_DIR_DISABLED;
+  globalFlags.data.motorData.leftMotorDir = MTR_DIR_DISABLED;
+  globalFlags.data.motorData.leftMotorSpeed = 0;
+  globalFlags.data.motorData.rightMotorSpeed = 0;
+
+  globalFlags.data.lineSensorData.linePos = LINE_POS_CENTER;
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
@@ -114,7 +111,6 @@ int main(void) {
   /* USER CODE END RTOS_TIMERS */
 
   /* Create the thread(s) */
-  /* Create the thread(s) */
   osThreadDef(bossTask, StartBossTask, osPriorityNormal, 0, 128);
   bossTaskHandle = osThreadCreate(osThread(bossTask), NULL);
 
@@ -123,6 +119,12 @@ int main(void) {
 
   osThreadDef(USARTOutTask, StartUSARTOutTask, osPriorityNormal, 0, 128);
   USARTOutTaskHandle = osThreadCreate(osThread(USARTOutTask), NULL);
+
+  osThreadDef(motorTask, StartMotorTask, osPriorityNormal, 0, 128);
+  motorTaskHandle = osThreadCreate(osThread(motorTask), NULL);
+
+  osThreadDef(lineSensorTask, StartLineSensorTask, osPriorityNormal, 0, 128);
+  lineSensorTaskHandle = osThreadCreate(osThread(lineSensorTask), NULL);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   // Generic messaging and string message memory pools
@@ -144,13 +146,9 @@ int main(void) {
   /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   while (1) {
     __asm("nop");
   }
-
-  /* USER CODE END 3 */
-
 }
 
 /* USART1 init function */
@@ -196,13 +194,13 @@ int main(void) {
  * @param line: assert_param error line source number
  * @retval None
  */
-void assert_failed(uint8_t* file, uint32_t line) {
-  /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-   ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-  /* USER CODE END 6 */
-
-}
+//void assert_failed(uint8_t* file, uint32_t line) {
+//  /* USER CODE BEGIN 6 */
+//  /* User can add his own implementation to report the file name and line number,
+//   ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+//  /* USER CODE END 6 */
+//
+//}
 
 #endif
 
