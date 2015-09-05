@@ -51,6 +51,12 @@ typedef enum {
   MTR_DIR_REV
 } motorDir_t;
 
+// H-Bridge states
+typedef enum {
+  HB_STATE_DISABLED,
+  HB_STATE_ENABLED
+} hBridgeState_t;
+
 // State of the line sensor algorithm
 typedef enum {
   LNS_STATE_OFF,
@@ -81,11 +87,14 @@ typedef enum {
 } wifiProcedures_t;
 
 // Global motor control data
+// NOTE: Only the main function and the motorTask should set these values.
+//       No other task is to write to these values!
 typedef struct {
   motorDir_t leftMotorDir;
   motorDir_t rightMotorDir;
   int8_t leftMotorSpeed;
   int8_t rightMotorSpeed;
+  hBridgeState_t hBridgeState;
 } motorData_struct;
 
 // Global line sensor data
@@ -106,17 +115,12 @@ typedef struct {
   lineSensorState_t lineSensorState;
 } globalStates_t;
 
-// Global data structs
-typedef struct {
-  motorData_struct motorData;
-  lineSensorData_struct lineSensorData;
-} globalData_t;
-
 // Global program flags
 typedef struct {
   globalStates_t states;
   globalProcedures_t procedures;
-  globalData_t data;
+  motorData_struct motorData;
+  lineSensorData_struct lineSensorData;
 } globalFlags_t;
 
 // == Exported Variables ==

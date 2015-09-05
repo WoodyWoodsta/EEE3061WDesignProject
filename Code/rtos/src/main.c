@@ -91,12 +91,12 @@ int main(void) {
   globalFlags.states.motorState = MTR_STATE_OFF;
   globalFlags.states.lineSensorState = LNS_STATE_OFF;
 
-  globalFlags.data.motorData.leftMotorDir = MTR_DIR_DISABLED;
-  globalFlags.data.motorData.leftMotorDir = MTR_DIR_DISABLED;
-  globalFlags.data.motorData.leftMotorSpeed = 0;
-  globalFlags.data.motorData.rightMotorSpeed = 0;
+  globalFlags.motorData.leftMotorDir = MTR_DIR_DISABLED;
+  globalFlags.motorData.leftMotorDir = MTR_DIR_DISABLED;
+  globalFlags.motorData.leftMotorSpeed = 0;
+  globalFlags.motorData.rightMotorSpeed = 0;
 
-  globalFlags.data.lineSensorData.linePos = LINE_POS_CENTER;
+  globalFlags.lineSensorData.linePos = LINE_POS_CENTER;
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
