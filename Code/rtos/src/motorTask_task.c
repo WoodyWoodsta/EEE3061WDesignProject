@@ -13,7 +13,14 @@
 #define FALSE 0
 #define TRUE 1
 
-#define MTR_SPEED_REACTION_PERIOD 1 // Period of changing motor speed by 1% [+-ms]
+#define MTR_SPEED_REACTION_PERIOD     1 // Period of changing motor speed by 1% [+-ms]
+#define MTR_UPDATE_PERIOD             10 // Interval between updating the motor speeds [+-ms]
+#define LEFT_TRIM                     (int8_t)(0) // Percentage trim of the left motor
+#define RIGHT_TRIM                    (int8_t)(0) // Percentage trim of the right motor
+#define TRACKING_COMMIT               1 // Amount to decrease the motor speed by to achieve tracking
+#define AUTO_SPEED                    100 // Percentage PWM to apply to motors when in auto drive mode
+#define MIN_TRACKING_SPEED            (int8_t)(-20) // Minimum speed a motor can reach during tracking
+#define SETTLE_SPEED                  2 // Amount to decrease the cumulative error when line is in center
 
 // == Private Function Declerations ==
 static void interpretCommand(msgCommand_t rxCommand);
@@ -35,14 +42,53 @@ static void setRR(uint8_t speed);
  */
 void StartMotorTask(void const * argument) {
   msg_genericMessage_t rxMessage;
+  uint32_t errorCount = 0; // How many times have we updated the speed but have not achieved line tracking
   disableMotors();
-  enableMotors();
-  setMotors(100, -100);
 
   /* Infinite loop */
   for (;;) {
-    // Wait for messages
-    fetchMessage(msgQUSARTOut, &rxMessage, osWaitForever);
+    // If we are tracking the line
+    if ((globalFlags.states.lineSensorState == LNS_STATE_ON)
+        && globalFlags.states.motorState == MTR_STATE_RUNNING) {
+      // Grab the current line position as picked up by the sensors
+      linePos_t linePositionCurrent = globalFlags.lineSensorData.linePos;
+
+      switch(linePositionCurrent) {
+      case LINE_POS_LEFT: {
+        // Calculate the adjustment
+        int8_t newSpeed = globalFlags.motorData.leftMotorSpeed - (++errorCount*TRACKING_COMMIT);
+
+        // Set the new speed of the motors, taking into account the minimum allowable speed
+        setMotors((newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed),
+            globalFlags.motorData.rightMotorSpeed);
+        break;
+      }
+      case LINE_POS_RIGHT: {
+        // Calculate the adjustment
+        int8_t newSpeed = globalFlags.motorData.rightMotorSpeed - (++errorCount*TRACKING_COMMIT);
+
+        // Set the new speed of the motors, taking into account the minimum allowable speed
+        setMotors(globalFlags.motorData.leftMotorSpeed,
+            (newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed));
+        break;
+      }
+      case LINE_POS_CENTER:
+        // If the line is tracked, set the speed of the motors to the set speed
+        setMotors(AUTO_SPEED + LEFT_TRIM, AUTO_SPEED + RIGHT_TRIM);
+
+        // Adjust the error counter
+        // If it is not zero, decrease until zero is reached
+        if (errorCount != 0) {
+          errorCount -= SETTLE_SPEED;
+          if (errorCount < 0) {
+            errorCount = 0;
+          }
+        }
+      }
+    }
+
+    // Check for messages
+    fetchMessage(msgQUSARTOut, &rxMessage, 0);
 
     // Indentify the type of message
     switch (rxMessage.messageType) {
@@ -53,6 +99,8 @@ void StartMotorTask(void const * argument) {
     default:
       break;
     }
+
+    osDelay(MTR_UPDATE_PERIOD);
   }
 }
 
@@ -62,6 +110,26 @@ void StartMotorTask(void const * argument) {
  */
 static void interpretCommand(msgCommand_t rxCommand) {
   switch (rxCommand) {
+  case MSG_CMD_MOTOR_START_TRACKING:
+    // Enable the motors
+    enableMotors();
+
+    // Send a signal to the line sensor task to enable sensing
+    osSignalSet(lineSensorTaskHandle, 1);
+
+    // Update states
+    globalFlags.states.motorState = MTR_STATE_RUNNING;
+    break;
+  case MSG_CMD_MOTOR_STOP_TRACKING:
+    // Disable the motors
+    disableMotors();
+
+    // Send a signal to the line sensor task to disable sensing
+    osSignalSet(lineSensorTaskHandle, 0);
+
+    // Update states
+    globalFlags.states.motorState = MTR_STATE_OFF;
+    break;
   default:
     break;
   }
@@ -265,7 +333,7 @@ static void setMotors(int8_t leftSpeed, int8_t rightSpeed) {
  * @param speed: PWM value of the channel
  */
 static void setLF(uint8_t speed) {
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, speed);
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, speed*10);
 }
 
 /**
@@ -273,7 +341,7 @@ static void setLF(uint8_t speed) {
  * @param speed: PWM value of the channel
  */
 static void setLR(uint8_t speed) {
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, speed);
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, speed*10);
 }
 
 /**
@@ -281,7 +349,7 @@ static void setLR(uint8_t speed) {
  * @param speed: PWM value of the channel
  */
 static void setRF(uint8_t speed) {
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, speed);
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, speed*10);
 }
 
 /**
@@ -289,6 +357,6 @@ static void setRF(uint8_t speed) {
  * @param speed: PWM value of the channel
  */
 static void setRR(uint8_t speed) {
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, speed);
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, speed*10);
 }
 

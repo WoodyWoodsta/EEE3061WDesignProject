@@ -19,21 +19,20 @@ static void interpretCommand(msgCommand_t rxCommand);
  * @param argument
  */
 void StartLineSensorTask(void const * argument) {
-  size_t freeHeap;
   msg_genericMessage_t rxMessage;
   /* Infinite loop */
   for (;;) {
-    // Wait for messages
-    fetchMessage(msgQUSARTOut, &rxMessage, osWaitForever);
+    // Wait for the signal - if line sensor is on, don't wait just check
+    osEvent signalEvent = osSignalWait(0, (globalFlags.states.lineSensorState == LNS_STATE_OFF) ? (osWaitForever) : (0));
 
-    // Indentify the type of message
-    switch (rxMessage.messageType) {
-    case MSG_TYPE_COMMAND:
-      // If we have received a command, decode and interpret it
-      interpretCommand(decodeCommand(&rxMessage));
-      break;
-    default:
-      break;
+    if (signalEvent.status == osEventSignal) {
+      // Check for signal, enable line sensor if the signal is 1
+      if (signalEvent.value.signals == 1) {
+        globalFlags.states.lineSensorState = LNS_STATE_ON;
+      // If the signal is 0, disable the line sensor
+      } else if (signalEvent.value.signals == 0) {
+        globalFlags.states.lineSensorState = LNS_STATE_ON;
+      }
     }
   }
 }

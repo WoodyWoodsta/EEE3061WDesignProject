@@ -59,7 +59,9 @@ typedef enum {
   MSG_CMD_WIFI_RX_ERROR,
   MSG_CMD_WIFI_RX_NO_FUNCTION,
   MSG_CMD_WIFI_RX_FAIL,
-  MSG_CMD_WIFI_RX_START_SERVER
+  MSG_CMD_WIFI_RX_START_SERVER,
+  MSG_CMD_MOTOR_START_TRACKING,
+  MSG_CMD_MOTOR_STOP_TRACKING
 } msgCommand_t;
 
 // Generic message struct to package any associated data
