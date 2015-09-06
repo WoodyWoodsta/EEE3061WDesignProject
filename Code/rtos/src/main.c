@@ -99,8 +99,6 @@ int main(void) {
   globalFlags.motorData.leftMotorSpeed = 0;
   globalFlags.motorData.rightMotorSpeed = 0;
 
-  globalFlags.lineSensorData.linePos = LINE_POS_CENTER;
-
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
