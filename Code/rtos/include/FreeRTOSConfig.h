@@ -116,7 +116,7 @@
 /* Software timer definitions. */
 #define configUSE_TIMERS                         1
 #define configTIMER_TASK_PRIORITY                ( 2 )
-#define configTIMER_QUEUE_LENGTH                 5
+#define configTIMER_QUEUE_LENGTH                 4
 #define configTIMER_TASK_STACK_DEPTH             (configMINIMAL_STACK_SIZE)
 
 /* Set the following definitions to 1 to include the API function, or zero

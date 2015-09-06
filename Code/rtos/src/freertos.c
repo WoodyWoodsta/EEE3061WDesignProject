@@ -88,7 +88,7 @@ void vApplicationMallocFailedHook(void)
   while(1) {
     HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);
     uint32_t i;
-    for (i = 0; i<500000; i++);
+    for (i = 0; i<300000; i++);
   }
 }
 /* USER CODE END 5 */

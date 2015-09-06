@@ -52,7 +52,7 @@ osMessageQDef(msgQUSARTOut, 2, msg_genericMessage_t);
 osMessageQDef(msgQBoss, 5, msg_genericMessage_t);
 
 // UserIO Task Message Queue
-osMessageQDef(msgQUserIO, 4, msg_genericMessage_t);
+osMessageQDef(msgQUserIO, 3, msg_genericMessage_t);
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -122,7 +122,7 @@ int main(void) {
   osThreadDef(bossTask, StartBossTask, osPriorityNormal, 0, 128);
   bossTaskHandle = osThreadCreate(osThread(bossTask), NULL);
 
-  osThreadDef(USARTInTask, StartUSARTInTask, osPriorityNormal, 0, 128);
+  osThreadDef(USARTInTask, StartUSARTInTask, osPriorityNormal, 0, 64);
   USARTInTaskHandle = osThreadCreate(osThread(USARTInTask), NULL);
 
   osThreadDef(USARTOutTask, StartUSARTOutTask, osPriorityNormal, 0, 128);
@@ -134,7 +134,7 @@ int main(void) {
   osThreadDef(lineSensorTask, StartLineSensorTask, osPriorityNormal, 0, 64);
   lineSensorTaskHandle = osThreadCreate(osThread(lineSensorTask), NULL);
 
-  osThreadDef(userIOTask, StartUserIOTask, osPriorityNormal, 0, 64);
+  osThreadDef(userIOTask, StartUserIOTask, osPriorityNormal, 0, 128);
   userIOTaskHandle = osThreadCreate(osThread(userIOTask), NULL);
 
   /* USER CODE BEGIN RTOS_QUEUES */
@@ -151,7 +151,7 @@ int main(void) {
   // Boss Task Queue
   msgQBoss = osMessageCreate(osMessageQ(msgQBoss), NULL);
 
-  // Boss Task Queue
+  // UserIO Task Queue
   msgQUserIO = osMessageCreate(osMessageQ(msgQUserIO), NULL);
 
   /* Start scheduler */

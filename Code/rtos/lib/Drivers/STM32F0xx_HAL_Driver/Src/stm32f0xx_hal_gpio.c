@@ -507,7 +507,6 @@ void HAL_GPIO_EXTI_IRQHandler(uint16_t GPIO_Pin)
   if(__HAL_GPIO_EXTI_GET_IT(GPIO_Pin) != RESET) 
   { 
     HAL_GPIO_EXTI_Callback(GPIO_Pin);
-    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
   }
 }
 

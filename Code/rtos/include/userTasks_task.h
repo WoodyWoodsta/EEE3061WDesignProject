@@ -24,7 +24,7 @@
 #define LED_BLINK_FAST_PERIOD       500 // Value to load the one-shot timer for FAST blink [ms]
 #define LED_BLINK_SUPERFAST_PERIOD  100 // Value to load the one-shot timer for SUPERFAST blink [ms]
 
-// == Type Declarations - General ==
+// == Type Declarations - Procedures ==
 // Procedure statuses
 typedef enum {
   PROC_STATUS_OK,
@@ -32,6 +32,24 @@ typedef enum {
   PROC_STATUS_COMPLETED,
   PROC_STATUS_ERROR
 } procStatus_t;
+
+// Wifi communication procedures (flags)
+typedef enum {
+  WIFI_PROC_NONE,
+  WIFI_PROC_AT_TEST,
+  WIFI_PROC_INIT,
+  WIFI_PROC_CONNECT_AP,
+  WIFI_PROC_START_SERVER
+} wifiProcedures_t;
+
+// == Type Declarations - States ==
+
+// Peripheral states - to be used for locking out peripherals during procedures etc.
+typedef enum {
+  GEN_STATE_READY,
+  GEN_STATE_BUSY,
+  GEN_STATE_ERROR
+} genericStates_t;
 
 // Method of communication with the wifi module. AUTO allows tasks to handle
 // responses from the module. MANUAL routes all communication via USB<-->WIFI
@@ -56,13 +74,6 @@ typedef enum {
   MTR_STATE_RUNNING
 } motorState_t;
 
-// Directions of the motors
-typedef enum {
-  MTR_DIR_DISABLED,
-  MTR_DIR_FWD,
-  MTR_DIR_REV
-} motorDir_t;
-
 // H-Bridge states
 typedef enum {
   HB_STATE_DISABLED,
@@ -75,30 +86,20 @@ typedef enum {
   LNS_STATE_ON
 } lineSensorState_t;
 
-// Positions of the line being sensed
-typedef enum {
-  LINE_POS_LEFTLEFT,
-  LINE_POS_LEFT,
-  LINE_POS_CENTER,
-  LINE_POS_RIGHT,
-  LINE_POS_RIGHTRIGHT
-} linePos_t;
+// == Type Declarations - Other Motor ==
 
-// Peripheral states - to be used for locking out peripherals during procedures etc.
+// Directions of the motors
 typedef enum {
-  GEN_STATE_READY,
-  GEN_STATE_BUSY,
-  GEN_STATE_ERROR
-} genericStates_t;
+  MTR_DIR_DISABLED,
+  MTR_DIR_FWD,
+  MTR_DIR_REV
+} motorDir_t;
 
-// Wifi communication procedures (flags)
+// Signals that can be sent to the motor task
 typedef enum {
-  WIFI_PROC_NONE,
-  WIFI_PROC_AT_TEST,
-  WIFI_PROC_INIT,
-  WIFI_PROC_CONNECT_AP,
-  WIFI_PROC_START_SERVER
-} wifiProcedures_t;
+  MTR_SIG_START_TRACKING,
+  MTR_SIG_STOP_TRACKING
+} motorSignals_t;
 
 // Global motor control data
 // NOTE: Only the main function and the motorTask should set these values.
@@ -111,10 +112,23 @@ typedef struct {
   hBridgeState_t hBridgeState;
 } motorData_struct;
 
+// == Type Declarations - Other Line Sensor ==
+
+// Positions of the line being sensed
+typedef enum {
+  LINE_POS_LEFTLEFT,
+  LINE_POS_LEFT,
+  LINE_POS_CENTER,
+  LINE_POS_RIGHT,
+  LINE_POS_RIGHTRIGHT
+} linePos_t;
+
 // Global line sensor data
 typedef struct {
   linePos_t linePos;
 } lineSensorData_struct;
+
+// == Type Declarations - Global Structs ==
 
 // Proceedure flags
 typedef struct {

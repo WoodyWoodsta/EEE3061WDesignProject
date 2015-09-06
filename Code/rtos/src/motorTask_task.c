@@ -23,7 +23,7 @@
 #define SETTLE_SPEED                  2 // Amount to decrease the cumulative error when line is in center
 
 // == Private Function Declerations ==
-static void interpretCommand(msgCommand_t rxCommand);
+static void interpretSignal(osEvent *signalEvent);
 static void stopMotors(void);
 static void disableMotors(void);
 static void enableMotors(void);
@@ -44,6 +44,7 @@ void StartMotorTask(void const * argument) {
   msg_genericMessage_t rxMessage;
   uint32_t errorCount = 0; // How many times have we updated the speed but have not achieved line tracking
   disableMotors();
+  enableMotors();
 
   /* Infinite loop */
   for (;;) {
@@ -87,17 +88,10 @@ void StartMotorTask(void const * argument) {
       }
     }
 
-    // Check for messages
-    fetchMessage(msgQUSARTOut, &rxMessage, 0);
+    osEvent signalEvent = osSignalWait(0, 0);
 
-    // Indentify the type of message
-    switch (rxMessage.messageType) {
-    case MSG_TYPE_COMMAND:
-      // If we have received a command, decode and interpret it
-      interpretCommand(decodeCommand(&rxMessage));
-      break;
-    default:
-      break;
+    if (signalEvent.status == osEventSignal) {
+      interpretSignal(&signalEvent);
     }
 
     osDelay(MTR_UPDATE_PERIOD);
@@ -108,9 +102,10 @@ void StartMotorTask(void const * argument) {
  * @brief Interpret the command received, and act on it
  * @param rxCommand: Command received in the message
  */
-static void interpretCommand(msgCommand_t rxCommand) {
-  switch (rxCommand) {
-  case MSG_CMD_MOTOR_START_TRACKING:
+static void interpretSignal(osEvent *signalEvent) {
+  int32_t signalEventValue = signalEvent->value.signals;
+  switch (signalEventValue) {
+  case MTR_SIG_START_TRACKING:
     // Enable the motors
     enableMotors();
 
@@ -120,7 +115,7 @@ static void interpretCommand(msgCommand_t rxCommand) {
     // Update states
     globalFlags.states.motorState = MTR_STATE_RUNNING;
     break;
-  case MSG_CMD_MOTOR_STOP_TRACKING:
+  case MTR_SIG_STOP_TRACKING:
     // Disable the motors
     disableMotors();
 
@@ -187,9 +182,9 @@ static void disableMotors(void) {
 static void enableMotors(void) {
   // Start the PWM channels
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
 
   // Set all PWMs to zero
   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 0);

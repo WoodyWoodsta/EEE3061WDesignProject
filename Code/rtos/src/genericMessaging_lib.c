@@ -7,15 +7,22 @@
 *                      sent to any task with one type of message Q)
 * Author             : Sean Wood
 * ============================================================================
+* ======================= MESSAGE SENDING SUMMARY ============================
+*       Task       |         Method of Communication        |    Message Q
+* ----------------------------------------------------------------------------
+* bossTask          Generic Messages                         msgQBossTask
+* USARTInTask       String Messages                          msgQUSARTInTask
+* USARTOutTask      Generic Messages                         msgQUSARTOutTask
+* lineSensorTask    Signals                                  ----
+* motorTask         Signals                                  ----
+* userIOTask        Generic Messages                         msgQUserIOTask
+* ============================================================================
 */
 
 // == Includes ==
 #include "genericMessaging_lib.h"
 
 // == Function Definitions ==
-
-// TODO Add functionality to send strings from anywhere else (in addition to the specialised string methods for the USART IRQ)
-
 /**
 * @brief Send a generic message which packages any data structure
 * @param msgQ: Message Q to send the message to
@@ -110,8 +117,13 @@ void sendCommand(osMessageQId msgQ, msgSource_t source, msgCommand_t command, ui
   messageTxPtr->dataLength = dataLength;
 
   // Send the message!
-  osMessagePut(msgQ, (uint32_t) messageTxPtr, timeout);
+  osStatus status =  osMessagePut(msgQ, (uint32_t) messageTxPtr, timeout);
   
+  // If the send failed, get rid of allocated memory
+  if (status != osOK) {
+    vPortFree(commandStructTxPtr);
+    osPoolFree(genericMPool, messageTxPtr);
+  }
 }
 
 /**

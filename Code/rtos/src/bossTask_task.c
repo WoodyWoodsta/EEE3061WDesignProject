@@ -49,6 +49,7 @@ void StartBossTask(void const * argument) {
     }
 
     // This delay is actually pretty critical for the rest of tasks to execute
+    // UNLESS the fetchMessage call has a timeout of osWaitForever
     osDelay(1);
   }
 }
@@ -206,7 +207,7 @@ procStatus_t proc_wifiInit(msgCommand_t rxCommand) {
   static step = 0;
   uint8_t finished = 0;
 
-  // If we are not waiting on a CMD, but the proceedure function was called, we need to run through anyway
+  // If we are not waiting on a CMD, but the procedure function was called, we need to run through anyway
   // We also need to run through if the command is the one we are waiting for
   while (!finished) {
     switch (step) {

@@ -9,8 +9,7 @@
 // == Includes ==
 #include "userTasks_task.h"
 
-// == Private Function Declerations ==
-static void interpretCommand(msgCommand_t rxCommand);
+// == Private Function Declarations ==
 
 // == Function Definitions ==
 
@@ -20,10 +19,12 @@ static void interpretCommand(msgCommand_t rxCommand);
  */
 void StartLineSensorTask(void const * argument) {
   msg_genericMessage_t rxMessage;
+
   /* Infinite loop */
   for (;;) {
+    // TODO Switch signal receiving to a proper handler function1
     // Wait for the signal - if line sensor is on, don't wait just check
-    osEvent signalEvent = osSignalWait(0, (globalFlags.states.lineSensorState == LNS_STATE_OFF) ? (osWaitForever) : (0));
+    osEvent signalEvent = osSignalWait(0, (globalFlags.states.lineSensorState == LNS_STATE_OFF) ? (osWaitForever) : (1));
 
     if (signalEvent.status == osEventSignal) {
       // Check for signal, enable line sensor if the signal is 1
@@ -31,19 +32,8 @@ void StartLineSensorTask(void const * argument) {
         globalFlags.states.lineSensorState = LNS_STATE_ON;
       // If the signal is 0, disable the line sensor
       } else if (signalEvent.value.signals == 0) {
-        globalFlags.states.lineSensorState = LNS_STATE_ON;
+        globalFlags.states.lineSensorState = LNS_STATE_OFF;
       }
     }
-  }
-}
-
-/**
- * @brief Interpret the command received, and act on it
- * @param rxCommand: Command received in the message
- */
-static void interpretCommand(msgCommand_t rxCommand) {
-  switch (rxCommand) {
-  default:
-    break;
   }
 }
