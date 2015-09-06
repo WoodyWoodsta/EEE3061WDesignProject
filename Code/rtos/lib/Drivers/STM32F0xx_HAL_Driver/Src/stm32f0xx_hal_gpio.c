@@ -498,14 +498,16 @@ HAL_StatusTypeDef HAL_GPIO_LockPin(GPIO_TypeDef* GPIOx, uint16_t GPIO_Pin)
   * @brief  Handle EXTI interrupt request.
   * @param  GPIO_Pin: Specifies the port pin connected to corresponding EXTI line.
   * @retval None
+  * @NOTE: Clearing the interrupt before firing the callback makes no sense regarding
+  *        debouncing. Moved the __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin) to after the callback
   */
 void HAL_GPIO_EXTI_IRQHandler(uint16_t GPIO_Pin)
 {
   /* EXTI line interrupt detected */
   if(__HAL_GPIO_EXTI_GET_IT(GPIO_Pin) != RESET) 
   { 
-    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
     HAL_GPIO_EXTI_Callback(GPIO_Pin);
+    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
   }
 }
 

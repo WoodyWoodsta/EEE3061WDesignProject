@@ -17,6 +17,11 @@ osThreadId USARTInTaskHandle;
 osThreadId USARTOutTaskHandle;
 osThreadId motorTaskHandle;
 osThreadId lineSensorTaskHandle;
+osThreadId userIOTaskHandle;
+
+osTimerId ledTimerHandle;
+osTimerId buzzerTimerHandle;
+
 globalFlags_t globalFlags;
 
 // USART In Task String Queue
@@ -27,3 +32,6 @@ osMessageQId msgQUSARTOut;
 
 // Boss Task Command Queue
 osMessageQId msgQBoss;
+
+// UserIO Task Command Queue
+osMessageQId msgQUserIO;

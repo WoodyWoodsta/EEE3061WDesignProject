@@ -18,8 +18,11 @@
 #include "stdio.h"
 
 // == Definitions ==
-#define AP_SSID   "coreNet"
-#define AP_KEY    "electronics9663"
+#define AP_SSID                     "coreNet"
+#define AP_KEY                      "electronics9663"
+#define LED_BLINK_SLOW_PERIOD       1000 // Value to load the one-shot timer for SLOW blink [ms]
+#define LED_BLINK_FAST_PERIOD       500 // Value to load the one-shot timer for FAST blink [ms]
+#define LED_BLINK_SUPERFAST_PERIOD  100 // Value to load the one-shot timer for SUPERFAST blink [ms]
 
 // == Type Declarations - General ==
 // Procedure statuses
@@ -36,6 +39,15 @@ typedef enum {
   COMM_STATE_AUTO,
   COMM_STATE_MANUAL
 } commState_t;
+
+// State of the indicator LED
+typedef enum {
+  LED_STATE_OFF,
+  LED_STATE_ON,
+  LED_STATE_BLINK_SLOW,
+  LED_STATE_BLINK_FAST,
+  LED_STATE_BLINK_SUPERFAST
+} ledState_t;
 
 // States of the motor controllers (PWMs)
 typedef enum {
@@ -65,9 +77,11 @@ typedef enum {
 
 // Positions of the line being sensed
 typedef enum {
+  LINE_POS_LEFTLEFT,
   LINE_POS_LEFT,
   LINE_POS_CENTER,
-  LINE_POS_RIGHT
+  LINE_POS_RIGHT,
+  LINE_POS_RIGHTRIGHT
 } linePos_t;
 
 // Peripheral states - to be used for locking out peripherals during procedures etc.
@@ -113,6 +127,7 @@ typedef struct {
   genericStates_t wifiState; // Task level peripheral state flag (for task level locking)
   motorState_t motorState;
   lineSensorState_t lineSensorState;
+  ledState_t ledState;
 } globalStates_t;
 
 // Global program flags
@@ -129,6 +144,11 @@ extern osThreadId USARTInTaskHandle;
 extern osThreadId USARTOutTaskHandle;
 extern osThreadId motorTaskHandle;
 extern osThreadId lineSensorTaskHandle;
+extern osThreadId userIOTaskHandle;
+
+extern osTimerId ledTimerHandle;
+extern osTimerId buzzerTimerHandle;
+
 extern globalFlags_t globalFlags;
 
 // USART In Task String Queue
@@ -140,6 +160,9 @@ extern osMessageQId msgQUSARTOut;
 // Boss Task Command Queue
 extern osMessageQId msgQBoss;
 
+// UserIO Task Command Queue
+extern osMessageQId msgQUserIO;
+
 
 // == Function Prototypes ==
 void StartBossTask(void const * argument);
@@ -148,5 +171,9 @@ void StartUSARTInBufferTask(void const * argument);
 void StartUSARTOutTask(void const * argument);
 void StartMotorTask(void const * argument);
 void StartLineSensorTask(void const * argument);
+void StartUserIOTask(void const * argument);
+
+void ledTimerCallback(void const * argument);
+void buzzerTimerCallback(void const * argument);
 
 #endif /*USERTASKS_TASK_H*/

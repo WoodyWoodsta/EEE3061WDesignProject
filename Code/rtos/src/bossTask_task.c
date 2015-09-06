@@ -47,6 +47,9 @@ void StartBossTask(void const * argument) {
     default:
       break;
     }
+
+    // This delay is actually pretty critical for the rest of tasks to execute
+    osDelay(1);
   }
 }
 

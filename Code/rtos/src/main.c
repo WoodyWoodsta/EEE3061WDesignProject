@@ -51,6 +51,9 @@ osMessageQDef(msgQUSARTOut, 2, msg_genericMessage_t);
 // Boss Task Message Queue
 osMessageQDef(msgQBoss, 5, msg_genericMessage_t);
 
+// UserIO Task Message Queue
+osMessageQDef(msgQUserIO, 4, msg_genericMessage_t);
+
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 
@@ -106,9 +109,14 @@ int main(void) {
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
 
-  /* USER CODE BEGIN RTOS_TIMERS */
-  /* start timers, add new ones, ... */
-  /* USER CODE END RTOS_TIMERS */
+  /* Create the timer(s) */
+  /* Definition and creation of ledTimer */
+  osTimerDef(ledTimer, ledTimerCallback);
+  ledTimerHandle = osTimerCreate(osTimer(ledTimer), osTimerOnce, NULL);
+
+  /* Definition and creation of buzzerTiemr */
+  osTimerDef(buzzerTimer, buzzerTimerCallback);
+  buzzerTimerHandle = osTimerCreate(osTimer(buzzerTimer), osTimerOnce, NULL);
 
   /* Create the thread(s) */
   osThreadDef(bossTask, StartBossTask, osPriorityNormal, 0, 128);
@@ -120,11 +128,14 @@ int main(void) {
   osThreadDef(USARTOutTask, StartUSARTOutTask, osPriorityNormal, 0, 128);
   USARTOutTaskHandle = osThreadCreate(osThread(USARTOutTask), NULL);
 
-  osThreadDef(motorTask, StartMotorTask, osPriorityNormal, 0, 128);
+  osThreadDef(motorTask, StartMotorTask, osPriorityNormal, 0, 64);
   motorTaskHandle = osThreadCreate(osThread(motorTask), NULL);
 
-  osThreadDef(lineSensorTask, StartLineSensorTask, osPriorityNormal, 0, 128);
+  osThreadDef(lineSensorTask, StartLineSensorTask, osPriorityNormal, 0, 64);
   lineSensorTaskHandle = osThreadCreate(osThread(lineSensorTask), NULL);
+
+  osThreadDef(userIOTask, StartUserIOTask, osPriorityNormal, 0, 64);
+  userIOTaskHandle = osThreadCreate(osThread(userIOTask), NULL);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   // Generic messaging and string message memory pools
@@ -139,6 +150,9 @@ int main(void) {
 
   // Boss Task Queue
   msgQBoss = osMessageCreate(osMessageQ(msgQBoss), NULL);
+
+  // Boss Task Queue
+  msgQUserIO = osMessageCreate(osMessageQ(msgQUserIO), NULL);
 
   /* Start scheduler */
   osKernelStart();
@@ -184,6 +198,7 @@ int main(void) {
 //  HAL_UART_Init(&huart2);
 //
 //}
+
 
 #ifdef USE_FULL_ASSERT
 
