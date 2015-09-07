@@ -36,6 +36,8 @@ void StartUserIOTask(void const * argument) {
 
   /* Infinite loop */
   for (;;) {
+    globalFlags.generalData.userIOTaskStackHWM = uxTaskGetStackHighWaterMark(userIOTaskHandle);
+
     fetchMessage(msgQUserIO, &rxMessage, osWaitForever);
 
     volatile size_t freeHeap = xPortGetFreeHeapSize();

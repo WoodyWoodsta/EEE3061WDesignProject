@@ -36,6 +36,8 @@ void StartBossTask(void const * argument) {
 
   /* Infinite loop */
   for (;;) {
+    globalFlags.generalData.bossTaskStackHWM = uxTaskGetStackHighWaterMark(bossTaskHandle);
+
     fetchMessage(msgQBoss, &rxMessage, 0);
 
     switch (rxMessage.messageType) {

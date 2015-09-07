@@ -30,6 +30,7 @@ void StartLineSensorTask(void const * argument) {
 
   /* Infinite loop */
   for (;;) {
+    globalFlags.generalData.lineSensorTaskStackHWM = uxTaskGetStackHighWaterMark(lineSensorTaskHandle);
     // TODO Switch signal receiving to a proper handler function!
     // Wait for the signal - if line sensor is on, don't wait just check
     osEvent signalEvent = osSignalWait(0, (globalFlags.states.lineSensorState == LNS_STATE_OFF) ? (osWaitForever) : (LNS_UPDATE_PERIOD));

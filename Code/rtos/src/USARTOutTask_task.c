@@ -23,6 +23,8 @@ void StartUSARTOutTask(void const * argument) {
   msg_genericMessage_t rxMessage;
   /* Infinite loop */
   for (;;) {
+    globalFlags.generalData.USARTOutTaskStackHWM = uxTaskGetStackHighWaterMark(USARTOutTaskHandle);
+
     // Wait for messages
     fetchMessage(msgQUSARTOut, &rxMessage, osWaitForever);
 

@@ -11,6 +11,7 @@
 
 // == Includes ==
 #include "cmsis_os.h"
+#include "task.h"
 #include "hal_lib.h"
 #include "genericMessaging_lib.h"
 #include "string.h"
@@ -130,6 +131,15 @@ typedef struct {
 
 // == Type Declarations - Global Structs ==
 
+typedef struct {
+  size_t bossTaskStackHWM;
+  size_t USARTInTaskStackHWM;
+  size_t USARTOutTaskStackHWM;
+  size_t motorTaskStackHWM;
+  size_t lineSensorTaskStackHWM;
+  size_t userIOTaskStackHWM;
+} generalData_t;
+
 // Proceedure flags
 typedef struct {
   wifiProcedures_t wifiProcedures;
@@ -150,6 +160,7 @@ typedef struct {
   globalProcedures_t procedures;
   motorData_struct motorData;
   lineSensorData_struct lineSensorData;
+  generalData_t generalData;
 } globalFlags_t;
 
 // == Exported Variables ==

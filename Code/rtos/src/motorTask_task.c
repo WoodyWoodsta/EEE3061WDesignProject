@@ -48,6 +48,8 @@ void StartMotorTask(void const * argument) {
 
   /* Infinite loop */
   for (;;) {
+    globalFlags.generalData.motorTaskStackHWM = uxTaskGetStackHighWaterMark(motorTaskHandle);
+
     // If we are tracking the line
     if ((globalFlags.states.lineSensorState == LNS_STATE_ON)
         && globalFlags.states.motorState == MTR_STATE_RUNNING) {

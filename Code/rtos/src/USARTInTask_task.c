@@ -20,6 +20,8 @@ static void fetchString(msg_stringMessage_t *pMessage);
 * @param argument
 */
 void StartUSARTInTask(void const * argument) {
+  globalFlags.generalData.USARTInTaskStackHWM = uxTaskGetStackHighWaterMark(USARTInTaskHandle);
+
   msg_stringMessage_t rxMessage;
 
   /* Infinite loop */
