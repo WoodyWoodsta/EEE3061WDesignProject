@@ -13,9 +13,7 @@
 #define LNS_UPDATE_PERIOD           5 // Time to wait in between line sensor updates [ms]
 
 // == Private Function Declarations ==
-static void interpretSignal(osEvent *signalEvent);
 static void updateLinePos(void);
-static void checkLightSensor(void);
 static uint8_t fetchSensors(void);
 
 // == Function Definitions ==
@@ -34,53 +32,23 @@ void StartLineSensorTask(void const * argument) {
   for (;;) {
     globalFlags.generalData.lineSensorTaskStackHWM = uxTaskGetStackHighWaterMark(lineSensorTaskHandle);
     // TODO Switch signal receiving to a proper handler function!
-    // Wait for the signal - if the light or line sensor is on, don't wait, just check
-    osEvent signalEvent = osSignalWait(0, (globalFlags.states.lineSensorState == LNS_STATE_OFF
-                                           || globalFlags.states.lightSensorState == LIGHT_STATE_OFF)
-                                           ? (osWaitForever) : (LNS_UPDATE_PERIOD));
+    // Wait for the signal - if line sensor is on, don't wait just check
+    osEvent signalEvent = osSignalWait(0, (globalFlags.states.lineSensorState == LNS_STATE_OFF) ? (osWaitForever) : (LNS_UPDATE_PERIOD));
 
     if (signalEvent.status == osEventSignal) {
-      // Decode the signal and act on it
-      interpretSignal(&signalEvent);
+      // Check for signal, enable line sensor if the signal is 1
+      if (signalEvent.value.signals == 1) {
+        globalFlags.states.lineSensorState = LNS_STATE_ON;
+      // If the signal is 0, disable the line sensor
+      } else if (signalEvent.value.signals == 0) {
+        globalFlags.states.lineSensorState = LNS_STATE_OFF;
+      }
     }
 
-    if (globalFlags.states.lineSensorState == LNS_STATE_ON) {
-      updateLinePos();
-    } else if (globalFlags.states.lightSensorState == LIGHT_STATE_ON) {
-      checkLightSensor();
-    }
+    updateLinePos();
   }
 }
 
-/**
- * @brief Decode the signal received and act on the command
- * @param *signalEvent: Pointer to the received signal even structure
- */
-static void interpretSignal(osEvent *signalEvent) {
-  int32_t signalEventValue = signalEvent->value.signals;
-  switch (signalEventValue) {
-  case LINE_SIG_START:
-    // Enable line sensor
-    globalFlags.states.lineSensorState = LNS_STATE_ON;
-    break;
-  case LINE_SIG_STOP:
-    // This must only be fired if the motors are actually running
-    if (globalFlags.states.motorState == MTR_STATE_RUNNING) {
-      globalFlags.states.lineSensorState = LNS_STATE_OFF;
-    }
-    break;
-  case LIGHT_SIG_START:
-    break;
-  case LIGHT_SIG_STOP:
-    break;
-  default:
-    break;
-  }
-}
-
-/**
- * @brief Run the logic to determine where the line is based on where it was and what the sensors are reading
- */
 static void updateLinePos(void) {
   // Read in the sensor data
   uint8_t sensorReading = fetchSensors();
@@ -119,34 +87,6 @@ static void updateLinePos(void) {
   globalFlags.lineSensorData.linePos = newLinePos;
 }
 
-/**
- * @brief Check the light sensor for green light
- */
-static void checkLightSensor(void) {
-  uint32_t lightSensorDischarge = 0;
-  // Start the charge-up (should have been set last time the function was called)
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);
-  osDelay(200);
-
-  TIM_SetCounter(TIM2, 0); // Reset the timer
-  GPIOA->MODER &= ~GPIO_MODER_MODER6; // Switch it to an input
-  // Check for a digital 1
-  while ((GPIOA->IDR) & (1 << 6)) {
-    // Do nothing
-  }
-
-  lightSensorDischarge = TIM_GetCounter(TIM2); // Get the discharge time
-
-  // TODO: Set PA8 back to an output pin and drive it high
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);
-
-  return lightSensorDischarge;
-}
-
-/**
- * @brief Get the reading of the line sensors
- * @retval uint8_t number, MSB being the left sensor and LSB being the right sensor
- */
 static uint8_t fetchSensors(void) {
   // Read the sensors
   // LSB is right and MSB is left

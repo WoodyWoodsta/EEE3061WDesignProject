@@ -87,12 +87,6 @@ typedef enum {
   LNS_STATE_ON
 } lineSensorState_t;
 
-// State of the color light sensor
-typedef enum {
-  LIGHT_STATE_OFF,
-  LIGHT_STATE_ON
-} lightSensorState_t;
-
 // == Type Declarations - Other Motor ==
 
 // Directions of the motors
@@ -130,14 +124,6 @@ typedef enum {
   LINE_POS_RIGHTRIGHT
 } linePos_t;
 
-// Signals to send to the Line Sensor Task (used for line and light sensors)
-typedef enum {
-  LINE_SIG_STOP,
-  LINE_SIG_START,
-  LIGHT_SIG_START,
-  LIGHT_SIG_STOP
-} lineSensorSignals_t;
-
 // Global line sensor data
 typedef struct {
   linePos_t linePos;
@@ -165,7 +151,6 @@ typedef struct {
   genericStates_t wifiState; // Task level peripheral state flag (for task level locking)
   motorState_t motorState;
   lineSensorState_t lineSensorState;
-  lightSensorState_t lightSensorState;
   ledState_t ledState;
 } globalStates_t;
 

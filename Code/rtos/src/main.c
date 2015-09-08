@@ -86,15 +86,6 @@ int main(void) {
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
 
-  // Beep da buzza
-  int i = 0;
-  int j = 0;
-  while (j < 4) {
-    HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_6);
-    for (i = 0; i < 100000; i++);
-    j++;
-  }
-
   // Initialise global flags
   globalFlags.states.commState = COMM_STATE_AUTO;
   globalFlags.states.wifiState = GEN_STATE_READY;
