@@ -108,24 +108,31 @@ static void interpretSignal(osEvent *signalEvent) {
   int32_t signalEventValue = signalEvent->value.signals;
   switch (signalEventValue) {
   case MTR_SIG_START_TRACKING:
-    // Enable the motors
-    enableMotors();
+    // This must only be fired if the motors aren't actually running
+    if (globalFlags.states.motorState != MTR_STATE_RUNNING) {
+      // Enable the motors
+      enableMotors();
 
-    // Send a signal to the line sensor task to enable sensing
-    osSignalSet(lineSensorTaskHandle, 1);
+      // Send a signal to the line sensor task to enable sensing
+      osSignalSet(lineSensorTaskHandle, LINE_SIG_START);
 
-    // Update states
-    globalFlags.states.motorState = MTR_STATE_RUNNING;
+      // Update states
+      globalFlags.states.motorState = MTR_STATE_RUNNING;
+    }
+
     break;
   case MTR_SIG_STOP_TRACKING:
-    // Disable the motors
-    disableMotors();
+    // This muct only be fired if the motors are actually running
+    if (globalFlags.states.motorState == MTR_STATE_RUNNING) {
+      // Disable the motors
+      disableMotors();
 
-    // Send a signal to the line sensor task to disable sensing
-    osSignalSet(lineSensorTaskHandle, 0);
+      // Send a signal to the line sensor task to disable sensing
+      osSignalSet(lineSensorTaskHandle, LINE_SIG_STOP);
 
-    // Update states
-    globalFlags.states.motorState = MTR_STATE_OFF;
+      // Update states
+      globalFlags.states.motorState = MTR_STATE_OFF;
+    }
     break;
   default:
     break;

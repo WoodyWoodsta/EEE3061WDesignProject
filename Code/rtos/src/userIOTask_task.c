@@ -10,7 +10,7 @@
 #include "userTasks_task.h"
 
 // == Defintions ==
-#define DEBOUNCE_PERIOD       5 // Amount of time to delay when debouncing switches [ms]
+#define DEBOUNCE_PERIOD       10 // Amount of time to delay when debouncing switches [ms]
 
 // == Private Function Declerations ==
 static void interpretCommand(msgCommand_t rxCommand);
@@ -170,6 +170,7 @@ static void SW0UpAction(void) {
  */
 static void SW0DownAction(void) {
   sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_LED_ON, 0);
+//  osSignalSet(motorTaskHandle, MTR_SIG_START_TRACKING);
 }
 
 /**
@@ -183,7 +184,7 @@ static void SW1UpAction(void) {
  * @brief Callback for a switch 1 DOWN event
  */
 static void SW1DownAction(void) {
-  sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_LED_BLINK_SUPERFAST, 0);
+  osSignalSet(motorTaskHandle, MTR_SIG_STOP_TRACKING);
 }
 
 /**
