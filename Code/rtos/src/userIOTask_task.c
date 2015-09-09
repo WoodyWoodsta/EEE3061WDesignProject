@@ -169,8 +169,8 @@ static void SW0UpAction(void) {
  * @brief Callback for a switch 0 DOWN event
  */
 static void SW0DownAction(void) {
-  sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_LED_ON, 0);
-//  osSignalSet(motorTaskHandle, MTR_SIG_START_TRACKING);
+  osSignalSet(lineSensorTaskHandle, LIGHT_SIG_START);
+  //  osSignalSet(motorTaskHandle, MTR_SIG_START_TRACKING);
 }
 
 /**

@@ -82,6 +82,7 @@ int main(void) {
 //  MX_SPI1_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
+  MX_TIM6_Init();
   MX_TIM15_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
@@ -91,7 +92,7 @@ int main(void) {
   int j = 0;
   while (j < 4) {
     HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_6);
-    for (i = 0; i < 100000; i++);
+    for (i = 0; i < 300000; i++);
     j++;
   }
 

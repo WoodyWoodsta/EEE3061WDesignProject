@@ -20,6 +20,7 @@ SPI_HandleTypeDef hspi1;
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim6;
 TIM_HandleTypeDef htim15;
 
 UART_HandleTypeDef huart1;
@@ -249,13 +250,12 @@ void MX_TIM1_Init(void) {
   sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
   HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1);
 
-#ifndef JG_BOARD // If we are using James' Board
+#ifndef JG_BOARD // If we are not using James' Board
   HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2);
   HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3);
 #endif
 
   HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4);
-
 }
 
 /**
@@ -379,6 +379,26 @@ void MX_DMA_Init(void) {
   /* DMA interrupt init */
   HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 3, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
+
+}
+
+/* TIM6 init function */
+void MX_TIM6_Init(void)
+{
+  __HAL_RCC_TIM6_CLK_ENABLE();
+  TIM_MasterConfigTypeDef sMasterConfig;
+
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 5000;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 0xffff;
+  HAL_TIM_Base_Init(&htim6);
+
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig);
+
+  __HAL_TIM_ENABLE(&htim6);
 
 }
 

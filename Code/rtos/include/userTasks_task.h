@@ -141,6 +141,8 @@ typedef enum {
 // Global line sensor data
 typedef struct {
   linePos_t linePos;
+  uint8_t lightSensorCal; // Used to check if the light sensor has been calibrated
+  uint32_t lightSensorThreshold; // The threshold calculated during the calibration
 } lineSensorData_struct;
 
 // == Type Declarations - Global Structs ==

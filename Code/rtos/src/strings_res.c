@@ -27,6 +27,11 @@ const uint8_t txString_wifiServerStarted[] = "Wifi Server Started!\r\n";
 const uint8_t txString_commStateManual[] = "MANUAL On\r\n";
 const uint8_t txString_commStateAuto[] = "AUTO On\r\n";
 const uint8_t txString_connectAPCommand[] = "AT+CWJAP=";
+const uint8_t txString_linePosCenter[] = "Line: Center\r\n";
+const uint8_t txString_linePosLeft[] = "Line: Left\r\n";
+const uint8_t txString_linePosRight[] = "Line: Right\r\n";
+const uint8_t txString_linePosLeftLeft[] = "Line: LeftLeft";
+const uint8_t txString_linePosRightRight[] = "Line: RightRight";
 
 // Strings to compare with
 const uint8_t rxString_led0Toggle[] = "Toggle LED0\r\n";

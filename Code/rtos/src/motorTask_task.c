@@ -44,7 +44,7 @@ void StartMotorTask(void const * argument) {
   msg_genericMessage_t rxMessage;
   uint32_t errorCount = 0; // How many times have we updated the speed but have not achieved line tracking
   disableMotors();
-  enableMotors();
+//  enableMotors();
 
   /* Infinite loop */
   for (;;) {

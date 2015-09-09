@@ -24,6 +24,11 @@ extern const uint8_t txString_wifiServerStarted[];
 extern const uint8_t txString_commStateManual[];
 extern const uint8_t txString_commStateAuto[];
 extern const uint8_t txString_connectAPCommand[];
+extern const uint8_t txString_linePosCenter[];
+extern const uint8_t txString_linePosLeft[];
+extern const uint8_t txString_linePosRight[];
+extern const uint8_t txString_linePosLeftLeft[];
+extern const uint8_t txString_linePosRightRight[];
 
 extern const uint8_t rxString_led0Toggle[];
 extern const uint8_t rxString_commStateManual[];

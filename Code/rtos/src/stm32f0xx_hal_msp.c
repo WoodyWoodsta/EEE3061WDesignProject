@@ -202,7 +202,7 @@ void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef* htim_pwm)
     */
     GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_11;
 #ifndef JG_BOARD // If we are not using James' Board
-    GPIO_InitStruct.Pin = GPIO_PIN_9|GPIO_PIN_10;
+    GPIO_InitStruct.Pin |= GPIO_PIN_9|GPIO_PIN_10;
 #endif
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
