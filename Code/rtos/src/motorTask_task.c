@@ -13,26 +13,27 @@
 #define FALSE 0
 #define TRUE 1
 
-#define MTR_SPEED_REACTION_PERIOD     1 // Period of changing motor speed by 1% [+-ms]
-#define MTR_UPDATE_PERIOD             10 // Interval between updating the motor speeds [+-ms]
-#define LEFT_TRIM                     (int8_t)(0) // Percentage trim of the left motor
-#define RIGHT_TRIM                    (int8_t)(0) // Percentage trim of the right motor
-#define TRACKING_COMMIT               1 // Amount to decrease the motor speed by to achieve tracking
-#define AUTO_SPEED                    100 // Percentage PWM to apply to motors when in auto drive mode
-#define MIN_TRACKING_SPEED            (int8_t)(-20) // Minimum speed a motor can reach during tracking
-#define SETTLE_SPEED                  2 // Amount to decrease the cumulative error when line is in center
+#define MTR_SPEED_REACTION_PERIOD     1 // Period of changing PWM motor speed [+-ms]
+#define MTR_UPDATE_PERIOD             20 // Interval between updating the motor control [+-ms]
+#define LEFT_TRIM                     ((float)0) // Percentage trim of the left motor
+#define RIGHT_TRIM                    ((float)0) // Percentage trim of the right motor
+#define TRACKING_GAIN                 ((float)0.25) // Amount to decrease the motor speed by to achieve tracking
+#define AUTO_SPEED                    ((float)98) // Percentage PWM to apply to motors when in auto drive mode
+#define MIN_TRACKING_SPEED            ((float)60) // Minimum speed a motor can reach during tracking
+#define SETTLE_SPEED                  ((float)0.2) // Amount to decrease the cumulative error when line is in center
+#define MAX_ERROR_COUNT               70 // Maximum accumlution
 
-// == Private Function Declerations ==
+// == Private Function Declarations ==
 static void interpretSignal(osEvent *signalEvent);
 static void stopMotors(void);
 static void disableMotors(void);
 static void enableMotors(void);
-static void setMotors(int8_t leftSpeed, int8_t rightSpeed);
+static void setMotors(float leftSpeed, float rightSpeed);
 
-static void setLF(uint8_t speed);
-static void setLR(uint8_t speed);
-static void setRF(uint8_t speed);
-static void setRR(uint8_t speed);
+static void setLF(float speed);
+static void setLR(float speed);
+static void setRF(float speed);
+static void setRR(float speed);
 
 // == Function Definitions ==
 
@@ -41,8 +42,13 @@ static void setRR(uint8_t speed);
  * @param argument
  */
 void StartMotorTask(void const * argument) {
+  globalFlags.motorData.leftMotorDir = MTR_DIR_DISABLED;
+  globalFlags.motorData.leftMotorDir = MTR_DIR_DISABLED;
+  globalFlags.motorData.leftMotorSpeed = 0;
+  globalFlags.motorData.rightMotorSpeed = 0;
+
   msg_genericMessage_t rxMessage;
-  uint32_t errorCount = 0; // How many times have we updated the speed but have not achieved line tracking
+  float errorCount = 0; // How many times have we updated the speed but have not achieved line tracking
   disableMotors();
 //  enableMotors();
 
@@ -56,10 +62,16 @@ void StartMotorTask(void const * argument) {
       // Grab the current line position as picked up by the sensors
       linePos_t linePositionCurrent = globalFlags.lineSensorData.linePos;
 
+      // Limit the accumulation
+      if (errorCount < 80) {
+        errorCount += 0.1;
+      }
+
+      // CONTROL SEQUENCE
       switch(linePositionCurrent) {
       case LINE_POS_LEFT: {
         // Calculate the adjustment
-        int8_t newSpeed = globalFlags.motorData.leftMotorSpeed - (++errorCount*TRACKING_COMMIT);
+        float newSpeed = globalFlags.motorData.leftMotorSpeed - (errorCount*TRACKING_GAIN);
 
         // Set the new speed of the motors, taking into account the minimum allowable speed
         setMotors((newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed),
@@ -68,7 +80,7 @@ void StartMotorTask(void const * argument) {
       }
       case LINE_POS_RIGHT: {
         // Calculate the adjustment
-        int8_t newSpeed = globalFlags.motorData.rightMotorSpeed - (++errorCount*TRACKING_COMMIT);
+        float newSpeed = globalFlags.motorData.rightMotorSpeed - (errorCount*TRACKING_GAIN);
 
         // Set the new speed of the motors, taking into account the minimum allowable speed
         setMotors(globalFlags.motorData.leftMotorSpeed,
@@ -81,12 +93,34 @@ void StartMotorTask(void const * argument) {
 
         // Adjust the error counter
         // If it is not zero, decrease until zero is reached
-        if (errorCount != 0) {
+        if (errorCount > 0) {
           errorCount -= SETTLE_SPEED;
-          if (errorCount < 0) {
-            errorCount = 0;
-          }
         }
+        break;
+      case LINE_POS_LEFTLEFT: {
+        // Ensure this number doubles
+
+        // Calculate the adjustment
+        float newSpeed = globalFlags.motorData.leftMotorSpeed - (errorCount*TRACKING_GAIN*2);
+
+        // Set the new speed of the motors, taking into account the minimum allowable speed
+        setMotors((newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed),
+            globalFlags.motorData.rightMotorSpeed);
+        break;
+      }
+      case LINE_POS_RIGHTRIGHT: {
+        // Ensure this number doubles
+
+        // Calculate the adjustment
+        float newSpeed = globalFlags.motorData.rightMotorSpeed - (errorCount*TRACKING_GAIN*2);
+
+        // Set the new speed of the motors, taking into account the minimum allowable speed
+        setMotors(globalFlags.motorData.leftMotorSpeed,
+            (newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed));
+        break;
+      }
+      default:
+        break;
       }
     }
 
@@ -113,16 +147,44 @@ static void interpretSignal(osEvent *signalEvent) {
       // Enable the motors
       enableMotors();
 
-      // Send a signal to the line sensor task to enable sensing
-      osSignalSet(lineSensorTaskHandle, LINE_SIG_START);
-
-      // Update states
+      // Update the flags
       globalFlags.states.motorState = MTR_STATE_RUNNING;
+
+      // Get the LED going!
+      sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_LED_BLINK_FAST, 0);
     }
 
     break;
+  case MTR_SIG_STANDBY:
+    if (globalFlags.motorData.hBridgeState == HB_STATE_ENABLED) {
+      disableMotors();
+    }
+
+    // This will reset the motors and set all PWM to zero
+    enableMotors();
+
+    // Send a signal to the line sensor task to enable sensing
+    if (globalFlags.states.lineSensorState != LNS_STATE_ON) {
+      osSignalSet(lineSensorTaskHandle, LINE_SIG_START);
+      osDelay(100);
+      globalFlags.states.lightSensorState = LIGHT_STATE_ON;
+    }
+
+    // Wait for the line sensor to start
+    while (globalFlags.states.lineSensorState != LNS_STATE_ON) {
+      osDelay(1);
+    }
+
+    // Update the flags
+    globalFlags.states.motorState = MTR_STATE_STANDBY;
+
+    // Do the LED and buzzer
+    sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_LED_ON, 0);
+    sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_BUZZER_BURST_TWICE, 0);
+
+    break;
   case MTR_SIG_STOP_TRACKING:
-    // This muct only be fired if the motors are actually running
+    // This must only be fired if the motors are actually running
     if (globalFlags.states.motorState == MTR_STATE_RUNNING) {
       // Disable the motors
       disableMotors();
@@ -132,6 +194,10 @@ static void interpretSignal(osEvent *signalEvent) {
 
       // Update states
       globalFlags.states.motorState = MTR_STATE_OFF;
+
+      // Do the LED and buzzer
+      sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_LED_ON, 0);
+      sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_BUZZER_BURST_ONCE, 0);
     }
     break;
   default:
@@ -219,10 +285,10 @@ static void enableMotors(void) {
  * @note Speeds can be any value between -100 and 100 (reverse to forward)
  * @note This function does not enable motors if they are disabled (PWM off)
  */
-static void setMotors(int8_t leftSpeed, int8_t rightSpeed) {
+static void setMotors(float leftSpeed, float rightSpeed) {
   // Load in data
-  int8_t leftSpeedCurrent = globalFlags.motorData.leftMotorSpeed;
-  int8_t rightSpeedCurrent = globalFlags.motorData.rightMotorSpeed;
+  float leftSpeedCurrent = globalFlags.motorData.leftMotorSpeed;
+  float rightSpeedCurrent = globalFlags.motorData.rightMotorSpeed;
   motorDir_t leftDirCurrent = globalFlags.motorData.leftMotorDir;
   motorDir_t rightDirCurrent = globalFlags.motorData.rightMotorDir;
 
@@ -290,77 +356,78 @@ static void setMotors(int8_t leftSpeed, int8_t rightSpeed) {
 
   }
 
+  // If we have made a direction change (by stopping motors etc..)
   if (dirChange) {
     // Enable the Bridge again
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
   }
 
   // While the speeds still need to be changed
-  while ((!leftSpeedChangeCmplt) || (!rightSpeedChangeCmplt)) {
-    // Check if the speed needs to be changed
-    if (leftSpeedCurrent != leftSpeed) {
+//  while ((!leftSpeedChangeCmplt) || (!rightSpeedChangeCmplt)) {
+//    // Check if the speed needs to be changed
+//    if (leftSpeedCurrent != leftSpeed) {
       // Check which PWM needs to be changed based on direction
       if (leftDirCurrent == MTR_DIR_FWD) {
-        setLF(++leftSpeedCurrent);
+        setLF(leftSpeed);
       } else {
-        setLR(-(--leftSpeedCurrent));
+        setLR(-leftSpeed);
       }
-    } else {
-      // Update when finished
-      leftSpeedChangeCmplt = TRUE;
-    }
+//    } else {
+//      // Update when finished
+//      leftSpeedChangeCmplt = TRUE;
+//    }
 
     // Check if the speed needs to be changed
-    if (rightSpeedCurrent != rightSpeed) {
-      // Check which PWM needs to be changed based on direction
+//    if (rightSpeedCurrent != rightSpeed) {
+//      // Check which PWM needs to be changed based on direction
       if (rightDirCurrent == MTR_DIR_FWD) {
-        setRF(++rightSpeedCurrent);
+        setRF(rightSpeed);
       } else {
-        setRR(-(--rightSpeedCurrent));
+        setRR(-rightSpeed);
       }
-    } else {
-      // Update when finished
-      rightSpeedChangeCmplt = TRUE;
-    }
+//    } else {
+//      // Update when finished
+//      rightSpeedChangeCmplt = TRUE;
+//    }
 
     // Delay to allow a gradual change in speed
-    osDelay(MTR_SPEED_REACTION_PERIOD);
-  }
+//    osDelay(MTR_SPEED_REACTION_PERIOD);
+//  }
 
   // Update data
-  globalFlags.motorData.leftMotorSpeed = leftSpeedCurrent;
-  globalFlags.motorData.rightMotorSpeed = rightSpeedCurrent;
+  globalFlags.motorData.leftMotorSpeed = leftSpeed;
+  globalFlags.motorData.rightMotorSpeed = rightSpeed;
 }
 
 /**
  * @brief Set the PWM compare on the LF channel (TIM1 CH4)
  * @param speed: PWM value of the channel
  */
-static void setLF(uint8_t speed) {
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, speed*10);
+static void setLF(float speed) {
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_4, (uint16_t)(speed*10));
 }
 
 /**
  * @brief Set the PWM compare on the LF channel (TIM1 CH2)
  * @param speed: PWM value of the channel
  */
-static void setLR(uint8_t speed) {
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, speed*10);
+static void setLR(float speed) {
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, (uint16_t)(speed*10));
 }
 
 /**
  * @brief Set the PWM compare on the LF channel (TIM1 CH3)
  * @param speed: PWM value of the channel
  */
-static void setRF(uint8_t speed) {
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, speed*10);
+static void setRF(float speed) {
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_3, (uint16_t)(speed*10));
 }
 
 /**
  * @brief Set the PWM compare on the LF channel (TIM1 CH1)
  * @param speed: PWM value of the channel
  */
-static void setRR(uint8_t speed) {
-  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, speed*10);
+static void setRR(float speed) {
+  __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, (uint16_t)(speed*10));
 }
 

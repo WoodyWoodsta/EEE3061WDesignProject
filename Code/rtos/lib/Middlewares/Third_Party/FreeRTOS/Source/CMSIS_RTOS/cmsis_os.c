@@ -471,12 +471,12 @@ int32_t osSignalSet (osThreadId thread_id, int32_t signal)
   
   if (inHandlerMode())
   {
-    if(xTaskNotifyFromISR( thread_id, (uint32_t)signal, eSetBits, &xHigherPriorityTaskWoken ) != pdPASS )
+    if(xTaskNotifyFromISR( thread_id, (uint32_t)signal, eSetValueWithOverwrite, &xHigherPriorityTaskWoken ) != pdPASS )
       return osErrorOS;
 
     portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
   }  
-  else if(xTaskNotify( thread_id, (uint32_t)signal, eSetBits) != pdPASS )
+  else if(xTaskNotify( thread_id, (uint32_t)signal, eSetValueWithOverwrite) != pdPASS )
   {
     return osErrorOS;
   }

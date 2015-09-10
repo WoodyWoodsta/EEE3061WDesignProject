@@ -30,9 +30,6 @@ static void checkStartLight(void);
 void StartLineSensorTask(void const * argument) {
   msg_genericMessage_t rxMessage;
 
-  globalFlags.lineSensorData.linePos = LINE_POS_CENTER;
-  globalFlags.states.lightSensorState = LIGHT_STATE_ON;
-
   // Do the light sensor calibration
   sendCommand(msgQUserIO, MSG_SRC_LINE_SENSOR_TASK, MSG_CMD_LED_BLINK_SLOW, osWaitForever);
   int i = 0;
@@ -40,16 +37,18 @@ void StartLineSensorTask(void const * argument) {
     globalFlags.lineSensorData.lightSensorThreshold += checkLightSensor()/(LIGHT_CAL_ITERATIONS);
   }
 
-  sendCommand(msgQUserIO, MSG_SRC_LINE_SENSOR_TASK, MSG_CMD_LED_OFF, osWaitForever);
   HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
   osDelay(100);
   HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
+  sendCommand(msgQUserIO, MSG_SRC_LINE_SENSOR_TASK, MSG_CMD_LED_OFF, osWaitForever);
 
   // Calculate the threshold with the preset division
   globalFlags.lineSensorData.lightSensorThreshold = globalFlags.lineSensorData.lightSensorThreshold/LIGHT_THRESHOLD_DIV;
-
   // Start the timer to record the capacitive discharge
-  HAL_TIM_Base_Start(&htim6);
+  HAL_TIM_Base_Start(&htim6); // TODO Don't think I need that anymore
+
+  // Put the motors into standby
+  osSignalSet(motorTaskHandle, MTR_SIG_STANDBY);
 
   /* Infinite loop */
   for (;;) {
@@ -58,7 +57,7 @@ void StartLineSensorTask(void const * argument) {
     // Wait for the signal - if the light or line sensor is on, don't wait, just check
     osEvent signalEvent = osSignalWait(0, (globalFlags.states.lineSensorState == LNS_STATE_OFF
                                            && globalFlags.states.lightSensorState == LIGHT_STATE_OFF)
-                                           ? (osWaitForever) : (LNS_UPDATE_PERIOD));
+                                           ? (1000) : (LNS_UPDATE_PERIOD));
 
     if (signalEvent.status == osEventSignal) {
       // Decode the signal and act on it
@@ -67,7 +66,9 @@ void StartLineSensorTask(void const * argument) {
 
     if (globalFlags.states.lineSensorState == LNS_STATE_ON) {
       updateLinePos();
-    } else if (globalFlags.states.lightSensorState == LIGHT_STATE_ON) {
+    }
+
+    if (globalFlags.states.lightSensorState == LIGHT_STATE_ON) {
       checkStartLight();
     }
   }
@@ -123,11 +124,11 @@ static void updateLinePos(void) {
       newLinePos = LINE_POS_RIGHTRIGHT;
     }
     break;
-  case 0b01: // Left: no line | Right: line
+  case 0b10: // Left: no line | Right: line
     // Robot has either moved in from the far left, or has moved out to the left
     newLinePos = LINE_POS_LEFT;
     break;
-  case 0b10: // Left: line | Right: no line
+  case 0b01: // Left: line | Right: no line
     // Robot has either moved in from the far right, or has moved out to the right
     newLinePos = LINE_POS_RIGHT;
     break;
@@ -153,6 +154,7 @@ static uint32_t checkLightSensor(void) {
   osDelay(200);
 
   osThreadSetPriority(lineSensorTaskHandle, osPriorityAboveNormal);
+
   __HAL_TIM_SET_COUNTER(&htim6, 0); // Reset the timer
   GPIOB->MODER &= ~GPIO_MODER_MODER2; // Switch it to an input
 
@@ -182,14 +184,19 @@ static void checkStartLight(void) {
 //  }
 
   while(!(lightReading <= globalFlags.lineSensorData.lightSensorThreshold)) {
+    if (globalFlags.states.motorState == MTR_STATE_RUNNING) {
+      globalFlags.states.lightSensorState = LIGHT_STATE_OFF;
+      return;
+    }
     lightReading = checkLightSensor();
+    osDelay(1);
   }
 
   // When the green light is sensed, send a signal to start the motors
   osSignalSet(motorTaskHandle, MTR_SIG_START_TRACKING);
 
   sendCommand(msgQUserIO, MSG_SRC_LINE_SENSOR_TASK, MSG_CMD_LED_BLINK_SUPERFAST, osWaitForever);
-  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
+//  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
   osDelay(500);
   sendCommand(msgQUserIO, MSG_SRC_LINE_SENSOR_TASK, MSG_CMD_LED_OFF, osWaitForever);
   HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);

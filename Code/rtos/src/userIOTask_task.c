@@ -162,29 +162,52 @@ static void stopLED(void) {
  * @brief Callback for a switch 0 UP event
  */
 static void SW0UpAction(void) {
-  sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_LED_OFF, 0);
 }
 
 /**
  * @brief Callback for a switch 0 DOWN event
  */
 static void SW0DownAction(void) {
-  osSignalSet(lineSensorTaskHandle, LIGHT_SIG_START);
-  //  osSignalSet(motorTaskHandle, MTR_SIG_START_TRACKING);
+  // If the motors were off, set them to standby
+  if (globalFlags.states.motorState == MTR_STATE_OFF) {
+    osSignalSet(motorTaskHandle, MTR_SIG_STANDBY); // This will also start the line sensor
+  } else if (globalFlags.states.motorState == MTR_STATE_STANDBY) {
+    // Else, if for some reason the light sensor failed, this will start things rolling
+    osSignalSet(motorTaskHandle, MTR_SIG_START_TRACKING);
+  }
 }
 
 /**
  * @brief Callback for a switch 1 UP event
  */
 static void SW1UpAction(void) {
-  sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_LED_OFF, 0);
 }
 
 /**
  * @brief Callback for a switch 1 DOWN event
  */
 static void SW1DownAction(void) {
-  osSignalSet(motorTaskHandle, MTR_SIG_STOP_TRACKING);
+  if (globalFlags.states.motorState != MTR_STATE_RUNNING) {
+    // If the motors are in standby or no running, SW1 must reset the line sensor to center
+    osSignalSet(lineSensorTaskHandle, LINE_SIG_STOP); // Turn the line sensor off in order to preserve thread-safety
+    globalFlags.lineSensorData.linePos = LINE_POS_CENTER; // Reset the sensor
+
+    // Delay to let things settle
+    osDelay(5);
+
+    // Then, if the motors are in standby, turn the line sensor back on
+    if (globalFlags.states.motorState == MTR_STATE_STANDBY) {
+      osSignalSet(lineSensorTaskHandle, LINE_SIG_START);
+    }
+  }
+
+  // If the motors are running, kill the motors and put them in standby (line sensor will continue to sense)
+  if (globalFlags.states.motorState == MTR_STATE_RUNNING) {
+    osSignalSet(motorTaskHandle, MTR_SIG_STANDBY);
+  } else if (globalFlags.states.motorState == MTR_STATE_STANDBY) {
+    // Else, if the motors were in standby, turn them off
+    osSignalSet(motorTaskHandle, MTR_SIG_STOP_TRACKING);
+  }
 }
 
 /**

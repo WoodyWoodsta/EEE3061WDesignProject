@@ -104,7 +104,8 @@ typedef enum {
 
 // Signals that can be sent to the motor task
 typedef enum {
-  MTR_SIG_START_TRACKING,
+  MTR_SIG_START_TRACKING = 1,
+  MTR_SIG_STANDBY,
   MTR_SIG_STOP_TRACKING
 } motorSignals_t;
 
@@ -114,8 +115,8 @@ typedef enum {
 typedef struct {
   motorDir_t leftMotorDir;
   motorDir_t rightMotorDir;
-  int8_t leftMotorSpeed;
-  int8_t rightMotorSpeed;
+  float leftMotorSpeed;
+  float rightMotorSpeed;
   hBridgeState_t hBridgeState;
 } motorData_struct;
 
@@ -132,7 +133,7 @@ typedef enum {
 
 // Signals to send to the Line Sensor Task (used for line and light sensors)
 typedef enum {
-  LINE_SIG_STOP,
+  LINE_SIG_STOP = 1,
   LINE_SIG_START,
   LIGHT_SIG_START,
   LIGHT_SIG_STOP

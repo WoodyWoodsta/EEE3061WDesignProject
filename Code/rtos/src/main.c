@@ -52,7 +52,7 @@ osMessageQDef(msgQUSARTOut, 2, msg_genericMessage_t);
 osMessageQDef(msgQBoss, 5, msg_genericMessage_t);
 
 // UserIO Task Message Queue
-osMessageQDef(msgQUserIO, 3, msg_genericMessage_t);
+osMessageQDef(msgQUserIO, 4, msg_genericMessage_t);
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -108,6 +108,11 @@ int main(void) {
   globalFlags.motorData.leftMotorDir = MTR_DIR_DISABLED;
   globalFlags.motorData.leftMotorSpeed = 0;
   globalFlags.motorData.rightMotorSpeed = 0;
+
+  globalFlags.lineSensorData.linePos = LINE_POS_CENTER; // Initial condition is for the robot to be centered
+  globalFlags.states.lightSensorState = LIGHT_STATE_OFF;
+
+
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
