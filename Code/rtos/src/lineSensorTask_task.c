@@ -133,7 +133,7 @@ static void updateLinePos(void) {
     newLinePos = LINE_POS_RIGHT;
     break;
   case 0b11: // Left: line | Right: line
-    if (previousLinePos != LINE_POS_RIGHTRIGHT && previousLinePos != LINE_POS_LEFTLEFT) {
+    if (1 || (previousLinePos != LINE_POS_RIGHTRIGHT && previousLinePos != LINE_POS_LEFTLEFT)) {
       // Robot has moved in from the left or right
       newLinePos = LINE_POS_CENTER;
     } // ELSE: Robot has moved over a perpendicular line whilst over to the far right or far left
@@ -196,7 +196,7 @@ static void checkStartLight(void) {
   osSignalSet(motorTaskHandle, MTR_SIG_START_TRACKING);
 
   sendCommand(msgQUserIO, MSG_SRC_LINE_SENSOR_TASK, MSG_CMD_LED_BLINK_SUPERFAST, osWaitForever);
-//  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
   osDelay(500);
   sendCommand(msgQUserIO, MSG_SRC_LINE_SENSOR_TASK, MSG_CMD_LED_OFF, osWaitForever);
   HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);

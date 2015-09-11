@@ -24,6 +24,7 @@
 #define LED_BLINK_SLOW_PERIOD       1000 // Value to load the one-shot timer for SLOW blink [ms]
 #define LED_BLINK_FAST_PERIOD       500 // Value to load the one-shot timer for FAST blink [ms]
 #define LED_BLINK_SUPERFAST_PERIOD  100 // Value to load the one-shot timer for SUPERFAST blink [ms]
+#define BUZZER_FAST
 
 // == Type Declarations - Procedures ==
 // Procedure statuses

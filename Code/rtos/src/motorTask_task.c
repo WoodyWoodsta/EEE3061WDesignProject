@@ -17,11 +17,11 @@
 #define MTR_UPDATE_PERIOD             20 // Interval between updating the motor control [+-ms]
 #define LEFT_TRIM                     ((float)0) // Percentage trim of the left motor
 #define RIGHT_TRIM                    ((float)0) // Percentage trim of the right motor
-#define TRACKING_GAIN                 ((float)0.25) // Amount to decrease the motor speed by to achieve tracking
-#define AUTO_SPEED                    ((float)98) // Percentage PWM to apply to motors when in auto drive mode
-#define MIN_TRACKING_SPEED            ((float)60) // Minimum speed a motor can reach during tracking
-#define SETTLE_SPEED                  ((float)0.2) // Amount to decrease the cumulative error when line is in center
-#define MAX_ERROR_COUNT               70 // Maximum accumlution
+#define TRACKING_GAIN                 ((float)2) // Amount to decrease the motor speed by to achieve tracking
+#define AUTO_SPEED                    ((float)100) // Percentage PWM to apply to motors when in auto drive mode
+#define MIN_TRACKING_SPEED            ((float)0) // Minimum speed a motor can reach during tracking
+#define SETTLE_SPEED                  ((float)0.25) // Amount to decrease the cumulative error when line is in center
+#define MAX_ERROR_COUNT               100000 // Maximum accumlution
 
 // == Private Function Declarations ==
 static void interpretSignal(osEvent *signalEvent);
@@ -70,22 +70,40 @@ void StartMotorTask(void const * argument) {
       // CONTROL SEQUENCE
       switch(linePositionCurrent) {
       case LINE_POS_LEFT: {
-        // Calculate the adjustment
-        float newSpeed = globalFlags.motorData.leftMotorSpeed - (errorCount*TRACKING_GAIN);
+        // If the line is tracked, set the speed of the motors to the set speed
+        setMotors(AUTO_SPEED + LEFT_TRIM, AUTO_SPEED + RIGHT_TRIM);
 
-        // Set the new speed of the motors, taking into account the minimum allowable speed
-        setMotors((newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed),
-            globalFlags.motorData.rightMotorSpeed);
-        break;
+        // Adjust the error counter
+        // If it is not zero, decrease until zero is reached
+        if (errorCount > 0) {
+          errorCount -= SETTLE_SPEED;
+        }
+
+        //        // Calculate the adjustment
+//        float newSpeed = globalFlags.motorData.leftMotorSpeed - (errorCount*TRACKING_GAIN);
+//
+//        // Set the new speed of the motors, taking into account the minimum allowable speed
+//        setMotors((newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed),
+//            globalFlags.motorData.rightMotorSpeed);
+//        break;
       }
       case LINE_POS_RIGHT: {
-        // Calculate the adjustment
-        float newSpeed = globalFlags.motorData.rightMotorSpeed - (errorCount*TRACKING_GAIN);
+        // If the line is tracked, set the speed of the motors to the set speed
+        setMotors(AUTO_SPEED + LEFT_TRIM, AUTO_SPEED + RIGHT_TRIM);
 
-        // Set the new speed of the motors, taking into account the minimum allowable speed
-        setMotors(globalFlags.motorData.leftMotorSpeed,
-            (newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed));
-        break;
+        // Adjust the error counter
+        // If it is not zero, decrease until zero is reached
+        if (errorCount > 0) {
+          errorCount -= SETTLE_SPEED;
+        }
+
+        //        // Calculate the adjustment
+//        float newSpeed = globalFlags.motorData.rightMotorSpeed - (errorCount*TRACKING_GAIN);
+//
+//        // Set the new speed of the motors, taking into account the minimum allowable speed
+//        setMotors(globalFlags.motorData.leftMotorSpeed,
+//            (newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed));
+//        break;
       }
       case LINE_POS_CENTER:
         // If the line is tracked, set the speed of the motors to the set speed
