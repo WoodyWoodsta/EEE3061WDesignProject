@@ -1,0 +1,450 @@
+\input{woodamble}                                                       % Custom preamble
+%----------------------------------------------------------------------------------------
+% NAME AND CLASS SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\reportTitle}{Final Report} % Assignment title
+\newcommand{\reportDueDate}{Wednesday,\ September\ 03,\ 2014}                    % Due date
+\newcommand{\reportClass}{EEE3061W - Mechatronics Design}                               % Course/class
+\newcommand{\reportClassTime}{10:30am}                                 % Class/lecture time
+\newcommand{\reportClassInstructor}{Jones}                               % Teacher/lecturer
+\newcommand{\reportAuthorName}{Team 13}                           % Your name
+\newcommand{\reportDepartment}{Department of Electrical Engineering}           % Department
+
+%----------------------------------------------------------------------------------------
+% TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title{
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.4\columnwidth]{uct-logo}
+  \end{center}
+\end{figure}
+\textmd{\Huge UNIVERSITY OF CAPETOWN \\ \LARGE \reportDepartment} \\
+\vspace{2in}
+\textmd{\textbf{\LARGE \reportClass \\ \Huge Biathlon Robot \\ \reportTitle \\ \vspace{1.5in} \Large Team 13 \\  WDXSEA003 \textbar\space PRSSAM004 \textbar\space RJDYAR001 \textbar\space STRIBR001}}\\
+}
+
+\date{}
+
+%========================================================================================
+%========================================================================================
+
+\begin{document}
+  \maketitle
+  \thispagestyle{empty}
+
+\frontmatter
+%----------------------------------------------------------------------------------------
+% ABTRACT
+%----------------------------------------------------------------------------------------
+\setcounter{tocdepth}{3}                                                      % ToC Depth
+
+\begin{abstract}
+  \thispagestyle{empty}
+  This report covers the conceptualization, design and building stages of an autonomous bi-athletic robot for the EEE3061W Mechatronics Design Project 2015.  This robot is to partake in a sprint as well as throw a ping-pong ball after maneuvering with an end-goal intention. % Add some more stuff here
+\end{abstract}
+
+%----------------------------------------------------------------------------------------
+% TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+\cleardoublepage
+\addcontentsline{toc}{section}{Table of Contents}
+\tableofcontents
+
+\clearpage
+\section*{List of Illustrations}
+\addcontentsline{toc}{section}{List of Illustrations}
+\label{sec:List of Illustrations}
+\addcontentsline{toc}{subsection}{List of Figures}
+\listoffigures
+\addcontentsline{toc}{subsection}{List of Tables}
+\listoftables
+
+\clearpage
+
+% ----- Report Layout Plan -----
+% - Abstract
+% - Introduction
+%   - Sprinter Introduction
+%   - Launcher Introduction
+%
+% Sprinter Stuff
+% - Sprinter Design Concepts
+%   - Design Concept 1
+%   - Design Concept 2
+%   - Design Concept 3
+% - Sprinter Final Concept
+% - Sprinter Preliminary Calculations
+% - Sprinter Mechanical Design
+% - Sprinter Electronic Design
+%   - Core electronics (Controller board)
+%   - Peripheral electronics (Power board, LEDs, Sensors etc)
+% - Sprinter Control and Software
+%   - Control Principles
+%   - Software structure choice
+%   - Other details like gyro etc
+% - Sprinter Build, Testing and Calibration
+% - Sprinter Results and Conclusions
+%
+% Launcher Stuff
+% - Launcher Design Concepts
+%   - Design Concept 1
+%   - Design Concept 2
+%   - Design Concept 3
+% - Launcher Final Concept
+% - Launcher Preliminary Calculations
+% - Launcher Mechanical Design
+% - Launcher Electronic Design
+%   - Core electronics (Controller board)
+%   - Peripheral electronics (Power board, LEDs, Sensors etc)
+% - Launcher Control and Software
+%   - Control principles
+%   - Software structure choice and a note on RTOS
+%   - Other details
+% - Launcher Build, Testing and Calibration
+% - Launcher Results and Conclusions
+%
+% - Final Conclusion
+% - APPENDICES
+
+%----------------------------------------------------------------------------------------
+% NOMENCLATURE
+%----------------------------------------------------------------------------------------
+
+\section{Nomenclature}
+\label{sec:Nomenclature}
+
+\textbf{Constants}
+
+\(V_{LINE}\) - Nominal Line Voltage\\
+\(A_v\) - Operational Amplifier Gain\\
+\(db_{SPL}\) - Sound Pressure Level\\
+\(\theta_S\) - Phase Shift
+
+%----------------------------------------------------------------------------------------
+% INTRODUCTION
+%----------------------------------------------------------------------------------------
+\mainmatter
+\section{Introduction}
+\label{sec:Introduction}
+  This report covers the complete design process for EEE3061W Mechatronics Design Project for 2015.  The project involves the design, manufacture and testing of a legged, autonomous, bi-athletic robot that will be able to partake in a 5m sprint and then throw a weighted ping-pong ball.  The robot is to adhere to a set of specifications as provided by the course management. \\
+
+  The entire project is split into two sections, each covering the semester's task.  The first section involved the sprinting aspect of the robot, and the second involved line following and launching.  The relevant sections are named accordingly.
+
+  \subsection{Sprinter Introduction}
+  \label{sub:Sprinter Introduction}
+    In summary, the sprinting robot was to make use of a digital 3-axis gyroscope in an attempt to sprint 5m as fast as possible within a fixed-width lane (maintain fixed heading).  The robot was also specified to start the sprint when green light from a set of three lights was detected, signaling the beginning of the race. \\
+
+    The locomotion design was constrained to the use of legs, making use of a mechanical linkage-type system to convert rotational motion from the provided motors into linear motion to move forward.  Other restrictions included the dimensions of the entire robot and out-of-pocket components budget.
+
+  \subsection{Launcher Introduction}
+  \label{sub:Launcher Introduction}
+    The second stage of the project required the robot to first navigate along a line (autonomously) into a box and then throw a weighted ping-pong ball as far as possible. The launching mechanism was limited to the use of a lever system, driven by a DC motor provided.  The rest of the restrictions follow from the Sprinter as well. \\
+
+  The development of both robots followed the same design process whereby 3 conceptual designs were proposed and one final design (or a combination of ideas from more than one) was developed upon further after having drawn up a pros and cons comparison.  The final design was, at this stage, separated into the electronic and mechanical aspects.  As such, they are discussed separately.  Mechanical designs were modelled using 3D CAD (either SolidWorks or AutoDesk Inventor) and electronics were drawn up in Altium Designer.
+
+%----------------------------------------------------------------------------------------
+% SPRINTER DESIGN CONCEPTS
+%----------------------------------------------------------------------------------------
+
+\clearpage
+\part{Sprinter}
+\label{part:sprinter}
+
+\section{Sprinter Design Concepts}
+\label{sec:Sprinter Design Concepts}
+  \subsection{Design Concept 1}
+  \label{sub:Design Concept 1}
+    \begin{figure}[H]
+    \label{fig:3dConcept1}
+      \begin{center}
+        \includegraphics[width=0.8\columnwidth]{DesignConcept1RenderCropped}
+        \caption{3D Render of Sprinter Design Concept 1}
+      \end{center}
+    \end{figure}
+
+    The first sprinter design concept is one which incorporates the Klann Linkage system in the leg design. This allows direct conversion of rotary motion from the motors to linear motion in the legs. The body design, which is somewhat complex, is octagonal in shape, with the angled panels fastened using internal brackets bolted onto the inside. This design is aesthetically appealing however, may make it difficult to access the internal components once the design is completed.  Also, the body restricts the height of the gearing system within. The leg system is a standard Klann Linkage with 8 legs. The legs are connected in pairs, situated on each side of the body, which are run by the same gear (i.e. each motor controls one side each of the leg system).  The main advantage of the extra 4 legs is to provide improved stability. Definitive of the Klann Linkage system, each stride lasts for 180 degrees of each revolution, and so having two legs per revolution, the leg group is able to provide at least one leg for the full revolution. This means there will be 4 legs on the ground at all times during the robot's motion. Although not shown in the rendering, the gearing system would have the final output on the outside of the main body, with the gears placed between the rotating disks. This prevents physical interference at any point during the leg cycles.\\
+
+    The rendering is not necessarily to scale or proportion.  Due to restrictions in volume and dimensions, the legs would be shorter and body closer to the ground.
+
+  \subsection{Design Concept 2}
+  \label{sub:Design Concept 2}
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.8\columnwidth]{DesignConcept2RenderCropped}
+        \caption{3D Render of Design Concept 2}
+        \label{fig:3dConcept2}
+      \end{center}
+    \end{figure}
+
+    The second design concept is somewhat similar to the previous one, but with one important difference: the left and right leg pairings are driven by a single, central driving gear. The main body of the robot is also similar to the previous design, but with an open rear to make it easier to access internal components. The front of the main body acts primarily as a visor to help protect the components to some extent during the motion. This is also an attempt to minimize weight, but compromises the aesthetic appeal as all the components will be visible. The same 8-leg Klann Linkage system is employed here as well. The gearing system and motor placement will be the same as the previous concept, as the ratios and general internal configuration will be the same.
+
+  \subsection{Design Concept 3}
+  \label{sub:Design Concept 3}
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.8\columnwidth]{DesignConcept3RenderCropped}
+        \caption{3D Render of Design Concept 3}
+        \label{fig:3dConcept3}
+      \end{center}
+    \end{figure}
+
+    The third and final design again employs the Klann Linkage system. The primary difference is that the legs are now placed closer towards the front and back of the main body rather than on the sides. The general body shape is box-like as this will be most efficient to accommodate this particular leg system. The motor and gear placement would also be different: they would be placed on the front and back, with the circuitry and control system placed more centrally. The 8-piece Klann Linkage legs would be most stable in this orientation and allow greater body width. This implementation, however, will result in an overall loss in body length.
+
+%----------------------------------------------------------------------------------------
+% SPRINTER FINAL CONCEPT
+%----------------------------------------------------------------------------------------
+\section{Sprinter Final Concept}
+\label{sec:Sprinter Final Concept}
+  The following table (Table \ref{tab:comparison1}) compares the pros and cons of each design concept in order to analyze the merits and shortfalls of each concept.
+
+  \begin{table}[h]
+  \centering
+  \begin{tabular}{cccccc}
+  \hline
+  \multicolumn{2}{c}{\cellcolor[HTML]{E3E3E3}{\color[HTML]{000000} \textbf{Design Concept 1}}} & \multicolumn{2}{c}{\cellcolor[HTML]{E3E3E3}{\color[HTML]{000000} \textbf{Design Concept 2}}} & \multicolumn{2}{c}{\cellcolor[HTML]{E3E3E3}{\color[HTML]{000000} \textbf{Design Concept 3}}} \\ \hline
+  \multicolumn{1}{c|}{\textbf{Pros}} & \multicolumn{1}{c|}{\textbf{Cons}} & \multicolumn{1}{c|}{\textbf{Pros}} & \multicolumn{1}{c|}{\textbf{Cons}} & \multicolumn{1}{c|}{\textbf{Pros}} & \textbf{Cons} \\ \hline
+  \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Great\\ stability\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}May be\\ heavy\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}High\\ stability\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}More\\ complex\\ mechanism\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Improved\\ longitudinal\\ stability\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Limited\\ longitudinal\\ length\end{tabular} \\ \hline
+  \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Reasonable\\ speed\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Difficult\\ body\\ assembly\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Good\\ maneuverability\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Low\\ protection\\ of parts\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Higher\\ speed\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Difficult\\ part\\ placement\end{tabular} \\ \hline
+  \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Good\\ maneuverability\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Difficult\\ access\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Easier\\ assembly\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Limit\\ lateral\\ space/width\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}More\\ lateral\\ width\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Difficult\\ to assemble\end{tabular} \\ \hline
+  \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Good\\ part\\ orientation\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Limited\\ lateral\\ space/width\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Ease\\ of access\end{tabular}} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \begin{tabular}[c]{@{}c@{}}More\\ machining\\ required\end{tabular} \\ \hline
+  \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}More\\ gears\\ required\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Less\\ gears\\ needed\end{tabular}} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  \\ \hline
+  \end{tabular}
+  \label{tab:comparison1}
+  \caption{Table of pros and cons for each of the three design concepts}
+  \end{table}
+
+  Given the pros and cons of each, a combination of the leg design from concept 1 and the body design from concept 2 was decided upon. This provides a good speed design, a simple but functional body design, as well as good weight distribution with the gears placed at the back, while the battery pack placed is at the front.\\
+
+  Figure~\ref{fig:moduleplanview1}  below shows a conceptual feature plan of the above chosen design:
+
+  \begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=1\columnwidth]{ModulePlanView-Conceptual}
+      \caption{Conceptual feature plan and component placement diagram}
+      \label{fig:moduleplanview1}
+    \end{center}
+  \end{figure}
+
+  \begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=0.8\columnwidth]{KlannLinkageDiagram}
+      \caption{Diagram of the Klann Linkage System}
+      \label{fig:klannLinkage1}
+    \end{center}
+  \end{figure}
+
+  \subsection{Other Design Considerations}
+  \label{sub:Other Design Considerations}
+    The Jansen linkage was another concept that we considered for the legs. Its primary advantage over the Klann linkage is that it is notably faster. It is also more stable when dealing with obstacles. Despite this, however, the linkage system as well as its complex implementation would be considerably more difficult. The increased number of linkages per leg would make assembly as well as dimensioning and optimizing very difficult. This is the primary reason why we decided not to consider it for our final design.
+
+  \subsection{Potential Improvements}
+  \label{sub:Potential Improvements}
+    One possible design improvement would be to implement the use of oval gears instead of circular for the final output gear. By doing this with the correct orientation, the legs would have a longer contact time with the ground as the downward motion would be slower. This would serve to increase the torque of each leg. As well as this, the upward leg motion would be faster, resulting in a shorter stride time and an overall increase in speed because a smaller gear ratio would then be used.\\
+
+    As mentioned above, the legs should be shortened and widened, offering more height to the body, lower center of gravity for stability and extra strength in the legs.
+
+%----------------------------------------------------------------------------------------
+% SPRINTER PRELIMINARY CALCULATIONS
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Sprinter Preliminary Calculations}
+\label{sec:Sprinter Preliminary Calculations}
+  \subsection{Gear Ratio}
+  \label{sub:Gear Ratio}
+    The gear ratio is entirely dependent of the minimum torque that would be required per leg in order to move the robot forward. As per the specifications, the output rpm of the motors is too high to directly drive the legs whilst providing enough torque to overcome the inertia of the body. An initial calculation for the minimum torque would be enough to determine the best gear ratio.\\
+
+    \begin{equation}
+      \text{Torque} = \text{force}\times\text{distance}
+    \end{equation}
+
+    The weight of the overall design, as well as its perpendicular distance from the legs in contact with the ground would easily determine the minimum torque needed in order to drive the robot. \\
+
+    Mass of Robot = 510g \\
+    Distance from Leg = 7.5 cm
+
+    \begin{equation*}
+      \begin{split}
+        \therefore \text{Torque} &= \frac{510\left(7.5\right)}{2}\\
+                                 &\approx 1913 \text{g}\cdot\text{cm}
+      \end{split}
+    \end{equation*}
+
+    Given that the ratio of the input and output torque would be the same as the gear ratio, the final gear ratio would therefore be:
+
+    \begin{equation*}
+      \begin{split}
+        \text{Ratio} &= \frac{1913}{220} \\
+                     &\approx 9
+      \end{split}
+    \end{equation*}
+
+    The gear arrangement can be seen in Fig. 3.1.
+
+  \subsection{Weight Budget}
+  \label{sub:Weight Budget}
+    \begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|}
+    \hline
+    \rowcolor[HTML]{D9D9D9}
+    \textbf{Item/Material}                                                        & \textbf{Mass (g)} \\ \hline
+    Gears/sprockets                                                               & 50                \\ \hline
+    Nuts and Bolts                                                                & 30                \\ \hline
+    Legs (Perspex and Wood)                                                       & 100               \\ \hline
+    Pins                                                                          & 20                \\ \hline
+    Rubber Feet                                                                   & 10                \\ \hline
+    \begin{tabular}[c]{@{}c@{}}Body/Casing \\ (Perspex and Wood)\end{tabular}     & 135               \\ \hline
+    \begin{tabular}[c]{@{}c@{}}PCB (including components\\ and wire)\end{tabular} & 175               \\ \hline
+    Battery                                                                       & 20                \\ \hline
+    \rowcolor[HTML]{D9FFA4}
+    \multicolumn{1}{|r|}{\cellcolor[HTML]{D9FFA4}\textbf{TOTAL}}                  & 510               \\ \hline
+    \end{tabular}
+
+    \label{tab:weightBudget1}
+    \caption{Table showing a budget of the weight of the robot by individual components/materials}
+    \end{table}
+
+%----------------------------------------------------------------------------------------
+% SPRINTER MECHANICAL DESIGN
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Sprinter Mechanical Design}
+\label{sec:Sprinter Mechanical Design}
+
+%----------------------------------------------------------------------------------------
+% SPRINTER ELECTRONIC DESIGN
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Sprinter Electronic Design}
+\label{sec:Sprinter Electronic Design}
+
+%----------------------------------------------------------------------------------------
+% SPRINTER CONTROL AND SOFTWARE
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Sprinter Control and Software}
+\label{sec:Sprinter Control and Software}
+
+%----------------------------------------------------------------------------------------
+% SPRINTER BUILD, TESTING AND CALIBRATION
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Sprinter Build, Testing and Calibration}
+\label{sec:Sprinter Build, Testing and Calibration}
+
+%----------------------------------------------------------------------------------------
+% SPRINTER RESULTS AND CONCLUSIONS
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Sprinter Results and Conclusions}
+\label{sec:Sprinter Results and Conclusions}
+
+\end{document}
+
+%----------------------------------------------------------------------------------------
+% INSTRUCTIONS AND TEMPLATE COMPONENTS
+%----------------------------------------------------------------------------------------
+
+% Set space - \vspace{length}
+% Horizontal line - \hrule
+% Pagebreak - \clearpage or \newpage - they seem to do the same thing
+
+% Normal equation:
+% \begin{equation}
+%   p = \frac{p_g - k}{m}
+% \end{equation}
+
+% Aligned equation:
+% \begin{equation}
+%   \begin{split}
+%     \rho_5  & = -\frac{\left(1575-1900\right)}{g\left(105\e{-3}-70\e{-3}\right)}\\
+%             & = 946.56 \text{ kg/m\(^{-3}\)}\\
+%     \rho_6  & = -\frac{\left(1900-2150\right)}{g\left(70\e{-3}-42\e{-3}\right)}\\
+%             & = 910.15 \text{ kg/m\(^{-3}\)}\\
+%   \end{split}
+% \end{equation}
+
+% Table: Can get from the table site!
+% \begin{table}[h]
+% \centering
+% \begin{tabular}{cccc}
+% \multicolumn{4}{c}{\cellcolor[HTML]{EFEFEF}DATA MEASUREMENTS} \\ \hline
+% \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Known Weight \\ Pressure (Psi)\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Known Weight\\ Pressure (Bar)\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Gauge Pressure\\ (Psi)\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Gauge Pressure\\ (Bar)\end{tabular} \\ \hline
+% \multicolumn{1}{c|}{22} & \multicolumn{1}{c|}{1.52} & \multicolumn{1}{c|}{9.43} & 0.65 \\
+% \multicolumn{1}{c|}{\textbf{27}} & \multicolumn{1}{c|}{\textbf{1.86}} & \multicolumn{1}{c|}{\textbf{13.78}} & \textbf{0.95} \\
+% \multicolumn{1}{c|}{32} & \multicolumn{1}{c|}{2.21} & \multicolumn{1}{c|}{17.40} & 1.20 \\
+% \multicolumn{1}{c|}{37} & \multicolumn{1}{c|}{2.55} & \multicolumn{1}{c|}{21.76} & 1.50 \\
+% \multicolumn{1}{c|}{42} & \multicolumn{1}{c|}{2.90} & \multicolumn{1}{c|}{26.11} & 1.80 \\
+% \multicolumn{1}{c|}{47} & \multicolumn{1}{c|}{3.24} & \multicolumn{1}{c|}{29.01} & 2.00 \\
+% \multicolumn{1}{c|}{\textbf{52}} & \multicolumn{1}{c|}{\textbf{3.59}} & \multicolumn{1}{c|}{\textbf{33.36}} & \textbf{2.30} \\
+% \multicolumn{1}{c|}{57} & \multicolumn{1}{c|}{3.93} & \multicolumn{1}{c|}{37.71} & 2.60 \\ \hline
+% \end{tabular}
+% \caption{Dead weight tester and gauge measurements}
+% \label{gaugeMeasurements}
+% \end{table}
+
+% Picture:
+% \begin{figure}[H]
+%   \begin{center}
+%     \includegraphics[width=0.4\columnwidth]{MEC2022SLab1Exp1}
+%     \caption{Apparatus}
+%     \label{liquidDiagram}
+%   \end{center}
+% \end{figure}
+
+% Graph:
+% \begin{figure}[H]
+%   \centering
+%   \begin{tikzpicture}
+%     \begin{axis}[
+%       xlabel=Known Weight (Psi),
+%       ylabel=Reading (Psi),
+%       grid=major]
+%     \addplot[color=red, smooth] coordinates {
+%       (22,9.43)
+%       (27,13.78)
+%     };
+%     \addlegendentry{Gauge}
+
+%     \addplot[color=blue, dashed, smooth] coordinates {
+%       (22,22)
+%       (27,27)
+%     };
+%     \addlegendentry{Known weight}
+
+%     \end{axis}
+%   \end{tikzpicture}
+%   \caption{Dead weight tester and gauge measurements}
+%   \label{gaugePlot}
+% \end{figure}
+
+% Indented Text: (bit of a hacky way to do it)
+% \begin{quote}
+% where \(p_g\) is the gauge reading, \(m\) is the error coefficient, \(p\) is the known (``correct'') pressure and \(k\) is the error constant
+% \end{quote}
+
+% Code Snippet:
+% \begin{minted}{c}
+%   void main(void) {
+%     init_leds();
+%
+%     while (TRUE) {
+%       __asm("nop");
+%     }
+%   }
+% \end{minted}
+
+% Bibliography:
+% \begin{thebibliography}{99}
+%   \bibitem{itemname}
+%   Author,
+%   Date.
+%   \emph{Title}.
+%   Edition.
+%   Press.
+%   \url{http://web.iitd.ac.in/~shouri/eel201/tuts/diode_switch.pdf}
+% \end{thebibliography}
