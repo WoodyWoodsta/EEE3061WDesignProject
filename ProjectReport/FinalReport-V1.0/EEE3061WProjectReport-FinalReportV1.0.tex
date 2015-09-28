@@ -21,7 +21,7 @@
     \includegraphics[width=0.4\columnwidth]{uct-logo}
   \end{center}
 \end{figure}
-\textmd{\Huge UNIVERSITY OF CAPETOWN \\ \LARGE \reportDepartment} \\
+\textmd{\Huge UNIVERSITY OF CAPE TOWN \\ \LARGE \reportDepartment} \\
 \vspace{2in}
 \textmd{\textbf{\LARGE \reportClass \\ \Huge Biathlon Robot \\ \reportTitle \\ \vspace{1.5in} \Large Team 13 \\  WDXSEA003 \textbar\space PRSSAM004 \textbar\space RJDYAR001 \textbar\space STRIBR001}}\\
 }
@@ -39,11 +39,13 @@
 %----------------------------------------------------------------------------------------
 % ABTRACT
 %----------------------------------------------------------------------------------------
-\setcounter{tocdepth}{3}                                                      % ToC Depth
+\setcounter{tocdepth}{2}                                                      % ToC Depth
+\setcounter{secnumdepth}{2}                                     % Section Numbering Depth
 
 \begin{abstract}
   \thispagestyle{empty}
-  This report covers the conceptualization, design and building stages of an autonomous bi-athletic robot for the EEE3061W Mechatronics Design Project 2015.  This robot is to partake in a sprint as well as throw a ping-pong ball after maneuvering with an end-goal intention. % Add some more stuff here
+  This report covers the conceptualization, design and building stages of an autonomous bi-athletic robot for the EEE3061W Mechatronics Design Project 2015.  This robot was to partake in a sprint as well as launch a ping-pong ball after tracking a line and being aware of the end of the course. % TODO Add more here...
+
 \end{abstract}
 
 %----------------------------------------------------------------------------------------
@@ -64,6 +66,18 @@
 \listoftables
 
 \clearpage
+
+%----------------------------------------------------------------------------------------
+% GLOSSARY
+%----------------------------------------------------------------------------------------
+\section*{Glossary}
+\addcontentsline{toc}{section}{Glossary}
+\label{sec:Glossary}
+\vspace{2cm}
+\begin{tabular}{@{}p{6cm}@{\hspace{0.5cm}}p{9cm}@{\vspace{0.5cm}}}
+  \bfseries MEMS & MicroElectroMechanicalSystem \\
+\end{tabular}
+
 
 % ----- Report Layout Plan -----
 % - Abstract
@@ -113,8 +127,8 @@
 %----------------------------------------------------------------------------------------
 % NOMENCLATURE
 %----------------------------------------------------------------------------------------
-
-\section{Nomenclature}
+\section*{Nomenclature}
+\addcontentsline{toc}{section}{Nomenclature}
 \label{sec:Nomenclature}
 
 \textbf{Constants}
@@ -136,7 +150,7 @@
 
   \subsection{Sprinter Introduction}
   \label{sub:Sprinter Introduction}
-    In summary, the sprinting robot was to make use of a digital 3-axis gyroscope in an attempt to sprint 5m as fast as possible within a fixed-width lane (maintain fixed heading).  The robot was also specified to start the sprint when green light from a set of three lights was detected, signaling the beginning of the race. \\
+    In summary, the sprinting robot was to make use of a digital 3-axis gyroscope in an attempt to sprint 5m as fast as possible within a f ixed-width lane (maintain fixed heading).  The robot was also specified to start the sprint when green light from a set of three lights was detected, signaling the beginning of the race. \\
 
     The locomotion design was constrained to the use of legs, making use of a mechanical linkage-type system to convert rotational motion from the provided motors into linear motion to move forward.  Other restrictions included the dimensions of the entire robot and out-of-pocket components budget.
 
@@ -321,6 +335,81 @@
 \clearpage
 \section{Sprinter Electronic Design}
 \label{sec:Sprinter Electronic Design}
+  % Intro
+  The robot was to use its two 6V DC motors for controlled, autonomous, forwards motion in a straight line. Given the project constraints, this was to be achieved using an STM32F051C6 microcontroller and a 3-axis MEMS\footnote{MicroElectroMechanical System} gyroscope, an L3GD20. The robot was to start this motion when a green light is detected positioned behind the robot. A complete electronic system was developed to provide this functionality and implemented as described below.
+
+  \subsection{System Components}
+  \label{sub:System Components}
+    \subsubsection{The STM32F051C6 Microcontroller}
+    \label{subs:The STM32F051C6 Microcontroller}
+      The STM32F051C6 microcontroller is a 32-bit, 48 Mhz entry level microcontroller\textsuperscript{\cite{stm32f051c6Datasheet}} with a host of peripherals for communication and other digital and analog interaction.
+
+      \begin{figure}[H]
+        \begin{center}
+          \includegraphics[width=0.3\columnwidth]{STM32}
+          \caption{The STM32F051C6 product graphic}
+          \label{fig:STM32}
+        \end{center}
+      \end{figure}
+
+      This microcontroller was used to process sensory data including temperature, buttons for user input, light sensor readings and data from the gyroscope and calculate motor speeds to drive the robot forwards on the race track between the outer boundaries. More detail about the software implemented on the microcontroller is provided in Section \ref{sec:Sprinter Control and Software}.
+
+    \subsubsection{The L3GD20 Gyroscope}
+    \label{subs:The L3GD20 Gyroscope}
+      The L3GD20, also manufactured by ST Microelectronics, was implemented using a carrier board\footnote{L3GD20 carrier board - \url{https://www.pololu.com/product/2125}} shown in Figure~\ref{fig:l3gd20Pic1}. The device communicated using SPI and was programmable for different modes of operation, filters, power modes and more.
+
+      \begin{figure}[H]
+        \begin{center}
+          \includegraphics[width=0.35\columnwidth]{l3gd20Pic1}
+          \caption{The L3GD20 3-axis gyroscope and carrier board}
+          \label{fig:l3gd20Pic1}
+        \end{center}
+      \end{figure}
+
+    \subsubsection{L293DNE}
+    \label{subs:L293DNE}
+      The L293DNE is a quadruple half-H motor driver IC\footnote{L293DNE Motor Driver - \url{http://www.ti.com/lit/ds/symlink/l293.pdf}} which was used to drive the two 6V DC motors. Using this IC, it was possible to vary the speed of the motor using a PWM signal and it also provided isolation between the high and low current areas in the system. The drivers had a continuous current output of 600mA and a maximum peak current output of 1.2A across a voltage range of 4.5V to 36V. The PDIP (NE) package used included protection diodes for inductive transient suppression as a result of the inductive loads of the DC motors.
+
+      \begin{figure}[H]
+        \begin{center}
+          \includegraphics[width=0.35\columnwidth]{L293DNEPic1}
+          \caption{The L293DNE Quad half-H Motor Driver IC}
+          \label{fig:L293DNEPic1}
+        \end{center}
+      \end{figure}
+
+
+    \subsection{System Overview}
+    \label{sub:System Overview}
+      The above components, along with other peripheral components, made up the electronic system for the robot. It was decided that the system be divided into two sections, the ``ControllerBoard'' and the ``PowerBoard'', so that the high current circuitry could be safely isolated from the sensitive low current components such as the microcontroller and gyroscope. This is often necessary especially when serial communication lines are present in the system.\\
+
+      Figure~\ref{fig:sprinterElectronicSystemBlockDiagram} below shows a high level block diagram of the electronic system including both the Controller and Power sections.  This was later to be designed and drawn out in Altium Designer for PCB manufacture.
+
+      \begin{figure}[H]
+        \begin{center}
+          \includegraphics[width=0.9\columnwidth]{sprinterElectronicSystemBlockDiagram}
+          \caption{High level block diagram of the sprinter electronic system}
+          \label{fig:sprinterElectronicSystemBlockDiagram}
+        \end{center}
+      \end{figure}
+
+      The system as well as the motors were to run off a 3-cell LiPo\footnote{Lithium Polymer} battery which had to be regulated for most of the system components. The microcontroller required 3.3V as well as L3GD20 and these sources had to be stable for robust operation. The L293DNE required 5V for logic operation as it isolates this functionality from the power throughput to the motors. The LM35 temperature sensor, as in Figure~\ref{fig:sprinterElectronicSystemBlockDiagram} required a 5V source as well. An WS78L05\footnote{5V Linear Volatge Reagulator - \url{http://www.ti.com/lit/ds/symlink/lm78l05.pdf}} was used for regulation from battery voltage to 5V and after that a MCP17023302\footnote{3V3 Linear Voltage Regulator - \url{http://cdn-reichelt.de/documents/datenblatt/A200/MCP1702_MIC.pdf}} was used to bring the 5V down to 3.3V.\\
+
+      The L293DNE motor driver enabled bidirectional motion for both motors using each of its four half-H-bridges. Each of these had a signal pin, a power output pin and a ground pin. The signal pin was connected to one of the STM32F0's PWM output pin for speed variation. Each pair of half-H-bridges were enabled and disabled using the EN pin, of which the IC has two, using a GPIO digital output pin on the microcontroller. A small ceramic capacitor was placed across each of the motors (not shown in the schamtics further on) to further minimise the effects of the inductive load.\\
+
+      The microcontroller was supplied with the required 3.3V at all of its four supply pins with decoupling at the 3V3 regulator as well as at each 3V3 pin. It was required that the microcontroller operate at its full CPU clock speed of 48MHz and so an 8MHz crystal oscillator was connected to the oscillator pins on the microcontroller which it then scaled up to the maximum speed in an internal phase lock loop.\\
+
+      The L3GD20 makes use of an SPI serial connection involving CLK (clock source), SDA (master out, slave in), SDO (master in, slave out) and GND lines with the microcontroller acting as the master device and the gyroscope as the slave. Through testing, the gyro showed evidence of thermal drift and other inaccuracies and for that reason, an LM35\footnote{Precision Centigrade Thermal Sensor - \url{http://www.ti.com/lit/ds/symlink/lm35.pdf}} was implemented together with one of the microcontroller's ADCs. The LM35 required 5V which was available from the regulator on board.\\
+
+      The light sensor, which was to sense green light only, leveraged the capacitive nature of a green LED which was connected in reverse bias from a microcontroller GPIO pin down to ground. The GPIO pin was configured to output 3.3V for a short period of time and then switched to a digital input to allow build up of charge in the LED to drain through the microcontroller. The time taken for the LED to drain and the voltage to drop below the digital input low threshold was timed internally. The greater the amount of green light which was incident on the LED, the less capacitive the LED in reverse bias was, and hence the quicker it took to discharge. This process is detailed in <>.\\
+      % TODO Add in the link here.
+
+      Three pushbuttons and two LEDs were added to the system to allow for user input and some program indication as well as another LED for power indication.
+
+
+  % System design and circuit schematics
+
+  % PCB design and manufacture
 
 %----------------------------------------------------------------------------------------
 % SPRINTER CONTROL AND SOFTWARE
@@ -328,6 +417,11 @@
 \clearpage
 \section{Sprinter Control and Software}
 \label{sec:Sprinter Control and Software}
+  \subsection{Control Principles}
+  \label{sub:Control Principles}
+  \subsection{Software Structure}
+  \label{sub:Software Structure}
+
 
 %----------------------------------------------------------------------------------------
 % SPRINTER BUILD, TESTING AND CALIBRATION
@@ -343,8 +437,108 @@
 \section{Sprinter Results and Conclusions}
 \label{sec:Sprinter Results and Conclusions}
 
-\end{document}
 
+%========================================================================================
+%----------------------------------------------------------------------------------------
+% LAUNCHER DESIGN CONCEPTS
+%----------------------------------------------------------------------------------------
+\clearpage
+\part{Launcher}
+\label{part:launcher}
+
+\section{Launcher Design Concepts}
+\label{sec:Launcher Design Concepts}
+  \subsection{Design Concept 1}
+  \label{sub:Design Concept 1}
+
+  \subsection{Design Concept 2}
+  \label{sub:Design Concept 2}
+
+  \subsection{Design Concept 3}
+  \label{sub:Design Concept 3}
+
+%----------------------------------------------------------------------------------------
+% LAUNCHER FINAL CONCEPT
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Launcher Final Concept}
+\label{sec:Launcher Final Concept}
+
+%----------------------------------------------------------------------------------------
+% LAUNCHER PRELIMINARY CALCULATIONS
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Launcher Preliminary Calculations}
+\label{sec:Launcher Preliminary Calculations}
+
+%----------------------------------------------------------------------------------------
+% LAUNCHER MECHANICAL DESIGN
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Launcher Mechanical Design}
+\label{sec:Launcher Mechanical Design}
+
+%----------------------------------------------------------------------------------------
+% LAUNCHER ELECTRONIC DESIGN
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Launcher Electronic Design}
+\label{sec:Launcher Electronic Design}
+  \subsection{Core Electronics}
+  \label{sub:Core Electronics}
+  \subsection{Peripheral Electronics}
+  \label{sub:Peripheral Electronics}
+
+
+%----------------------------------------------------------------------------------------
+% LAUNCHER CONTROL AND SOFTWARE
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Launcher Control and Software}
+\label{sec:Launcher Control and Software}
+  \subsection{Control Principles}
+  \label{sub:Control Principles}
+  \subsection{Software Structure}
+  \label{sub:Software Structure}
+
+
+%----------------------------------------------------------------------------------------
+% LAUNCHER BUILD, TESTING AND CALIBRATION
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Launcher Build, Testing and Calibration}
+\label{sec:Launcher Build, Testing and Calibration}
+
+%----------------------------------------------------------------------------------------
+% LAUNCHER RESULTS AND CONCLUSIONS
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Launcher Results and Conclusions}
+\label{sec:Launcher Results and Conclusions}
+
+%----------------------------------------------------------------------------------------
+% FINAL CONCLUSION
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Final Conclusion}
+\label{sec:Final Conclusion}
+
+%----------------------------------------------------------------------------------------
+% BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+\clearpage
+\printbibliography
+
+
+%----------------------------------------------------------------------------------------
+% APPENDICES
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{APPENDIX}
+\label{sec:APPENDIX}
+
+
+\end{document}
 %----------------------------------------------------------------------------------------
 % INSTRUCTIONS AND TEMPLATE COMPONENTS
 %----------------------------------------------------------------------------------------
