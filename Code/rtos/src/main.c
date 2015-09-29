@@ -108,6 +108,7 @@ int main(void) {
   globalFlags.motorData.leftMotorDir = MTR_DIR_DISABLED;
   globalFlags.motorData.leftMotorSpeed = 0;
   globalFlags.motorData.rightMotorSpeed = 0;
+  globalFlags.motorData.controlState = MTR_CTRL_BANG_BANG;
 
   globalFlags.lineSensorData.linePos = LINE_POS_CENTER; // Initial condition is for the robot to be centered
   globalFlags.states.lightSensorState = LIGHT_STATE_OFF;

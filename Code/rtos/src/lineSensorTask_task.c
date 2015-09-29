@@ -32,7 +32,7 @@ void StartLineSensorTask(void const * argument) {
 
   // Do the light sensor calibration
   sendCommand(msgQUserIO, MSG_SRC_LINE_SENSOR_TASK, MSG_CMD_LED_BLINK_SLOW, osWaitForever);
-  int i = 0;
+  uint32_t i = 0;
   for (i = 0; i < LIGHT_CAL_ITERATIONS; i++) {
     globalFlags.lineSensorData.lightSensorThreshold += checkLightSensor()/(LIGHT_CAL_ITERATIONS);
   }
@@ -44,8 +44,9 @@ void StartLineSensorTask(void const * argument) {
 
   // Calculate the threshold with the preset division
   globalFlags.lineSensorData.lightSensorThreshold = globalFlags.lineSensorData.lightSensorThreshold/LIGHT_THRESHOLD_DIV;
+
   // Start the timer to record the capacitive discharge
-  HAL_TIM_Base_Start(&htim6); // TODO Don't think I need that anymore
+  HAL_TIM_Base_Start(&htim6); // TODO Check to see if I need this
 
   // Put the motors into standby
   osSignalSet(motorTaskHandle, MTR_SIG_STANDBY);

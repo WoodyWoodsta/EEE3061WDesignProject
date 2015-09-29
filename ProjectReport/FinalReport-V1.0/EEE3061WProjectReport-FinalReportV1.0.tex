@@ -379,37 +379,73 @@
       \end{figure}
 
 
-    \subsection{System Overview}
-    \label{sub:System Overview}
-      The above components, along with other peripheral components, made up the electronic system for the robot. It was decided that the system be divided into two sections, the ``ControllerBoard'' and the ``PowerBoard'', so that the high current circuitry could be safely isolated from the sensitive low current components such as the microcontroller and gyroscope. This is often necessary especially when serial communication lines are present in the system.\\
+  \subsection{System Overview}
+  \label{sub:System Overview}
+    The above components, along with other peripheral components, made up the electronic system for the robot. It was decided that the system be divided into two sections, the ``ControllerBoard'' and the ``PowerBoard'', so that the high current circuitry could be safely isolated from the sensitive low current components such as the microcontroller and gyroscope. This is often necessary especially when serial communication lines are present in the system.\\
 
-      Figure~\ref{fig:sprinterElectronicSystemBlockDiagram} below shows a high level block diagram of the electronic system including both the Controller and Power sections.  This was later to be designed and drawn out in Altium Designer for PCB manufacture.
+    Figure~\ref{fig:sprinterElectronicSystemBlockDiagram} below shows a high level block diagram of the electronic system including both the Controller and Power sections.  This was later to be designed and drawn out in Altium Designer for PCB manufacture.
 
-      \begin{figure}[H]
-        \begin{center}
-          \includegraphics[width=0.9\columnwidth]{sprinterElectronicSystemBlockDiagram}
-          \caption{High level block diagram of the sprinter electronic system}
-          \label{fig:sprinterElectronicSystemBlockDiagram}
-        \end{center}
-      \end{figure}
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.9\columnwidth]{sprinterElectronicSystemBlockDiagram}
+        \caption{High level block diagram of the sprinter electronic system}
+        \label{fig:sprinterElectronicSystemBlockDiagram}
+      \end{center}
+    \end{figure}
 
-      The system as well as the motors were to run off a 3-cell LiPo\footnote{Lithium Polymer} battery which had to be regulated for most of the system components. The microcontroller required 3.3V as well as L3GD20 and these sources had to be stable for robust operation. The L293DNE required 5V for logic operation as it isolates this functionality from the power throughput to the motors. The LM35 temperature sensor, as in Figure~\ref{fig:sprinterElectronicSystemBlockDiagram} required a 5V source as well. An WS78L05\footnote{5V Linear Volatge Reagulator - \url{http://www.ti.com/lit/ds/symlink/lm78l05.pdf}} was used for regulation from battery voltage to 5V and after that a MCP17023302\footnote{3V3 Linear Voltage Regulator - \url{http://cdn-reichelt.de/documents/datenblatt/A200/MCP1702_MIC.pdf}} was used to bring the 5V down to 3.3V.\\
+    The system as well as the motors were to run off a 3-cell LiPo\footnote{Lithium Polymer} battery which had to be regulated for most of the system components. The microcontroller required 3.3V as well as L3GD20 and these sources had to be stable for robust operation. The L293DNE required 5V for logic operation as it isolates this functionality from the power throughput to the motors. The LM35 temperature sensor, as in Figure~\ref{fig:sprinterElectronicSystemBlockDiagram} required a 5V source as well. An WS78L05\footnote{5V Linear Volatge Reagulator - \url{http://www.ti.com/lit/ds/symlink/lm78l05.pdf}} was used for regulation from battery voltage to 5V and after that a MCP17023302\footnote{3V3 Linear Voltage Regulator - \url{http://cdn-reichelt.de/documents/datenblatt/A200/MCP1702_MIC.pdf}} was used to bring the 5V down to 3.3V.\\
 
-      The L293DNE motor driver enabled bidirectional motion for both motors using each of its four half-H-bridges. Each of these had a signal pin, a power output pin and a ground pin. The signal pin was connected to one of the STM32F0's PWM output pin for speed variation. Each pair of half-H-bridges were enabled and disabled using the EN pin, of which the IC has two, using a GPIO digital output pin on the microcontroller. A small ceramic capacitor was placed across each of the motors (not shown in the schamtics further on) to further minimise the effects of the inductive load.\\
+    The L293DNE motor driver enabled bidirectional motion for both motors using each of its four half-H-bridges. Each of these had a signal pin, a power output pin and a ground pin. The signal pin was connected to one of the STM32F0's PWM output pin for speed variation. Each pair of half-H-bridges were enabled and disabled using the EN pin, of which the IC has two, using a GPIO digital output pin on the microcontroller. A small ceramic capacitor was placed across each of the motors (not shown in the schamtics further on) to further minimise the effects of the inductive load.\\
 
-      The microcontroller was supplied with the required 3.3V at all of its four supply pins with decoupling at the 3V3 regulator as well as at each 3V3 pin. It was required that the microcontroller operate at its full CPU clock speed of 48MHz and so an 8MHz crystal oscillator was connected to the oscillator pins on the microcontroller which it then scaled up to the maximum speed in an internal phase lock loop.\\
+    The microcontroller was supplied with the required 3.3V at all of its four supply pins with decoupling at the 3V3 regulator as well as at each 3V3 pin. It was required that the microcontroller operate at its full CPU clock speed of 48MHz and so an 8MHz crystal oscillator was connected to the oscillator pins on the microcontroller which it then scaled up to the maximum speed in an internal phase lock loop.\\
 
-      The L3GD20 makes use of an SPI serial connection involving CLK (clock source), SDA (master out, slave in), SDO (master in, slave out) and GND lines with the microcontroller acting as the master device and the gyroscope as the slave. Through testing, the gyro showed evidence of thermal drift and other inaccuracies and for that reason, an LM35\footnote{Precision Centigrade Thermal Sensor - \url{http://www.ti.com/lit/ds/symlink/lm35.pdf}} was implemented together with one of the microcontroller's ADCs. The LM35 required 5V which was available from the regulator on board.\\
+    The L3GD20 makes use of an SPI serial connection involving CLK (clock source), SDA (master out, slave in), SDO (master in, slave out) and GND lines with the microcontroller acting as the master device and the gyroscope as the slave. Through testing, the gyro showed evidence of thermal drift and other inaccuracies and for that reason, an LM35\footnote{Precision Centigrade Thermal Sensor - \url{http://www.ti.com/lit/ds/symlink/lm35.pdf}} was implemented together with one of the microcontroller's ADCs. The LM35 required 5V which was available from the regulator on board.\\
 
-      The light sensor, which was to sense green light only, leveraged the capacitive nature of a green LED which was connected in reverse bias from a microcontroller GPIO pin down to ground. The GPIO pin was configured to output 3.3V for a short period of time and then switched to a digital input to allow build up of charge in the LED to drain through the microcontroller. The time taken for the LED to drain and the voltage to drop below the digital input low threshold was timed internally. The greater the amount of green light which was incident on the LED, the less capacitive the LED in reverse bias was, and hence the quicker it took to discharge. This process is detailed in <>.\\
-      % TODO Add in the link here.
+    The light sensor, which was to sense green light only, leveraged the capacitive nature of a green LED which was connected in reverse bias from a microcontroller GPIO pin down to ground. The GPIO pin was configured to output 3.3V for a short period of time and then switched to a digital input to allow build up of charge in the LED to drain through the microcontroller. The time taken for the LED to drain and the voltage to drop below the digital input low threshold was timed internally. The greater the amount of green light which was incident on the LED, the less capacitive the LED in reverse bias was, and hence the quicker it took to discharge. This process is detailed in <>.\\
+    % TODO Add in the link here.
 
-      Three pushbuttons and two LEDs were added to the system to allow for user input and some program indication as well as another LED for power indication.
+    Three pushbuttons and two LEDs were added to the system to allow for user input and some program indication as well as another LED for power indication.\\
 
+    Two USB Type-B ports were included as optional extras. One of the ports was used for debugging via the ST-Link V2 on chip debugger board, and the other used for serial communication between the microcontroller and a PC. The serial connection was made via a USB-UART converter, the MCP2200\footnote{USB 2.0 to UART Protocol Converter - \url{http://ww1.microchip.com/downloads/en/DeviceDoc/22228B.pdf}} which was connected to two of the USART pins on the microcontroller.
 
   % System design and circuit schematics
+  \subsection{System Design}
+  \label{sub:System Design}
+    The schematics for the system concept in Figure~\ref{fig:sprinterElectronicSystemBlockDiagram} were then drawn in Altium Designer. This included both the PowerBoard and the ControllerBoard with the required headers and connectors for interaction and for the debugger and MCP2200 board. Figure~\ref{fig:ControllerBoardSchematic} and Figure~\ref{fig:PowerBoardSchematic} below show the schematic of both of the boards in the system.
+
+    \begin{figure}[H]
+      \begin{center}
+        \makebox[\textwidth][c]{\includegraphics[width=1.5\textwidth, angle=90]{ControllerBoardSchematic}}
+        \caption{Schematic of the ControllerBoard}
+        \label{fig:ControllerBoardSchematic}
+      \end{center}
+    \end{figure}
+
+    \begin{figure}[H]
+      \begin{center}
+        \makebox[\textwidth][c]{\includegraphics[width=1.5\textwidth, angle=90]{PowerBoardSchematic}}
+        \caption{Schematic of the PowerBoard}
+        \label{fig:PowerBoardSchematic}
+      \end{center}
+    \end{figure}
+
+    In Figure~\ref{fig:ControllerBoardSchematic}, P1 allows the user to select which source of power to use (either 5V supply from a USB connection or battery supply). If the battery supply is chosen, the WS708L05 (U5) will regulate the supply to 5V which will then be regulated further by U2. When USB power is being used, the external connection is completely isolated.\\
+
+    Headers were included for connectivity between this board and the PowerBoard via P8, the L3GD20 via P5, the MCP2200 via P2 and the green light sensing LED via P6. P3 and P4 female headers served as a breakout of all the microcontroller pins in case an extra component or extra functionality was needed.\\
+
+    R2 is a 10K pull-down resistor to keep the BOOT0 pin low for normal microcontroller operation. S2 shorts the reset pin (NRST) to ground in case the microcontroller needs to be reset.\\
+
+    In Figure~\ref{fig:PowerBoardSchematic}, the opposite end of the connection between the two boards is P1 with P5 being an XT60 connector for the battery, P4 being a power connection for the ControllerBoard and P2 and P3 connectors for the two motors.
 
   % PCB design and manufacture
+  \subsection{PCB Design and Manufacture}
+  \label{sub:PCB Design and Manufacture}
+    It was decided that the circuits be implemented on printed circuit boards for a more professional finish. Veroboard was not used due to the complexity of the system as well as robustness requirements and space constraints. Altium Designer was used for the PCD layout process and components were obtained from the Altium community vaults. The PCBs were single sided and manufactured using the ``press-n-peel'' method with copper clad board, press-n-peel laser printer paper and etching acid. The PCB copper layout (shown below) was output from Altium in pdf format and printed onto the press-n-peel paper. The paper was then placed on the clean copper clad board and heated for a short period using an iron. The paper was then lifted and the inked areas were left on the board. The board was then placed in the etching fluid and all excess copper was removed, leaving only the tracks. The holes were drilled by hand using a drill press and the components soldered to the board. Lacquer spray was used to insulate the bottom (solder-side) of the PCB and to prevent corrosion.\\
+
+    The PCB layout of the ControllerBoard is shown in <> an of the PowerBoard below that in <>.
+
+
+
 
 %----------------------------------------------------------------------------------------
 % SPRINTER CONTROL AND SOFTWARE

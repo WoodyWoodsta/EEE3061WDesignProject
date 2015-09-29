@@ -76,6 +76,13 @@ typedef enum {
   MTR_STATE_RUNNING
 } motorState_t;
 
+// Control methods
+typedef enum {
+  MTR_CTRL_BANG_BANG,
+  MTR_CTRL_BANG_BANG_SMOOTH,
+  MTR_CTRL_SMOOTH
+} motorControlState_t;
+
 // H-Bridge states
 typedef enum {
   HB_STATE_DISABLED,
@@ -118,6 +125,7 @@ typedef struct {
   motorDir_t rightMotorDir;
   float leftMotorSpeed;
   float rightMotorSpeed;
+  motorControlState_t controlState;
   hBridgeState_t hBridgeState;
 } motorData_struct;
 
