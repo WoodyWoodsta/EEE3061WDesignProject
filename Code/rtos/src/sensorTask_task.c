@@ -1,7 +1,7 @@
 /**
  * ============================================================================
- * File Name          : lineSensorTask_task.c
- * Description        : lineSensorTask Body
+ * File Name          : sensorTask_task.c
+ * Description        : sensorTask Body
  * Author             : Sean Wood
  * ============================================================================
  */
@@ -24,10 +24,10 @@ static void checkStartLight(void);
 // == Function Definitions ==
 
 /**
- * @brief lineSensorTask
+ * @brief sensorTask
  * @param argument
  */
-void StartLineSensorTask(void const * argument) {
+void StartSensorTask(void const * argument) {
   msg_genericMessage_t rxMessage;
 
   // Do the light sensor calibration
@@ -37,6 +37,7 @@ void StartLineSensorTask(void const * argument) {
     globalFlags.lineSensorData.lightSensorThreshold += checkLightSensor()/(LIGHT_CAL_ITERATIONS);
   }
 
+  // TODO Handle buzzer in the IO task
   HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
   osDelay(100);
   HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
@@ -53,12 +54,12 @@ void StartLineSensorTask(void const * argument) {
 
   /* Infinite loop */
   for (;;) {
-    globalFlags.generalData.lineSensorTaskStackHWM = uxTaskGetStackHighWaterMark(lineSensorTaskHandle);
+    globalFlags.generalData.lineSensorTaskStackHWM = uxTaskGetStackHighWaterMark(sensorTaskHandle);
     // TODO Switch signal receiving to a proper handler function!
     // Wait for the signal - if the light or line sensor is on, don't wait, just check
     osEvent signalEvent = osSignalWait(0, (globalFlags.states.lineSensorState == LNS_STATE_OFF
                                            && globalFlags.states.lightSensorState == LIGHT_STATE_OFF)
-                                           ? (1000) : (LNS_UPDATE_PERIOD));
+                                           ? (1000) : (LNS_UPDATE_PERIOD)); // TODO Double check the working of this timeout
 
     if (signalEvent.status == osEventSignal) {
       // Decode the signal and act on it
@@ -87,16 +88,16 @@ static void interpretSignal(osEvent *signalEvent) {
     globalFlags.states.lineSensorState = LNS_STATE_ON;
     break;
   case LINE_SIG_STOP:
-    // This must only be fired if the motors are actually running
-    if (globalFlags.states.motorState == MTR_STATE_RUNNING) {
-      globalFlags.states.lineSensorState = LNS_STATE_OFF;
-    }
+    // Disable the line sensor
+    globalFlags.states.lineSensorState = LNS_STATE_OFF;
     break;
   case LIGHT_SIG_START:
-    globalFlags.states.lightSensorState = LNS_STATE_ON;
+    // Enable the light sensor
+    globalFlags.states.lightSensorState = LIGHT_STATE_ON;
     break;
   case LIGHT_SIG_STOP:
-    globalFlags.states.lightSensorState = LNS_STATE_OFF;
+    // Disable the light sensor
+    globalFlags.states.lightSensorState = LIGHT_STATE_OFF;
     break;
   default:
     break;
@@ -141,6 +142,7 @@ static void updateLinePos(void) {
     break;
   }
 
+  // Update the flags
   globalFlags.lineSensorData.linePos = newLinePos;
 }
 
@@ -150,11 +152,13 @@ static void updateLinePos(void) {
  */
 static uint32_t checkLightSensor(void) {
   volatile uint32_t lightSensorDischarge = 0;
+
   // Start the charge-up (should have been set last time the function was called)
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);
   osDelay(200);
 
-  osThreadSetPriority(lineSensorTaskHandle, osPriorityAboveNormal);
+  // Make sure the thread priority is highest so nothing interrupts the sensitive timing
+  osThreadSetPriority(sensorTaskHandle, osPriorityAboveNormal);
 
   __HAL_TIM_SET_COUNTER(&htim6, 0); // Reset the timer
   GPIOB->MODER &= ~GPIO_MODER_MODER2; // Switch it to an input
@@ -163,9 +167,11 @@ static uint32_t checkLightSensor(void) {
   while ((GPIOB->IDR) & (1 << 2)) {
     __asm("nop");
   }
+
   lightSensorDischarge = __HAL_TIM_GET_COUNTER(&htim6); // Get the discharge time
 
-  osThreadSetPriority(lineSensorTaskHandle, osPriorityNormal);
+  // Restore priority
+  osThreadSetPriority(sensorTaskHandle, osPriorityNormal);
 
   GPIOB->MODER |= GPIO_MODER_MODER2_0; // Switch it to an output
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);
@@ -180,11 +186,9 @@ static uint32_t checkLightSensor(void) {
 static void checkStartLight(void) {
   // Wait for the light sensor to detect the green light
   volatile uint32_t lightReading = 0xFFFFFFFF;
-//  while(1) {
-//    lightReading = checkLightSensor();
-//  }
 
   while(!(lightReading <= globalFlags.lineSensorData.lightSensorThreshold)) {
+    // If something else starts the motors, stop this process and return
     if (globalFlags.states.motorState == MTR_STATE_RUNNING) {
       globalFlags.states.lightSensorState = LIGHT_STATE_OFF;
       return;
@@ -197,6 +201,7 @@ static void checkStartLight(void) {
   osSignalSet(motorTaskHandle, MTR_SIG_START_TRACKING);
 
   sendCommand(msgQUserIO, MSG_SRC_LINE_SENSOR_TASK, MSG_CMD_LED_BLINK_SUPERFAST, osWaitForever);
+  // TODO Handle the buzzer in the IO task
   HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
   osDelay(500);
   sendCommand(msgQUserIO, MSG_SRC_LINE_SENSOR_TASK, MSG_CMD_LED_OFF, osWaitForever);

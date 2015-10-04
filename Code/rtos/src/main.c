@@ -113,16 +113,6 @@ int main(void) {
   globalFlags.lineSensorData.linePos = LINE_POS_CENTER; // Initial condition is for the robot to be centered
   globalFlags.states.lightSensorState = LIGHT_STATE_OFF;
 
-
-
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
-
   /* Create the timer(s) */
   /* Definition and creation of ledTimer */
   osTimerDef(ledTimer, ledTimerCallback);
@@ -145,8 +135,8 @@ int main(void) {
   osThreadDef(motorTask, StartMotorTask, osPriorityNormal, 0, 64);
   motorTaskHandle = osThreadCreate(osThread(motorTask), NULL);
 
-  osThreadDef(lineSensorTask, StartLineSensorTask, osPriorityNormal, 0, 64);
-  lineSensorTaskHandle = osThreadCreate(osThread(lineSensorTask), NULL);
+  osThreadDef(sensorTask, StartSensorTask, osPriorityNormal, 0, 64);
+  sensorTaskHandle = osThreadCreate(osThread(sensorTask), NULL);
 
   osThreadDef(userIOTask, StartUserIOTask, osPriorityNormal, 0, 128);
   userIOTaskHandle = osThreadCreate(osThread(userIOTask), NULL);

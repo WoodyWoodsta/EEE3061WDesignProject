@@ -338,8 +338,8 @@
   % Intro
   The robot was to use its two 6V DC motors for controlled, autonomous, forwards motion in a straight line. Given the project constraints, this was to be achieved using an STM32F051C6 microcontroller and a 3-axis MEMS\footnote{MicroElectroMechanical System} gyroscope, an L3GD20. The robot was to start this motion when a green light is detected positioned behind the robot. A complete electronic system was developed to provide this functionality and implemented as described below.
 
-  \subsection{System Components}
-  \label{sub:System Components}
+  \subsection{Primary System Components}
+  \label{sub:Primary System Components}
     \subsubsection{The STM32F051C6 Microcontroller}
     \label{subs:The STM32F051C6 Microcontroller}
       The STM32F051C6 microcontroller is a 32-bit, 48 Mhz entry level microcontroller\textsuperscript{\cite{stm32f051c6Datasheet}} with a host of peripherals for communication and other digital and analog interaction.
@@ -442,19 +442,98 @@
   \label{sub:PCB Design and Manufacture}
     It was decided that the circuits be implemented on printed circuit boards for a more professional finish. Veroboard was not used due to the complexity of the system as well as robustness requirements and space constraints. Altium Designer was used for the PCD layout process and components were obtained from the Altium community vaults. The PCBs were single sided and manufactured using the ``press-n-peel'' method with copper clad board, press-n-peel laser printer paper and etching acid. The PCB copper layout (shown below) was output from Altium in pdf format and printed onto the press-n-peel paper. The paper was then placed on the clean copper clad board and heated for a short period using an iron. The paper was then lifted and the inked areas were left on the board. The board was then placed in the etching fluid and all excess copper was removed, leaving only the tracks. The holes were drilled by hand using a drill press and the components soldered to the board. Lacquer spray was used to insulate the bottom (solder-side) of the PCB and to prevent corrosion.\\
 
-    The PCB layout of the ControllerBoard is shown in <> an of the PowerBoard below that in <>.
+    The PCB layout of the ControllerBoard is shown in Figure~\ref{fig:ControllerBoardPCB} and of the PowerBoard below that in Figure~\ref{fig:PowerBoardPCBRev1}.
 
+    \begin{figure}[H]
+      \begin{center}
+        \makebox[\textwidth][c]{\includegraphics[width=1.5\textwidth]{ControllerBoardPCB}}
+        \caption{PCB layout output of the ControllerBoard}
+        \label{fig:ControllerBoardPCB}
+      \end{center}
+    \end{figure}
 
+    \begin{figure}[H]
+      \begin{center}
+        \makebox[\textwidth][c]{\includegraphics[width=1\textwidth]{PowerBoardPCBRev1}}
+        \caption{PCB layout output of the PowerBoard}
+        \label{fig:PowerBoardPCBRev1}
+      \end{center}
+    \end{figure}
 
+    Since the boards were only single-sided, the top layer tracks (red) signify jumper wires that were needed due to the complexity of the board and the track width constraints for press-n-peel manufacture.\\
 
+    Once completed, the PCBs were successful and minimal alterations were needed.
 %----------------------------------------------------------------------------------------
 % SPRINTER CONTROL AND SOFTWARE
 %----------------------------------------------------------------------------------------
 \clearpage
 \section{Sprinter Control and Software}
 \label{sec:Sprinter Control and Software}
-  \subsection{Control Principles}
-  \label{sub:Control Principles}
+  The software system for the microcontroller on the ControllerBoard was written in C. The hardware abstraction that was used was the Standard Peripheral Library written by the ST MCD Development Team and the development environment included Eclipse Luna together with the GNU ARM Eclipse Plugin\footnote{GNU ARM Eclipse Plugin - \url{http://gnuarmeclipse.github.io/}} and the GNU ARM Embedded Toolchain. The system ran in a single threaded mode of operation with a main ``super-loop'' which made calls to various libraries written specifically for the system. The libraries were split up by peripheral and below is a list and description of the functioning of these peripherals with their associated libraries. The code can be found in the github repository at \url{https://github.com/WoodyWoodsta/EEE3061WDesignProject/tree/master/Code/single-thread}\footnote{Made public only after the project was completed.}
+
+  \begin{itemize}
+    \item \textbf{ADC Temperature Sensor Library} (\texttt{adcTempSense\_lib.c})\\
+    The ADC Temperature Sensor Library initialised and made use of the ADC on the STM32F00 to capture analog data from the LM35 thermal sensor. The LM35, as discussed, measured the temperature to allow the microcontroller to compensate for the drift in the L3GD20 readings as a result of temperature fluctuations. The ADC was configured in 12 bit, right-aligned, continuous mode and mapped to the DMA controller to create a circular peripheral to memory DMA so that memory handling was not required. The ADC was also calibrated with each call to the library initialisation for accurate referencing.\\
+
+    The library provided the ability to collect and convert the ADC readings, at any particular moment, to milli-degrees Celsius by taking an average of 20 consecutive ADC readings.
+
+    \item \textbf{LED Library} (\texttt{ledGPIOB\_lib.c})\\
+    The LED Library simply provided initialisation and control of the two LEDs present on the board, as well as extra strips of blue LEDs for aesthetics which were varied in brightness using PWM from one of the timers on the microcontroller.
+
+    \item \textbf{LED Light Sensor Library} (\texttt{ledLightSensor\_lib.c})\\
+    The LED Light Sensor Library used the reverse bias LED, as described earlier, to capacitively sense for green light. The library initialised the pin for the LED as a general purpose output pin and configured a basic timer so that it operated at a very high frequency used to time how long the LED took to discharge. The sensing sequence is shown below in Figure~\ref{fig:lightSenseFlowDiagram}.
+
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.6\columnwidth]{lightSenseFlowDiagram}
+        \caption{Flow diagram showing the light sensing sequence}
+        \label{fig:lightSenseFlowDiagram}
+      \end{center}
+    \end{figure}
+
+    \item \textbf{Pushbutton Library} (\texttt{pbGPIOA\_lib.c})\\
+    The Pushbutton Library initialised two pins to be inputs, which were connected to two pushbuttons to ground. This required internal pullup resistors. The pushbuttons did not need to be used very often (in fact, the second push button was not even implemented) and so no external line interrupts were configured for these.
+
+    \item \textbf{Motor Library} (\texttt{pwmMotor\_lib.c})\\
+    The Motor Library handled the PWM outputs to the L293DNE motor driver IC on the PowerBoard which drove the motors and varying speeds. The library initialised four PWM outputs (one for each motor and direction), as well as two general purpose output pins for enabling each pair of outputs on the motor driver.\\
+
+    The library provided the ability to set the speed and direction of each of the motors and do so in a gradual manner for large speed changes, so as to not kick the motors too hard and possibly damage the gearbox.
+
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.7\columnwidth]{motorSpeedFlowDiagram}
+        \caption{Flow diagram showing the motor speed changing sequence}
+        \label{fig:motorSpeedFlowDiagram}
+      \end{center}
+    \end{figure}
+
+    \item \textbf{Gyro Library} (\texttt{spiGyro\_lib.c})\\
+    The Gyro library interfaced with the l3GD20 digital gyroscope to measure angular velocity. The communication protocol that the gyro required was SPI, as mentioned earlier, and so the library initialised one of the SPI controllers on the STM32F0. The connection was configured as in two line, full duplex, 8 bit mode with the first bit being the most significant bit, to satisfy the requirements of the gyro device. The CS (chip select) pin was simply a digital output. A timer was also configured for integrating the velocity output of the gyro to acquire angular position.\\
+
+    On a frame level, the protocol of sending data to the gyroscope involved concatenating the address of the destination register on the L3GD20 with the data to be set at that address in one packet. The library function \texttt{gyr\_writeSPIgyro()} did this and sent the data using an HAL 16 bit SPI send method. After a small delay, the expected data was received and returned.\\
+
+    The library provided the ability to start the gyro with a calibration sequence included. Calibration of the gyro was needed since the device showed slight inaccuracies with varying temperatures. The library offered three types of calibrations to be performed, a full calibration, an interval calibration and a zero calibration. When the gyro was started up, a ``full calibration'' was performed where the degrees per second per bit was calculated using the nominal value take from the resolution (250 dps, 500 dps or 2000 dps) and offset by the rated error given the temperature at that moment take from the device datasheet. Then the bias was found by taking a predetermined number of readings and averaging those. This required the device to remain stationary. The running angles were then set to zero. After a set period, the gyro was calibrated using the library's ``interval calibration'' which simply updated the degrees per second per bit based on anew temperature reading. An attempt was made to update the bias during this calculation as well but this proved to be error-prone and thus removed. When required, the gyro running angles could be set to zero using the ``zero calibration''.\\
+
+    The angle was calculated by multiplying the gyro reading (angluar velocity) by the time since the last update to the angle was made which was taken from a hardware timer on the microcontroller, and adding this to the running angle (Euler integration). Provided the time difference between running this procedure was small, this provided accurate results.
+
+    \item \textbf{Serial Library} (\texttt{serialTerminal\_lib.c})\\
+    The Serial Library initialised the USART peripheral on the microcontroller to be used with the MCP2200 to provide serial communication between it and a PC. The library also implemented a custom definition of \texttt{printf()} which made it easy to quickly send formatted strings out via the port. The library was adapted from James Gowan's serial library for the same IC found in this repo: \url{https://github.com/jgowans/stm32f0_devel/tree/master/jgowans-sample-projects/usart}.\\
+
+    The serial communication was mainly used for easy debugging, since the semihosting trace facilities that the ST-Link V2 offered were very slow and not ideal. Some telemetry was also pushed to Matlab and plotted on graphs for visual feedback, specifically the gyro outputs.
+  \end{itemize}
+
+  \subsection{Control Principle}
+  \label{sub:Control Principle}
+    The robot, with the aid of the L3GD20, was to maintain a fixed heading whilst running as fast as possible towards the finish line. A PID controller loop was implemented to achieve this and involved differentiating and integrating the difference between the heading measured at the start and the current heading (the error). These two values were then multiplied by their specific gains, added to the error itself, multiplied by its gain, and then subtracted from the maximum speed of the appropriate motor. The diagram below (<>) shows this loop.
+
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.7\columnwidth]{gyroControlLoopDiagram}
+        \caption{Flow diagram showing the PID control loop}
+        \label{fig:gyroControlLoopDiagram}
+      \end{center}
+    \end{figure}
+
   \subsection{Software Structure}
   \label{sub:Software Structure}
 

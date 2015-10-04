@@ -1,12 +1,12 @@
 /**
-  * ============================================================================
-  * File Name          : USARTInTask_task.c
-  * Description        : USARTInTask Body
-  * Author             : Sean Wood
-  * ============================================================================
-  */
+ * ============================================================================
+ * File Name          : USARTInTask_task.c
+ * Description        : USARTInTask Body
+ * Author             : Sean Wood
+ * ============================================================================
+ */
 
-  // == Includes ==
+// == Includes ==
 #include "userTasks_task.h"
 
 // == Private Function Declarations ==
@@ -16,9 +16,9 @@ static void fetchString(msg_stringMessage_t *pMessage);
 
 // == Function Definitions ==
 /**
-* @brief USARTInTask
-* @param argument
-*/
+ * @brief USARTInTask
+ * @param argument
+ */
 void StartUSARTInTask(void const * argument) {
   globalFlags.generalData.USARTInTaskStackHWM = uxTaskGetStackHighWaterMark(USARTInTaskHandle);
 
@@ -40,17 +40,19 @@ void StartUSARTInTask(void const * argument) {
 }
 
 /**
-* @brief Interpret a string received from the USB USART peripheral
-* @param *pStringMessageIn: Pointer to a generic message struct to interpret
-*/
+ * @brief Interpret a string received from the USB USART peripheral
+ * @param *pStringMessageIn: Pointer to a generic message struct to interpret
+ */
 static void interpretUSBString(msg_stringMessage_t *pStringMessageIn) {
   // If we are in manual mode, direct string to the Wifi module
   if (globalFlags.states.commState == COMM_STATE_MANUAL) {
-    if (strncmp(rxString_commStateAuto, pStringMessageIn->pString, pStringMessageIn->stringLength) == 0) {
+    if (strncmp(rxString_commStateAuto, pStringMessageIn->pString, pStringMessageIn->stringLength)
+        == 0) {
       globalFlags.states.commState = COMM_STATE_AUTO;
       cHAL_USART_sTransmit_IT(&huart1, txString_commStateAuto, strlen(txString_commStateAuto), 0);
     } else {
-      HAL_StatusTypeDef status = cHAL_USART_sTransmit_IT(&huart2, pStringMessageIn->pString, pStringMessageIn->stringLength, 1);
+      HAL_StatusTypeDef status =
+          cHAL_USART_sTransmit_IT(&huart2, pStringMessageIn->pString, pStringMessageIn->stringLength, 1);
 
       // If we run into issues, get rid of the string
       if (status != osOK) {
@@ -58,16 +60,21 @@ static void interpretUSBString(msg_stringMessage_t *pStringMessageIn) {
       }
     }
   } else if (globalFlags.states.commState == COMM_STATE_AUTO) {
-    if (strncmp(rxString_commStateManual, pStringMessageIn->pString, pStringMessageIn->stringLength) == 0) {
+    if (strncmp(rxString_commStateManual, pStringMessageIn->pString, pStringMessageIn->stringLength)
+        == 0) {
       globalFlags.states.commState = COMM_STATE_MANUAL;
       cHAL_USART_sTransmit_IT(&huart1, txString_commStateManual, strlen(txString_commStateManual), 0);
-    } else if (strncmp(rxString_ATCommandTest, pStringMessageIn->pString, pStringMessageIn->stringLength) == 0) {
+    } else if (strncmp(rxString_ATCommandTest, pStringMessageIn->pString, pStringMessageIn->stringLength)
+        == 0) {
       sendCommand(msgQBoss, MSG_SRC_USART_IN_TASK, MSG_CMD_WIFI_TEST_AT, osWaitForever);
-    } else if (strncmp(rxString_wifiInit, pStringMessageIn->pString, pStringMessageIn->stringLength) == 0) {
+    } else if (strncmp(rxString_wifiInit, pStringMessageIn->pString, pStringMessageIn->stringLength)
+        == 0) {
       sendCommand(msgQBoss, MSG_SRC_USART_IN_TASK, MSG_CMD_WIFI_INIT, osWaitForever);
-    } else if (strncmp(rxString_wifiConnectAp, pStringMessageIn->pString, pStringMessageIn->stringLength) == 0) {
+    } else if (strncmp(rxString_wifiConnectAp, pStringMessageIn->pString, pStringMessageIn->stringLength)
+        == 0) {
       sendCommand(msgQBoss, MSG_SRC_USART_IN_TASK, MSG_CMD_WIFI_CONNECT_AP, osWaitForever);
-    } else if (strncmp(rxString_wifiStartServer, pStringMessageIn->pString, pStringMessageIn->stringLength) == 0) {
+    } else if (strncmp(rxString_wifiStartServer, pStringMessageIn->pString, pStringMessageIn->stringLength)
+        == 0) {
       sendCommand(msgQBoss, MSG_SRC_USART_IN_TASK, MSG_CMD_WIFI_RX_START_SERVER, osWaitForever);
     }
 
@@ -76,13 +83,14 @@ static void interpretUSBString(msg_stringMessage_t *pStringMessageIn) {
 }
 
 /**
-* @brief Interpret a string received from the Wifi module
-* @param *pStringMessageIn: Pointer to a generic message struct to interpret
-*/
+ * @brief Interpret a string received from the Wifi module
+ * @param *pStringMessageIn: Pointer to a generic message struct to interpret
+ */
 static void interpretWifiString(msg_stringMessage_t *pStringMessageIn) {
   // If we are in manual mode, direct string to the USB module
   if (globalFlags.states.commState == COMM_STATE_MANUAL) {
-    HAL_StatusTypeDef status = cHAL_USART_sTransmit_IT(&huart1, pStringMessageIn->pString, pStringMessageIn->stringLength, 1);
+    HAL_StatusTypeDef status =
+        cHAL_USART_sTransmit_IT(&huart1, pStringMessageIn->pString, pStringMessageIn->stringLength, 1);
 
     // If we run into issues, get rid of the string
     if (status != osOK) {
@@ -92,17 +100,27 @@ static void interpretWifiString(msg_stringMessage_t *pStringMessageIn) {
     if (strncmp(rxString_OK, pStringMessageIn->pString, pStringMessageIn->stringLength) == 0) {
       sendCommand(msgQBoss, MSG_SRC_USART_IN_TASK, MSG_CMD_WIFI_RX_OK, osWaitForever);
 
-    } else if (strncmp(rxString_noChange, pStringMessageIn->pString, pStringMessageIn->stringLength) == 0) {
+    } else if (strncmp(rxString_noChange, pStringMessageIn->pString, pStringMessageIn->stringLength)
+        == 0) {
       sendCommand(msgQBoss, MSG_SRC_USART_IN_TASK, MSG_CMD_WIFI_RX_NO_CHANGE, osWaitForever);
 
-    } else if (strncmp(rxString_error, pStringMessageIn->pString, pStringMessageIn->stringLength) == 0) {
+    } else if (strncmp(rxString_error, pStringMessageIn->pString, pStringMessageIn->stringLength)
+        == 0) {
       sendCommand(msgQBoss, MSG_SRC_USART_IN_TASK, MSG_CMD_WIFI_RX_ERROR, osWaitForever);
 
-    } else if (strncmp(rxString_noSuchFunction, pStringMessageIn->pString, pStringMessageIn->stringLength) == 0) {
+    } else if (strncmp(rxString_noSuchFunction, pStringMessageIn->pString, pStringMessageIn->stringLength)
+        == 0) {
       sendCommand(msgQBoss, MSG_SRC_USART_IN_TASK, MSG_CMD_WIFI_RX_NO_FUNCTION, osWaitForever);
 
-    } else if (strncmp(rxString_fail, pStringMessageIn->pString, pStringMessageIn->stringLength) == 0) {
+    } else if (strncmp(rxString_fail, pStringMessageIn->pString, pStringMessageIn->stringLength)
+        == 0) {
       sendCommand(msgQBoss, MSG_SRC_USART_IN_TASK, MSG_CMD_WIFI_RX_FAIL, osWaitForever);
+    } else if (strncmp(rxString_link, pStringMessageIn->pString, pStringMessageIn->stringLength)
+        == 0) {
+      globalFlags.states.connectState = CONN_CONNECTED;
+    } else if (strncmp(rxString_unlink, pStringMessageIn->pString, pStringMessageIn->stringLength)
+        == 0) {
+      globalFlags.states.connectState = CONN_DISCONNECTED;
     }
 
     vPortFree(pStringMessageIn->pString);
@@ -110,9 +128,9 @@ static void interpretWifiString(msg_stringMessage_t *pStringMessageIn) {
 }
 
 /**
-* @brief Fetch a string message from the USARTIn Queue
-* @param *messagePtr: Pointer to a generic message struct copy into
-*/
+ * @brief Fetch a string message from the USARTIn Queue
+ * @param *messagePtr: Pointer to a generic message struct copy into
+ */
 static void fetchString(msg_stringMessage_t *pMessage) {
   osEvent messageEvent;
   msg_stringMessage_t *pRxMessage;

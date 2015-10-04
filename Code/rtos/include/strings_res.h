@@ -43,5 +43,7 @@ extern const uint8_t rxString_noSuchFunction[];
 extern const uint8_t rxString_noChange[];
 extern const uint8_t rxString_fail[];
 extern const uint8_t rxString_receiveDataCommand[];
+extern const uint8_t rxString_link[];
+extern const uint8_t rxString_unlink[];
 
 

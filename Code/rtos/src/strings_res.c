@@ -47,3 +47,5 @@ const uint8_t rxString_noSuchFunction[] = "no this fun\r\n";
 const uint8_t rxString_noChange[] = "no change\r\n";
 const uint8_t rxString_fail[] = "FAIL\r\n";
 const uint8_t rxString_receiveIPDCommand[] = "+IPD,0,1"; // This will be used for all "byte encoded" external commands
+const uint8_t rxString_link[] = "Link\r\n";
+const uint8_t rxString_unlink[] = "Unlink\r\n";

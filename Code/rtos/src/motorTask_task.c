@@ -26,7 +26,7 @@
 #define AUTO_SPEED                    ((float)100) // Percentage PWM to apply to motors when in auto drive mode
 #define MIN_TRACKING_SPEED            ((float)0) // Minimum speed a motor can reach during tracking
 #define SETTLE_SPEED                  ((float)0.25) // Amount to decrease the cumulative error when line is in center
-#define MAX_ERROR_COUNT               100000 // Maximum accumlution
+#define MAX_ERROR_COUNT               100000 // Maximum accumulation
 
 // == Private Function Declarations ==
 static void interpretSignal(osEvent *signalEvent);
@@ -58,6 +58,14 @@ void StartMotorTask(void const * argument) {
   /* Infinite loop */
   for (;;) {
     globalFlags.generalData.motorTaskStackHWM = uxTaskGetStackHighWaterMark(motorTaskHandle);
+
+    // Wait for the signal forever, unless the motors are running
+    osEvent signalEvent = osSignalWait(0,
+        (globalFlags.states.motorState != MTR_STATE_RUNNING) ? (osWaitForever) : 0);
+
+    if (signalEvent.status == osEventSignal) {
+      interpretSignal(&signalEvent);
+    }
 
     // If we are tracking the line
     if ((globalFlags.states.lineSensorState == LNS_STATE_ON)
@@ -166,18 +174,12 @@ void StartMotorTask(void const * argument) {
           // Set the new speed of the motors, taking into account the minimum allowable speed
           setMotors(globalFlags.motorData.leftMotorSpeed,
               (newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed));
-          }
+        }
         break;
       }
       default:
         break;
       }
-    }
-
-    osEvent signalEvent = osSignalWait(0, 0);
-
-    if (signalEvent.status == osEventSignal) {
-      interpretSignal(&signalEvent);
     }
 
     osDelay(MTR_UPDATE_PERIOD);
@@ -215,7 +217,7 @@ static void interpretSignal(osEvent *signalEvent) {
 
     // Send a signal to the line sensor task to enable sensing
     if (globalFlags.states.lineSensorState != LNS_STATE_ON) {
-      osSignalSet(lineSensorTaskHandle, LINE_SIG_START);
+      osSignalSet(sensorTaskHandle, LINE_SIG_START);
       osDelay(100);
       globalFlags.states.lightSensorState = LIGHT_STATE_ON;
     }
@@ -240,7 +242,7 @@ static void interpretSignal(osEvent *signalEvent) {
       disableMotors();
 
       // Send a signal to the line sensor task to disable sensing
-      osSignalSet(lineSensorTaskHandle, LINE_SIG_STOP);
+      osSignalSet(sensorTaskHandle, LINE_SIG_STOP);
 
       // Update states
       globalFlags.states.motorState = MTR_STATE_OFF;
@@ -412,37 +414,19 @@ static void setMotors(float leftSpeed, float rightSpeed) {
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_12, GPIO_PIN_SET);
   }
 
-  // While the speeds still need to be changed
-//  while ((!leftSpeedChangeCmplt) || (!rightSpeedChangeCmplt)) {
-//    // Check if the speed needs to be changed
-//    if (leftSpeedCurrent != leftSpeed) {
   // Check which PWM needs to be changed based on direction
   if (leftDirCurrent == MTR_DIR_FWD) {
     setLF(leftSpeed);
   } else {
     setLR(-leftSpeed);
   }
-//    } else {
-//      // Update when finished
-//      leftSpeedChangeCmplt = TRUE;
-//    }
 
-  // Check if the speed needs to be changed
-//    if (rightSpeedCurrent != rightSpeed) {
-//      // Check which PWM needs to be changed based on direction
+  // Check which PWM needs to be changed based on direction
   if (rightDirCurrent == MTR_DIR_FWD) {
     setRF(rightSpeed);
   } else {
     setRR(-rightSpeed);
   }
-//    } else {
-//      // Update when finished
-//      rightSpeedChangeCmplt = TRUE;
-//    }
-
-  // Delay to allow a gradual change in speed
-//    osDelay(MTR_SPEED_REACTION_PERIOD);
-//  }
 
   // Update data
   globalFlags.motorData.leftMotorSpeed = leftSpeed;

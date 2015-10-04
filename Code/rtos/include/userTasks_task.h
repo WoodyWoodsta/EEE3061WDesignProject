@@ -60,6 +60,12 @@ typedef enum {
   COMM_STATE_MANUAL
 } commState_t;
 
+// The state of the remote (android app)
+typedef enum {
+  CONN_DISCONNECTED,
+  CONN_CONNECTED
+} connectState_t;
+
 // State of the indicator LED
 typedef enum {
   LED_STATE_OFF,
@@ -175,6 +181,7 @@ typedef struct {
 typedef struct {
   commState_t commState;
   genericStates_t wifiState; // Task level peripheral state flag (for task level locking)
+  connectState_t connectState;
   motorState_t motorState;
   lineSensorState_t lineSensorState;
   lightSensorState_t lightSensorState;
@@ -195,7 +202,7 @@ extern osThreadId bossTaskHandle;
 extern osThreadId USARTInTaskHandle;
 extern osThreadId USARTOutTaskHandle;
 extern osThreadId motorTaskHandle;
-extern osThreadId lineSensorTaskHandle;
+extern osThreadId sensorTaskHandle;
 extern osThreadId userIOTaskHandle;
 
 extern osTimerId ledTimerHandle;
@@ -222,7 +229,7 @@ void StartUSARTInTask(void const * argument);
 void StartUSARTInBufferTask(void const * argument);
 void StartUSARTOutTask(void const * argument);
 void StartMotorTask(void const * argument);
-void StartLineSensorTask(void const * argument);
+void StartSensorTask(void const * argument);
 void StartUserIOTask(void const * argument);
 
 void ledTimerCallback(void const * argument);

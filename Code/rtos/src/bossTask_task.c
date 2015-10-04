@@ -28,6 +28,9 @@ void StartBossTask(void const * argument) {
 
   msg_genericMessage_t rxMessage;
 
+  // Kick off an init
+  sendCommand(msgQBoss, MSG_SRC_BOSS_TASK, MSG_CMD_WIFI_INIT, 0);
+
   // If in AUTO mode, set off a WIFI startup
 //  if (globalFlags.states.commState == COMM_STATE_AUTO) {
 //    sendCommand(msgQBoss, MSG_SRC_BOSS_TASK, MSG_CMD_WIFI_INIT,
@@ -284,6 +287,9 @@ procStatus_t proc_wifiInit(msgCommand_t rxCommand) {
         step = 0;
         globalFlags.procedures.wifiProcedures = WIFI_PROC_NONE;
         globalFlags.states.wifiState = GEN_STATE_READY;
+
+        // Kick off the next procedure
+        sendCommand(msgQBoss, MSG_SRC_BOSS_TASK, MSG_CMD_WIFI_RX_START_SERVER, osWaitForever);
         return PROC_STATUS_COMPLETED;
       } else {
         step = 5;
@@ -396,23 +402,33 @@ static procStatus_t proc_wifiStartServer(msgCommand_t rxCommand) {
       break;
     case 1:
       if (rxCommand == MSG_CMD_WIFI_RX_OK) {
+        sendCommand(msgQUSARTOut, MSG_SRC_BOSS_TASK, MSG_CMD_WIFI_TX_CIPMUX_1,
+        osWaitForever);
+
+        // Setup re-entry details
+        step = 2;
+        finished = 1;
+      } else {
+        step = 4;
+      }
+      break;
+    case 2:
+      if (rxCommand == MSG_CMD_WIFI_RX_OK) {
         // Send command to send command to start server
         sendCommand(msgQUSARTOut, MSG_SRC_BOSS_TASK,
             MSG_CMD_WIFI_TX_START_SERVER,
             osWaitForever);
 
-        step = 2;
+        step = 3;
         finished = 1;
       } else {
-        step = 3;
+        step = 4;
       }
 
       break;
-    case 2:
+    case 3:
       if (rxCommand == MSG_CMD_WIFI_RX_OK
           || rxCommand == MSG_CMD_WIFI_RX_NO_CHANGE) {
-        cHAL_USART_sTransmit_IT(&huart1, txString_wifiServerStarted,
-            strlen(txString_wifiServerStarted), 0);
 
         step = 0;
       }
@@ -421,7 +437,7 @@ static procStatus_t proc_wifiStartServer(msgCommand_t rxCommand) {
       globalFlags.states.wifiState = GEN_STATE_READY;
       return PROC_STATUS_COMPLETED;
       break;
-    case 3:
+    case 4:
       globalFlags.procedures.wifiProcedures = WIFI_PROC_NONE;
       globalFlags.states.wifiState = GEN_STATE_READY;
       return PROC_STATUS_ERROR;
