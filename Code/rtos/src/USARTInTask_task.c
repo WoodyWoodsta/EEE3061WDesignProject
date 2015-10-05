@@ -121,6 +121,16 @@ static void interpretWifiString(msg_stringMessage_t *pStringMessageIn) {
     } else if (strncmp(rxString_unlink, pStringMessageIn->pString, pStringMessageIn->stringLength)
         == 0) {
       globalFlags.states.connectState = CONN_DISCONNECTED;
+    } else if (strncmp(rxString_receiveDataCommand, pStringMessageIn->pString, strlen(rxString_receiveDataCommand))
+        == 0) {
+      uint16_t pos = 0;
+      while ((pStringMessageIn->pString[pos++] != ':') && (pStringMessageIn->stringLength != pos));
+
+      if (strncmp(rxString_WFR, pStringMessageIn->pString+pos, strlen(rxString_WFR)) == 0) {
+        HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
+        osDelay(100);
+        HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
+      }
     }
 
     vPortFree(pStringMessageIn->pString);
