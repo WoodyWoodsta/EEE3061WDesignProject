@@ -30,15 +30,23 @@
 
 // == Private Function Declarations ==
 static void interpretSignal(osEvent *signalEvent);
+static void controlMotors(void);
 static void stopMotors(void);
 static void disableMotors(void);
 static void enableMotors(void);
 static void setMotors(float leftSpeed, float rightSpeed);
 
+static void disableLauncher(void);
+static void enableLauncher(void);
+static void launch(void);
+static void terminateLaunch(void);
+
 static void setLF(float speed);
 static void setLR(float speed);
 static void setRF(float speed);
 static void setRR(float speed);
+static void setLaunchF(float speed);
+static void setLaunchR(float speed);
 
 // == Function Definitions ==
 
@@ -52,7 +60,6 @@ void StartMotorTask(void const * argument) {
   globalFlags.motorData.leftMotorSpeed = 0;
   globalFlags.motorData.rightMotorSpeed = 0;
 
-  float errorCount = 0; // How many times have we updated the speed but have not achieved line tracking
   disableMotors();
 
   /* Infinite loop */
@@ -61,7 +68,7 @@ void StartMotorTask(void const * argument) {
 
     // Wait for the signal forever, unless the motors are running
     osEvent signalEvent = osSignalWait(0,
-        (globalFlags.states.motorState != MTR_STATE_RUNNING) ? (osWaitForever) : 0);
+        ((globalFlags.states.motorState != MTR_STATE_RUNNING) && (globalFlags.states.launcherState == LNCH_STATE_OFF)) ? (osWaitForever) : 0);
 
     if (signalEvent.status == osEventSignal) {
       interpretSignal(&signalEvent);
@@ -70,119 +77,125 @@ void StartMotorTask(void const * argument) {
     // If we are tracking the line
     if ((globalFlags.states.lineSensorState == LNS_STATE_ON)
         && globalFlags.states.motorState == MTR_STATE_RUNNING) {
-      // Grab the current line position as picked up by the sensors
-      linePos_t linePositionCurrent = globalFlags.lineSensorData.linePos;
-
-      // Limit the accumulation
-      if (errorCount < 80) {
-        errorCount += 0.1;
-      }
-
-      // CONTROL SEQUENCE
-      switch (linePositionCurrent) {
-      case LINE_POS_LEFT: {
-        // If control is BANG BANG, LEFT position should not do anything
-        if (globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG) {
-          setMotors(AUTO_SPEED + LEFT_TRIM, AUTO_SPEED + RIGHT_TRIM);
-        } else if (globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG_SMOOTH) {
-          // Else, if in BANG BANG SMOOTH mode, reduce the speed by a set step
-          setMotors(AUTO_SPEED + LEFT_TRIM - REDUCTION_STEP,
-          AUTO_SPEED + RIGHT_TRIM);
-        } else if (globalFlags.motorData.controlState == MTR_CTRL_SMOOTH) {
-          // Else, if in SMOOTH control, do the calcs
-
-          // Adjust the error counter
-          // If it is not zero, decrease until zero is reached
-          if (errorCount > 0) {
-            errorCount -= SETTLE_SPEED;
-          }
-
-          // Calculate the adjustment
-          float newSpeed = globalFlags.motorData.leftMotorSpeed - (errorCount * TRACKING_GAIN);
-
-          // Set the new speed of the motors, taking into account the minimum allowable speed
-          setMotors((newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed), globalFlags.motorData.rightMotorSpeed);
-        }
-        break;
-      }
-      case LINE_POS_RIGHT: {
-        // If control is BANG BANG, LEFT position should not do anything
-        if (globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG) {
-          setMotors(AUTO_SPEED + LEFT_TRIM, AUTO_SPEED + RIGHT_TRIM);
-        } else if (globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG_SMOOTH) {
-          // Else, if in BANG BANG SMOOTH mode, reduce the speed by a set step
-          setMotors(AUTO_SPEED + LEFT_TRIM,
-          AUTO_SPEED + RIGHT_TRIM - REDUCTION_STEP);
-        } else if (globalFlags.motorData.controlState == MTR_CTRL_SMOOTH) {
-          // Else, if in SMOOTH control, do the calcs
-
-          // Adjust the error counter
-          // If it is not zero, decrease until zero is reached
-          if (errorCount > 0) {
-            errorCount -= SETTLE_SPEED;
-          }
-
-          // Calculate the adjustment
-          float newSpeed = globalFlags.motorData.rightMotorSpeed - (errorCount * TRACKING_GAIN);
-
-          // Set the new speed of the motors, taking into account the minimum allowable speed
-          setMotors(globalFlags.motorData.leftMotorSpeed,
-              (newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed));
-        }
-        break;
-      }
-      case LINE_POS_CENTER:
-        // If the line is tracked, set the speed of the motors to the set speed
-        setMotors(AUTO_SPEED + LEFT_TRIM, AUTO_SPEED + RIGHT_TRIM);
-
-        // Check for the SMOOTH control state
-        if (globalFlags.motorData.controlState == MTR_CTRL_SMOOTH) {
-          // Adjust the error counter
-          // If it is not zero, decrease until zero is reached
-          if (errorCount > 0) {
-            errorCount -= SETTLE_SPEED;
-          }
-        }
-        break;
-      case LINE_POS_LEFTLEFT: {
-        // If control is BANG BANG or BANG BANG SMOOTH, kill the left motor
-        if (globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG
-            || globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG_SMOOTH) {
-          setMotors(0, AUTO_SPEED + RIGHT_TRIM);
-        } else if (globalFlags.motorData.controlState == MTR_CTRL_SMOOTH) {
-          // Else, if in SMOOTH control, do the calcs
-
-          // Calculate the adjustment
-          float newSpeed = globalFlags.motorData.leftMotorSpeed - (errorCount * TRACKING_GAIN * 2);
-
-          // Set the new speed of the motors, taking into account the minimum allowable speed
-          setMotors((newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed), globalFlags.motorData.rightMotorSpeed);
-        }
-        break;
-      }
-      case LINE_POS_RIGHTRIGHT: {
-        // If control is BANG BANG or BANG BANG SMOOTH, kill the right motor
-        if (globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG
-            || globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG_SMOOTH) {
-          setMotors(AUTO_SPEED + LEFT_TRIM, 0);
-        } else if (globalFlags.motorData.controlState == MTR_CTRL_SMOOTH) {
-          // Else, if in SMOOTH control, do the calcs
-
-          // Calculate the adjustment
-          float newSpeed = globalFlags.motorData.rightMotorSpeed - (errorCount * TRACKING_GAIN * 2);
-
-          // Set the new speed of the motors, taking into account the minimum allowable speed
-          setMotors(globalFlags.motorData.leftMotorSpeed,
-              (newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed));
-        }
-        break;
-      }
-      default:
-        break;
-      }
+      controlMotors();
     }
 
     osDelay(MTR_UPDATE_PERIOD);
+  }
+}
+
+static void controlMotors(void) {
+  // Grab the current line position as picked up by the sensors
+  linePos_t linePositionCurrent = globalFlags.lineSensorData.linePos;
+  static float errorCount = 0; // How many times have we updated the speed but have not achieved line tracking
+
+
+  // Limit the accumulation
+  if (errorCount < 80) {
+    errorCount += 0.1;
+  }
+
+  // CONTROL SEQUENCE
+  switch (linePositionCurrent) {
+  case LINE_POS_LEFT: {
+    // If control is BANG BANG, LEFT position should not do anything
+    if (globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG) {
+      setMotors(AUTO_SPEED + LEFT_TRIM, AUTO_SPEED + RIGHT_TRIM);
+    } else if (globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG_SMOOTH) {
+      // Else, if in BANG BANG SMOOTH mode, reduce the speed by a set step
+      setMotors(AUTO_SPEED + LEFT_TRIM - REDUCTION_STEP,
+      AUTO_SPEED + RIGHT_TRIM);
+    } else if (globalFlags.motorData.controlState == MTR_CTRL_SMOOTH) {
+      // Else, if in SMOOTH control, do the calcs
+
+      // Adjust the error counter
+      // If it is not zero, decrease until zero is reached
+      if (errorCount > 0) {
+        errorCount -= SETTLE_SPEED;
+      }
+
+      // Calculate the adjustment
+      float newSpeed = globalFlags.motorData.leftMotorSpeed - (errorCount * TRACKING_GAIN);
+
+      // Set the new speed of the motors, taking into account the minimum allowable speed
+      setMotors((newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed), globalFlags.motorData.rightMotorSpeed);
+    }
+    break;
+  }
+  case LINE_POS_RIGHT: {
+    // If control is BANG BANG, LEFT position should not do anything
+    if (globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG) {
+      setMotors(AUTO_SPEED + LEFT_TRIM, AUTO_SPEED + RIGHT_TRIM);
+    } else if (globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG_SMOOTH) {
+      // Else, if in BANG BANG SMOOTH mode, reduce the speed by a set step
+      setMotors(AUTO_SPEED + LEFT_TRIM,
+      AUTO_SPEED + RIGHT_TRIM - REDUCTION_STEP);
+    } else if (globalFlags.motorData.controlState == MTR_CTRL_SMOOTH) {
+      // Else, if in SMOOTH control, do the calcs
+
+      // Adjust the error counter
+      // If it is not zero, decrease until zero is reached
+      if (errorCount > 0) {
+        errorCount -= SETTLE_SPEED;
+      }
+
+      // Calculate the adjustment
+      float newSpeed = globalFlags.motorData.rightMotorSpeed - (errorCount * TRACKING_GAIN);
+
+      // Set the new speed of the motors, taking into account the minimum allowable speed
+      setMotors(globalFlags.motorData.leftMotorSpeed,
+          (newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed));
+    }
+    break;
+  }
+  case LINE_POS_CENTER:
+    // If the line is tracked, set the speed of the motors to the set speed
+    setMotors(AUTO_SPEED + LEFT_TRIM, AUTO_SPEED + RIGHT_TRIM);
+
+    // Check for the SMOOTH control state
+    if (globalFlags.motorData.controlState == MTR_CTRL_SMOOTH) {
+      // Adjust the error counter
+      // If it is not zero, decrease until zero is reached
+      if (errorCount > 0) {
+        errorCount -= SETTLE_SPEED;
+      }
+    }
+    break;
+  case LINE_POS_LEFTLEFT: {
+    // If control is BANG BANG or BANG BANG SMOOTH, kill the left motor
+    if (globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG
+        || globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG_SMOOTH) {
+      setMotors(0, AUTO_SPEED + RIGHT_TRIM);
+    } else if (globalFlags.motorData.controlState == MTR_CTRL_SMOOTH) {
+      // Else, if in SMOOTH control, do the calcs
+
+      // Calculate the adjustment
+      float newSpeed = globalFlags.motorData.leftMotorSpeed - (errorCount * TRACKING_GAIN * 2);
+
+      // Set the new speed of the motors, taking into account the minimum allowable speed
+      setMotors((newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed), globalFlags.motorData.rightMotorSpeed);
+    }
+    break;
+  }
+  case LINE_POS_RIGHTRIGHT: {
+    // If control is BANG BANG or BANG BANG SMOOTH, kill the right motor
+    if (globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG
+        || globalFlags.motorData.controlState == MTR_CTRL_BANG_BANG_SMOOTH) {
+      setMotors(AUTO_SPEED + LEFT_TRIM, 0);
+    } else if (globalFlags.motorData.controlState == MTR_CTRL_SMOOTH) {
+      // Else, if in SMOOTH control, do the calcs
+
+      // Calculate the adjustment
+      float newSpeed = globalFlags.motorData.rightMotorSpeed - (errorCount * TRACKING_GAIN * 2);
+
+      // Set the new speed of the motors, taking into account the minimum allowable speed
+      setMotors(globalFlags.motorData.leftMotorSpeed,
+          (newSpeed < MIN_TRACKING_SPEED) ? (MIN_TRACKING_SPEED) : (newSpeed));
+    }
+    break;
+  }
+  default:
+    break;
   }
 }
 
@@ -232,7 +245,7 @@ static void interpretSignal(osEvent *signalEvent) {
 
     // Do the LED and buzzer
     sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_LED_ON, 0);
-    sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_BUZZER_BURST_TWICE, 0);
+//    sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_BUZZER_BURST_TWICE, 0);
 
     break;
   case MTR_SIG_STOP_TRACKING:
@@ -249,8 +262,40 @@ static void interpretSignal(osEvent *signalEvent) {
 
       // Do the LED and buzzer
       sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_LED_ON, 0);
-      sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_BUZZER_BURST_ONCE, 0);
+//      sendCommand(msgQUserIO, MSG_SRC_USER_IO_TASK, MSG_CMD_BUZZER_BURST_ONCE, 0);
     }
+    break;
+  case MTR_SIG_START_LAUNCHER:
+    // Prep the launcher for launch
+    enableLauncher();
+
+    // Check to see if the ball is in position and launch if it is
+    if (1) { // TODO Add ball sensor support here
+      launch();
+    } else {
+      // Else signal that we are waiting for the ball
+      sendCommand(msgQUserIO, MSG_SRC_MOTOR_TASK, MSG_CMD_LED_BLINK_SLOW, 0);
+
+      // Horrid, just plain horrid
+      HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
+      osDelay(100);
+      HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
+      osDelay(100);
+      HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
+      osDelay(100);
+      HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
+      osDelay(100);
+      HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
+      osDelay(100);
+      HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
+
+      globalFlags.states.launcherState = LNCH_STATE_WAIT_FOR_BALL;
+    }
+
+    break;
+  case MTR_SIG_STOP_LAUNCHER:
+    // Stop the launcher motor
+    terminateLaunch();
     break;
   default:
     break;
@@ -434,6 +479,69 @@ static void setMotors(float leftSpeed, float rightSpeed) {
 }
 
 /**
+ * @brief Disable the launcher completely
+ */
+static void disableLauncher(void) {
+  // Disable the h-bridge enable pin
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
+
+  // Set all PWMs to zero
+  __HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_1, 0);
+  __HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, 0);
+
+  // Stop all PWM outputs
+  HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Stop(&htim15, TIM_CHANNEL_2);
+
+  // Update data
+  globalFlags.motorData.launcherHBridgeState = HB_STATE_DISABLED;
+  globalFlags.states.launcherState = LNCH_STATE_OFF;
+}
+
+
+/**
+ * @brief Enable the launcher and set PWMs to zero
+ */
+static void enableLauncher(void) {
+  // Start the PWM channels
+  HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_2);
+
+  // Set all PWMs to zero
+  __HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_1, 0);
+  __HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, 0);
+
+  // Enable the h-bridge enable pin
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_SET);
+
+  // Update data
+  globalFlags.motorData.launcherHBridgeState = HB_STATE_ENABLED;
+  globalFlags.states.launcherState = LNCH_STATE_OFF; // Technically, the launcher is still off
+}
+
+/**
+ * @brief Launch the ball by starting the launcher motor
+ */
+static void launch(void) {
+  // Start the motor
+  setLaunchF(100);
+
+  // Update the flags
+  globalFlags.states.launcherState = LNCH_STATE_RUNNING;
+}
+
+/**
+ * @brief Stop the launcher by stopping the launcher motor
+ */
+static void terminateLaunch(void) {
+  // Turn off the motor
+  setLaunchF(0);
+
+  // Update the flags
+  globalFlags.states.launcherState = LNCH_STATE_OFF;
+}
+
+/**
  * @brief Set the PWM compare on the LF channel (TIM1 CH4)
  * @param speed: PWM value of the channel
  */
@@ -463,5 +571,21 @@ static void setRF(float speed) {
  */
 static void setRR(float speed) {
   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, (uint16_t )(speed * 10));
+}
+
+/**
+ * @brief Set the PWM compare on the Launcher Forward channel (TIM15 CH1)
+ * @param speed: PWM value of the channel
+ */
+static void setLaunchF(float speed) {
+  __HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_1, (uint16_t )(speed * 10));
+}
+
+/**
+ * @brief Set the PWM compare on the Launcher Revers channel (TIM15 CH2)
+ * @param speed: PWM value of the channel
+ */
+static void setLaunchR(float speed) {
+  __HAL_TIM_SET_COMPARE(&htim15, TIM_CHANNEL_2, (uint16_t )(speed * 10));
 }
 

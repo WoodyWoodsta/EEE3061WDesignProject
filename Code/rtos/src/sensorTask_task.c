@@ -10,6 +10,9 @@
 #include "userTasks_task.h"
 
 // == Defines ==
+#define TRUE                        1
+#define FALSE                       0
+
 #define LNS_UPDATE_PERIOD           5 // Time to wait in between line sensor updates [ms]
 #define LIGHT_CAL_ITERATIONS        10 // Number of readings to take of the light sensor to find the threshold
 #define LIGHT_THRESHOLD_DIV         3 // Divide the ambient light by 1/# to find the threshold
@@ -58,7 +61,8 @@ void StartSensorTask(void const * argument) {
     // TODO Switch signal receiving to a proper handler function!
     // Wait for the signal - if the light or line sensor is on, don't wait, just check
     osEvent signalEvent = osSignalWait(0, (globalFlags.states.lineSensorState == LNS_STATE_OFF
-                                           && globalFlags.states.lightSensorState == LIGHT_STATE_OFF)
+                                           && globalFlags.states.lightSensorState == LIGHT_STATE_OFF
+                                           && globalFlags.states.launcherState == LNCH_STATE_OFF)
                                            ? (1000) : (LNS_UPDATE_PERIOD)); // TODO Double check the working of this timeout
 
     if (signalEvent.status == osEventSignal) {
@@ -72,6 +76,19 @@ void StartSensorTask(void const * argument) {
 
     if (globalFlags.states.lightSensorState == LIGHT_STATE_ON) {
       checkStartLight();
+    }
+
+    // If we are waiting for the ball to leave the robot
+    if (globalFlags.states.launcherState == LNCH_STATE_RUNNING) {
+      if (FALSE) { // TODO Add ball sensor support here
+        osSignalSet(motorTaskHandle, MTR_SIG_STOP_LAUNCHER);
+      }
+    } else if (globalFlags.states.launcherState == LNCH_STATE_WAIT_FOR_BALL) {
+      if (TRUE) { // TODO Add ball sensor support here
+        // Else, if we are waiting for the ball
+        osSignalSet(motorTaskHandle, MTR_SIG_START_LAUNCHER);
+        sendCommand(msgQUserIO, MSG_SRC_MOTOR_TASK, MSG_CMD_LED_OFF, 0);
+      }
     }
   }
 }

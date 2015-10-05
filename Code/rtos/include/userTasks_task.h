@@ -82,6 +82,14 @@ typedef enum {
   MTR_STATE_RUNNING
 } motorState_t;
 
+// States of the launcher controllers (PWMs)
+typedef enum {
+  LNCH_STATE_OFF,
+  LNCH_STATE_WAIT_FOR_BALL,
+  LNCH_STATE_RUNNING,
+  LNCH_STATE_LAUNCHED
+} launcherState_t;
+
 // Control methods
 typedef enum {
   MTR_CTRL_BANG_BANG,
@@ -120,7 +128,9 @@ typedef enum {
 typedef enum {
   MTR_SIG_START_TRACKING = 1,
   MTR_SIG_STANDBY,
-  MTR_SIG_STOP_TRACKING
+  MTR_SIG_STOP_TRACKING,
+  MTR_SIG_START_LAUNCHER,
+  MTR_SIG_STOP_LAUNCHER
 } motorSignals_t;
 
 // Global motor control data
@@ -133,6 +143,7 @@ typedef struct {
   float rightMotorSpeed;
   motorControlState_t controlState;
   hBridgeState_t hBridgeState;
+  hBridgeState_t launcherHBridgeState;
 } motorData_struct;
 
 // == Type Declarations - Other Line Sensor ==
@@ -183,6 +194,7 @@ typedef struct {
   genericStates_t wifiState; // Task level peripheral state flag (for task level locking)
   connectState_t connectState;
   motorState_t motorState;
+  launcherState_t launcherState;
   lineSensorState_t lineSensorState;
   lightSensorState_t lightSensorState;
   ledState_t ledState;

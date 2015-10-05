@@ -28,14 +28,13 @@ void StartBossTask(void const * argument) {
 
   msg_genericMessage_t rxMessage;
 
-  // Kick off an init
-  sendCommand(msgQBoss, MSG_SRC_BOSS_TASK, MSG_CMD_WIFI_INIT, 0);
-
   // If in AUTO mode, set off a WIFI startup
-//  if (globalFlags.states.commState == COMM_STATE_AUTO) {
-//    sendCommand(msgQBoss, MSG_SRC_BOSS_TASK, MSG_CMD_WIFI_INIT,
-//        osWaitForever);
-//  }
+  if (globalFlags.states.commState == COMM_STATE_AUTO) {
+    // Delay in case, on power up, the Wifi has to still boot
+    osDelay(500);
+    sendCommand(msgQBoss, MSG_SRC_BOSS_TASK, MSG_CMD_WIFI_INIT,
+        osWaitForever);
+  }
 
   /* Infinite loop */
   for (;;) {
