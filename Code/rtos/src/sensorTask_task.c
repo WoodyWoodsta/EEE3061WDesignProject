@@ -175,7 +175,8 @@ static uint32_t checkLightSensor(void) {
   osDelay(200);
 
   // Make sure the thread priority is highest so nothing interrupts the sensitive timing
-  osThreadSetPriority(sensorTaskHandle, osPriorityAboveNormal);
+  // Note: disbaled for now, doesn't seem to need this
+//  osThreadSetPriority(sensorTaskHandle, osPriorityAboveNormal);
 
   __HAL_TIM_SET_COUNTER(&htim6, 0); // Reset the timer
   GPIOB->MODER &= ~GPIO_MODER_MODER2; // Switch it to an input
@@ -188,7 +189,7 @@ static uint32_t checkLightSensor(void) {
   lightSensorDischarge = __HAL_TIM_GET_COUNTER(&htim6); // Get the discharge time
 
   // Restore priority
-  osThreadSetPriority(sensorTaskHandle, osPriorityNormal);
+//  osThreadSetPriority(sensorTaskHandle, osPriorityNormal);
 
   GPIOB->MODER |= GPIO_MODER_MODER2_0; // Switch it to an output
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);

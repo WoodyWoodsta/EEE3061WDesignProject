@@ -97,7 +97,34 @@ static void interpretWifiString(msg_stringMessage_t *pStringMessageIn) {
       vPortFree(pStringMessageIn->pString);
     }
   } else if (globalFlags.states.commState == COMM_STATE_AUTO) {
-    if (strncmp(rxString_OK, pStringMessageIn->pString, pStringMessageIn->stringLength) == 0) {
+    if (strncmp(rxString_receiveDataCommand, pStringMessageIn->pString, strlen(rxString_receiveDataCommand))
+        == 0) {
+      uint16_t pos = 0;
+      while ((pStringMessageIn->pString[pos++] != ':') && (pStringMessageIn->stringLength != pos));
+
+      // Check for incoming strings
+      if (strncmp(rxString_WFR, pStringMessageIn->pString+pos, strlen(rxString_WFR)) == 0) {
+        // Start the robot!
+        osSignalSet(motorTaskHandle, MTR_SIG_START_TRACKING);
+        HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
+        osDelay(100);
+        HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
+
+      } else if (strncmp(rxString_WFS, pStringMessageIn->pString+pos, strlen(rxString_WFS)) == 0) {
+        // Stop the robot
+        osSignalSet(motorTaskHandle, MTR_SIG_STOP_TRACKING);
+        HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
+        osDelay(100);
+        HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
+
+      } else if (strncmp(rxString_WFL, pStringMessageIn->pString+pos, strlen(rxString_WFL)) == 0) {
+        // Start the launcher
+        osSignalSet(motorTaskHandle, MTR_SIG_START_LAUNCHER);
+        HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
+        osDelay(100);
+        HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
+      }
+    } else if (strncmp(rxString_OK, pStringMessageIn->pString, pStringMessageIn->stringLength) == 0) {
       sendCommand(msgQBoss, MSG_SRC_USART_IN_TASK, MSG_CMD_WIFI_RX_OK, osWaitForever);
 
     } else if (strncmp(rxString_noChange, pStringMessageIn->pString, pStringMessageIn->stringLength)
@@ -121,16 +148,6 @@ static void interpretWifiString(msg_stringMessage_t *pStringMessageIn) {
     } else if (strncmp(rxString_unlink, pStringMessageIn->pString, pStringMessageIn->stringLength)
         == 0) {
       globalFlags.states.connectState = CONN_DISCONNECTED;
-    } else if (strncmp(rxString_receiveDataCommand, pStringMessageIn->pString, strlen(rxString_receiveDataCommand))
-        == 0) {
-      uint16_t pos = 0;
-      while ((pStringMessageIn->pString[pos++] != ':') && (pStringMessageIn->stringLength != pos));
-
-      if (strncmp(rxString_WFR, pStringMessageIn->pString+pos, strlen(rxString_WFR)) == 0) {
-        HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
-        osDelay(100);
-        HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
-      }
     }
 
     vPortFree(pStringMessageIn->pString);

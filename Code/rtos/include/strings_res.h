@@ -46,4 +46,6 @@ extern const uint8_t rxString_receiveDataCommand[];
 extern const uint8_t rxString_link[];
 extern const uint8_t rxString_unlink[];
 extern const uint8_t rxString_WFR[];
+extern const uint8_t rxString_WFS[];
+extern const uint8_t rxString_WFL[];
 

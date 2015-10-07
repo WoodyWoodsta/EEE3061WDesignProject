@@ -50,3 +50,5 @@ const uint8_t rxString_receiveDataCommand[] = "+IPD,0,"; // This will be used fo
 const uint8_t rxString_link[] = "Link\r\n";
 const uint8_t rxString_unlink[] = "Unlink\r\n";
 const uint8_t rxString_WFR[] = "WF+R";
+const uint8_t rxString_WFS[] = "WF+S";
+const uint8_t rxString_WFL[] = "WF+L";

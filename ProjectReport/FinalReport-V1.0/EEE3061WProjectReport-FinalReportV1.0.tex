@@ -440,7 +440,7 @@
   % PCB design and manufacture
   \subsection{PCB Design and Manufacture}
   \label{sub:PCB Design and Manufacture}
-    It was decided that the circuits be implemented on printed circuit boards for a more professional finish. Veroboard was not used due to the complexity of the system as well as robustness requirements and space constraints. Altium Designer was used for the PCD layout process and components were obtained from the Altium community vaults. The PCBs were single sided and manufactured using the ``press-n-peel'' method with copper clad board, press-n-peel laser printer paper and etching acid. The PCB copper layout (shown below) was output from Altium in pdf format and printed onto the press-n-peel paper. The paper was then placed on the clean copper clad board and heated for a short period using an iron. The paper was then lifted and the inked areas were left on the board. The board was then placed in the etching fluid and all excess copper was removed, leaving only the tracks. The holes were drilled by hand using a drill press and the components soldered to the board. Lacquer spray was used to insulate the bottom (solder-side) of the PCB and to prevent corrosion.\\
+    It was decided that the circuits be implemented on printed circuit boards for a more professional finish. Veroboard was not used due to the complexity of the system as well as robustness requirements and space constraints. Altium Designer was used for the PCB layout process and components were obtained from the Altium community vaults. The PCBs were single sided and manufactured using the ``press-n-peel'' method with copper clad board, press-n-peel laser printer paper and etching acid. The PCB copper layout (shown below) was output from Altium in pdf format and printed onto the press-n-peel paper. The paper was then placed on the clean copper clad board and heated for a short period using an iron. The paper was then lifted and the inked areas were left on the board. The board was then placed in the etching fluid and all excess copper was removed, leaving only the tracks. The holes were drilled by hand using a drill press and the components soldered to the board. Lacquer spray was used to insulate the bottom (solder-side) of the PCB and to prevent corrosion.\\
 
     The PCB layout of the ControllerBoard is shown in Figure~\ref{fig:ControllerBoardPCB} and of the PowerBoard below that in Figure~\ref{fig:PowerBoardPCBRev1}.
 
@@ -524,7 +524,7 @@
 
   \subsection{Control Principle}
   \label{sub:Control Principle}
-    The robot, with the aid of the L3GD20, was to maintain a fixed heading whilst running as fast as possible towards the finish line. A PID controller loop was implemented to achieve this and involved differentiating and integrating the difference between the heading measured at the start and the current heading (the error). These two values were then multiplied by their specific gains, added to the error itself, multiplied by its gain, and then subtracted from the maximum speed of the appropriate motor. The diagram below (<>) shows this loop.
+    The robot, with the aid of the L3GD20, was to maintain a fixed heading whilst running as fast as possible towards the finish line. A PID controller loop was implemented to achieve this and involved differentiating and integrating the difference between the heading measured at the start and the current heading (the error). These two values were then multiplied by their specific gains, added to the error itself, multiplied by its gain, and then subtracted from the maximum speed of the appropriate motor. The diagram below (Figure~\ref{fig:gyroControlLoopDiagram}) shows this loop.
 
     \begin{figure}[H]
       \begin{center}
@@ -534,9 +534,11 @@
       \end{center}
     \end{figure}
 
+    After testing, it was observed that the robot as a system was far too complex (given the time constraints) to properly configure the PI portion of the controller, so these gains were made zero. Just the gain part of the controller sufficed.
+
   \subsection{Software Structure}
   \label{sub:Software Structure}
-
+    The system software was written in C to be loaded and run on the microcontroller. The application was single-threaded and structured in a ``super-loop'' style configuration through all that was required, save for interrupt routines for pushbutton handling. Execution started with initialisations and went on to start the gyro, set up running variables and finally into the loop. The application flow diagram, with function details, can be seen below in <>:
 
 %----------------------------------------------------------------------------------------
 % SPRINTER BUILD, TESTING AND CALIBRATION

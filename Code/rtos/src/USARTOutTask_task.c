@@ -31,22 +31,23 @@ void StartUSARTOutTask(void const * argument) {
     // Wait for messages
     fetchMessage(msgQUSARTOut, &rxMessage, TELEMETRY_PERIOD);
 
-    if (globalFlags.states.connectState == CONN_CONNECTED) {
-      uint8_t telemetryLength = 3;
-      uint8_t telemetryHeaderLength = (((telemetryLength > 9) ? (2) : (1)) + 15)*sizeof(uint8_t);
-      uint8_t telemetryStringLength = (telemetryLength * sizeof(uint8_t)) + sizeof('\0');
-
-      uint8_t *telemetryHeader = pvPortMalloc(telemetryHeaderLength);
-      sprintf(telemetryHeader, "AT+CIPSEND=0,%d\r\n", telemetryLength);
-      cHAL_USART_sTransmit_IT(&huart2, telemetryHeader, telemetryHeaderLength, 1);
-
-      uint8_t *telemetryString = pvPortMalloc(telemetryStringLength);
-      telemetryString[0] = globalFlags.states.lightSensorState;
-      telemetryString[1] = globalFlags.states.lineSensorState;
-      telemetryString[2] = globalFlags.states.motorState;
-
-      cHAL_USART_sTransmit_IT(&huart2, telemetryString, telemetryStringLength, 1);
-    }
+    // For now, we don't want to send the telemetry - just to save time and resources
+//    if (globalFlags.states.connectState == CONN_CONNECTED) {
+//      uint8_t telemetryLength = 3;
+//      uint8_t telemetryHeaderLength = (((telemetryLength > 9) ? (2) : (1)) + 15)*sizeof(uint8_t);
+//      uint8_t telemetryStringLength = (telemetryLength * sizeof(uint8_t)) + sizeof('\0');
+//
+//      uint8_t *telemetryHeader = pvPortMalloc(telemetryHeaderLength);
+//      sprintf(telemetryHeader, "AT+CIPSEND=0,%d\r\n", telemetryLength);
+//      cHAL_USART_sTransmit_IT(&huart2, telemetryHeader, telemetryHeaderLength, 1);
+//
+//      uint8_t *telemetryString = pvPortMalloc(telemetryStringLength);
+//      telemetryString[0] = globalFlags.states.lightSensorState;
+//      telemetryString[1] = globalFlags.states.lineSensorState;
+//      telemetryString[2] = globalFlags.states.motorState;
+//
+//      cHAL_USART_sTransmit_IT(&huart2, telemetryString, telemetryStringLength, 1);
+//    }
 
     // Identify the type of message
     switch (rxMessage.messageType) {
