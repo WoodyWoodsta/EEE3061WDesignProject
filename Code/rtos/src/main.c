@@ -96,6 +96,9 @@ int main(void) {
     j++;
   }
 
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 100);
+
   // Initialise global flags
   globalFlags.states.commState = COMM_STATE_AUTO;
   globalFlags.states.wifiState = GEN_STATE_READY;
@@ -112,6 +115,7 @@ int main(void) {
   globalFlags.states.launcherState = LNCH_STATE_OFF;
 
   globalFlags.lineSensorData.linePos = LINE_POS_CENTER; // Initial condition is for the robot to be centered
+  globalFlags.lineSensorData.prevReedState = REED_DEFAULT;
   globalFlags.states.lightSensorState = LIGHT_STATE_OFF;
 
   /* Create the timer(s) */

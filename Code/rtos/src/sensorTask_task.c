@@ -78,16 +78,24 @@ void StartSensorTask(void const * argument) {
       checkStartLight();
     }
 
-    // If we are waiting for the ball to leave the robot
+    // Check for the end of the launch
     if (globalFlags.states.launcherState == LNCH_STATE_RUNNING) {
-      if (FALSE) { // TODO Add ball sensor support here
-        osSignalSet(motorTaskHandle, MTR_SIG_STOP_LAUNCHER);
-      }
-    } else if (globalFlags.states.launcherState == LNCH_STATE_WAIT_FOR_BALL) {
-      if (TRUE) { // TODO Add ball sensor support here
-        // Else, if we are waiting for the ball
-        osSignalSet(motorTaskHandle, MTR_SIG_START_LAUNCHER);
-        sendCommand(msgQUserIO, MSG_SRC_MOTOR_TASK, MSG_CMD_LED_OFF, 0);
+      // Check for a zero on the reed input
+      if (!HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12)) {
+        if (globalFlags.lineSensorData.prevReedState == REED_DEFAULT) {
+          // Increment the stage
+          globalFlags.lineSensorData.prevReedState = REED_FIRST_STAGE;
+        } else if (globalFlags.lineSensorData.prevReedState == REED_SECOND_STAGE) {
+          // End stage reached, stop the launcher
+          osSignalSet(motorTaskHandle, MTR_SIG_STOP_LAUNCHER);
+          globalFlags.lineSensorData.prevReedState = REED_DEFAULT;
+        }
+      } else if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_12)) {
+        // Else check for a 1 (redundant)
+        if (globalFlags.lineSensorData.prevReedState == REED_FIRST_STAGE) {
+          // Increment the stage
+          globalFlags.lineSensorData.prevReedState = REED_SECOND_STAGE;
+        }
       }
     }
   }

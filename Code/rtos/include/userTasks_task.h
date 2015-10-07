@@ -150,6 +150,13 @@ typedef struct {
 
 // Positions of the line being sensed
 typedef enum {
+  REED_DEFAULT,
+  REED_FIRST_STAGE,
+  REED_SECOND_STAGE
+} reedStatus_t;
+
+// Positions of the line being sensed
+typedef enum {
   LINE_POS_LEFTLEFT,
   LINE_POS_LEFT,
   LINE_POS_CENTER,
@@ -168,6 +175,7 @@ typedef enum {
 // Global line sensor data
 typedef struct {
   linePos_t linePos;
+  reedStatus_t prevReedState; // Used to keep track of the launcher spinner
   uint8_t lightSensorCal; // Used to check if the light sensor has been calibrated
   uint32_t lightSensorThreshold; // The threshold calculated during the calibration
 } lineSensorData_struct;
