@@ -21,7 +21,8 @@
 static void interpretSignal(osEvent *signalEvent);
 static void updateLinePos(void);
 static uint32_t checkLightSensor(void);
-static uint8_t fetchSensors(void);
+static uint8_t fetchLineSensors(void);
+static uint8_t fetchBoxSensor(void);
 static void checkStartLight(void);
 
 // == Function Definitions ==
@@ -134,14 +135,18 @@ static void interpretSignal(osEvent *signalEvent) {
  */
 static void updateLinePos(void) {
   // Read in the sensor data
-  uint8_t sensorReading = fetchSensors();
+  uint8_t lineSensorReading = fetchLineSensors();
+
+  if (globalFlags.states.motorState == MTR_STATE_RUNNING) {
+    globalFlags.lineSensorData.boxPos = fetchBoxSensor(); // Update the box sensor flag
+  }
 
   // Fetch the previous line position from the global flags
   linePos_t previousLinePos = globalFlags.lineSensorData.linePos;
   linePos_t newLinePos = previousLinePos;
 
   // Do the logic!
-  switch (sensorReading) {
+  switch (lineSensorReading) {
   case 0b00: // Left: no line | Right: no line
     if (previousLinePos == LINE_POS_LEFT) {
       // Robot has moved off further towards the left
@@ -240,8 +245,18 @@ static void checkStartLight(void) {
  * @brief Get the reading of the line sensors
  * @retval uint8_t number, MSB being the left sensor and LSB being the right sensor
  */
-static uint8_t fetchSensors(void) {
+static uint8_t fetchLineSensors(void) {
   // Read the sensors
   // LSB is right and MSB is left
   return (uint8_t)(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_4)) | ((HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3)) << 1);
+}
+
+/**
+ * @brief Get the reading of the box sensors
+ * @retval uint8_t number
+ */
+static uint8_t fetchBoxSensor(void) {
+  // Read the sensors
+  // LSB is right and MSB is left
+  return (uint8_t)(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5));
 }

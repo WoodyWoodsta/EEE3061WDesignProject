@@ -35,6 +35,10 @@
 #include "cmsis_os.h"
 #include "userTasks_task.h"
 
+// == Defines ==
+#define TRUE          1
+#define FALSE         0
+
 /* Private variables ---------------------------------------------------------*/
 
 // == Message Pools and Queues ==
@@ -115,6 +119,7 @@ int main(void) {
   globalFlags.states.launcherState = LNCH_STATE_OFF;
 
   globalFlags.lineSensorData.linePos = LINE_POS_CENTER; // Initial condition is for the robot to be centered
+  globalFlags.lineSensorData.boxPos = FALSE;
   globalFlags.lineSensorData.prevReedState = REED_DEFAULT;
   globalFlags.states.lightSensorState = LIGHT_STATE_OFF;
 

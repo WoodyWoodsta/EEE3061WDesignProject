@@ -60,6 +60,8 @@ void StartMotorTask(void const * argument) {
   globalFlags.motorData.leftMotorSpeed = 0;
   globalFlags.motorData.rightMotorSpeed = 0;
 
+  static uint8_t step = 0;
+
   disableMotors();
 
   /* Infinite loop */
@@ -68,7 +70,7 @@ void StartMotorTask(void const * argument) {
 
     // Wait for the signal forever, unless the motors are running
     osEvent signalEvent = osSignalWait(0,
-        ((globalFlags.states.motorState != MTR_STATE_RUNNING) && (globalFlags.states.launcherState == LNCH_STATE_OFF)) ? (osWaitForever) : 0);
+        ((globalFlags.states.motorState != MTR_STATE_RUNNING) && (globalFlags.states.launcherState == LNCH_STATE_OFF)) ? (1000) : 0);
 
     if (signalEvent.status == osEventSignal) {
       interpretSignal(&signalEvent);
@@ -78,6 +80,52 @@ void StartMotorTask(void const * argument) {
     if ((globalFlags.states.lineSensorState == LNS_STATE_ON)
         && globalFlags.states.motorState == MTR_STATE_RUNNING) {
       controlMotors();
+    }
+
+    // Check to see if the box line has been passed
+    if (globalFlags.lineSensorData.boxPos || step != 0) {
+
+      // Update data
+      globalFlags.states.lineSensorState = LNS_STATE_OFF;
+      globalFlags.states.motorState = MTR_STATE_OFF;
+
+      osThreadSetPriority(motorTaskHandle, osPriorityAboveNormal);
+
+      switch (step) {
+      case 0:
+        // First re-orient the robot
+        setMotors(100, 0);
+        osDelay(500);
+        setMotors(0, 0);
+        step = 1;
+        break;
+      case 1:
+        // Make sure the robot is a bit more in the box
+        setMotors(100, 100);
+        osDelay(1250);
+        step = 2;
+        break;
+      case 2:
+        // Then continue to drive forward until the edge of the box is reached (until the sensors both trigger)
+        setMotors(0, 0);
+        enableLauncher();
+        launch();
+        step = 3;
+        osThreadSetPriority(motorTaskHandle, osPriorityNormal);
+
+//        if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_4) || HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3)) {
+//          // Stop and launch after 1s
+//          setMotors(0, 0);
+//          osDelay(1000);
+//          enableLauncher();
+//          launch();
+//          step = 3;
+//          osThreadSetPriority(motorTaskHandle, osPriorityNormal);
+//        } else {
+//          setMotors(100, 100);
+//        }
+        break;
+      }
     }
 
     osDelay(MTR_UPDATE_PERIOD);
@@ -197,6 +245,7 @@ static void controlMotors(void) {
   default:
     break;
   }
+
 }
 
 /**

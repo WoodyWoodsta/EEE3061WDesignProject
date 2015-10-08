@@ -175,6 +175,7 @@ typedef enum {
 // Global line sensor data
 typedef struct {
   linePos_t linePos;
+  uint8_t boxPos; // 1 or 0 for the box
   reedStatus_t prevReedState; // Used to keep track of the launcher spinner
   uint8_t lightSensorCal; // Used to check if the light sensor has been calibrated
   uint32_t lightSensorThreshold; // The threshold calculated during the calibration
