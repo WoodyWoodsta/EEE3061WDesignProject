@@ -3,7 +3,7 @@
   * File Name          : userTasks_task.c
   * Description        : Common source between all tasks, specific to tasks
   *                      Also includes source common to memory pools and
-  *                      messaging cues
+  *                      messaging queues
   * Author             : Sean Wood
   * ============================================================================
   */
@@ -16,7 +16,7 @@ osThreadId bossTaskHandle;
 osThreadId USARTInTaskHandle;
 osThreadId USARTOutTaskHandle;
 osThreadId motorTaskHandle;
-osThreadId lineSensorTaskHandle;
+osThreadId sensorTaskHandle;
 osThreadId userIOTaskHandle;
 
 osTimerId ledTimerHandle;

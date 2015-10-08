@@ -189,7 +189,7 @@ static void SW1UpAction(void) {
 static void SW1DownAction(void) {
   if (globalFlags.states.motorState != MTR_STATE_RUNNING) {
     // If the motors are in standby or no running, SW1 must reset the line sensor to center
-    osSignalSet(lineSensorTaskHandle, LINE_SIG_STOP); // Turn the line sensor off in order to preserve thread-safety
+    osSignalSet(sensorTaskHandle, LINE_SIG_STOP); // Turn the line sensor off in order to preserve thread-safety
     globalFlags.lineSensorData.linePos = LINE_POS_CENTER; // Reset the sensor
 
     // Delay to let things settle
@@ -197,7 +197,7 @@ static void SW1DownAction(void) {
 
     // Then, if the motors are in standby, turn the line sensor back on
     if (globalFlags.states.motorState == MTR_STATE_STANDBY) {
-      osSignalSet(lineSensorTaskHandle, LINE_SIG_START);
+      osSignalSet(sensorTaskHandle, LINE_SIG_START);
     }
   }
 

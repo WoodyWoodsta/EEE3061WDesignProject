@@ -1,0 +1,757 @@
+\input{woodamble}                                                       % Custom preamble
+%----------------------------------------------------------------------------------------
+% NAME AND CLASS SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\reportTitle}{Final Report} % Assignment title
+\newcommand{\reportDueDate}{Wednesday,\ September\ 03,\ 2014}                    % Due date
+\newcommand{\reportClass}{EEE3061W - Mechatronics Design}                               % Course/class
+\newcommand{\reportClassTime}{10:30am}                                 % Class/lecture time
+\newcommand{\reportClassInstructor}{Jones}                               % Teacher/lecturer
+\newcommand{\reportAuthorName}{Team 13}                           % Your name
+\newcommand{\reportDepartment}{Department of Electrical Engineering}           % Department
+
+%----------------------------------------------------------------------------------------
+% TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title{
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=0.4\columnwidth]{uct-logo}
+  \end{center}
+\end{figure}
+\textmd{\Huge UNIVERSITY OF CAPE TOWN \\ \LARGE \reportDepartment} \\
+\vspace{2in}
+\textmd{\textbf{\LARGE \reportClass \\ \Huge Biathlon Robot \\ \reportTitle \\ \vspace{1.5in} \Large Team 13 \\  WDXSEA003 \textbar\space PRSSAM004 \textbar\space RJDYAR001 \textbar\space STRIBR001}}\\
+}
+
+\date{}
+
+%========================================================================================
+%========================================================================================
+
+\begin{document}
+  \maketitle
+  \thispagestyle{empty}
+
+\frontmatter
+%----------------------------------------------------------------------------------------
+% ABTRACT
+%----------------------------------------------------------------------------------------
+\setcounter{tocdepth}{2}                                                      % ToC Depth
+\setcounter{secnumdepth}{2}                                     % Section Numbering Depth
+
+\begin{abstract}
+  \thispagestyle{empty}
+  This report covers the conceptualization, design and building stages of an autonomous bi-athletic robot for the EEE3061W Mechatronics Design Project 2015.  This robot was to partake in a sprint as well as launch a ping-pong ball after tracking a line and being aware of the end of the course. % TODO Add more here...
+
+\end{abstract}
+
+%----------------------------------------------------------------------------------------
+% TABLE OF CONTENTS
+%----------------------------------------------------------------------------------------
+
+\cleardoublepage
+\addcontentsline{toc}{section}{Table of Contents}
+\tableofcontents
+
+\clearpage
+\section*{List of Illustrations}
+\addcontentsline{toc}{section}{List of Illustrations}
+\label{sec:List of Illustrations}
+\addcontentsline{toc}{subsection}{List of Figures}
+\listoffigures
+\addcontentsline{toc}{subsection}{List of Tables}
+\listoftables
+
+\clearpage
+
+%----------------------------------------------------------------------------------------
+% GLOSSARY
+%----------------------------------------------------------------------------------------
+\section*{Glossary}
+\addcontentsline{toc}{section}{Glossary}
+\label{sec:Glossary}
+\vspace{2cm}
+\begin{tabular}{@{}p{6cm}@{\hspace{0.5cm}}p{9cm}@{\vspace{0.5cm}}}
+  \bfseries MEMS & MicroElectroMechanicalSystem \\
+\end{tabular}
+
+
+% ----- Report Layout Plan -----
+% - Abstract
+% - Introduction
+%   - Sprinter Introduction
+%   - Launcher Introduction
+%
+% Sprinter Stuff
+% - Sprinter Design Concepts
+%   - Design Concept 1
+%   - Design Concept 2
+%   - Design Concept 3
+% - Sprinter Final Concept
+% - Sprinter Preliminary Calculations
+% - Sprinter Mechanical Design
+% - Sprinter Electronic Design
+%   - Core electronics (Controller board)
+%   - Peripheral electronics (Power board, LEDs, Sensors etc)
+% - Sprinter Control and Software
+%   - Control Principles
+%   - Software structure choice
+%   - Other details like gyro etc
+% - Sprinter Build, Testing and Calibration
+% - Sprinter Results and Conclusions
+%
+% Launcher Stuff
+% - Launcher Design Concepts
+%   - Design Concept 1
+%   - Design Concept 2
+%   - Design Concept 3
+% - Launcher Final Concept
+% - Launcher Preliminary Calculations
+% - Launcher Mechanical Design
+% - Launcher Electronic Design
+%   - Core electronics (Controller board)
+%   - Peripheral electronics (Power board, LEDs, Sensors etc)
+% - Launcher Control and Software
+%   - Control principles
+%   - Software structure choice and a note on RTOS
+%   - Other details
+% - Launcher Build, Testing and Calibration
+% - Launcher Results and Conclusions
+%
+% - Final Conclusion
+% - APPENDICES
+
+%----------------------------------------------------------------------------------------
+% NOMENCLATURE
+%----------------------------------------------------------------------------------------
+\section*{Nomenclature}
+\addcontentsline{toc}{section}{Nomenclature}
+\label{sec:Nomenclature}
+
+\textbf{Constants}
+
+\(V_{LINE}\) - Nominal Line Voltage\\
+\(A_v\) - Operational Amplifier Gain\\
+\(db_{SPL}\) - Sound Pressure Level\\
+\(\theta_S\) - Phase Shift
+
+%----------------------------------------------------------------------------------------
+% INTRODUCTION
+%----------------------------------------------------------------------------------------
+\mainmatter
+\section{Introduction}
+\label{sec:Introduction}
+  This report covers the complete design process for EEE3061W Mechatronics Design Project for 2015.  The project involves the design, manufacture and testing of a legged, autonomous, bi-athletic robot that will be able to partake in a 5m sprint and then throw a weighted ping-pong ball.  The robot is to adhere to a set of specifications as provided by the course management. \\
+
+  The entire project is split into two sections, each covering the semester's task.  The first section involved the sprinting aspect of the robot, and the second involved line following and launching.  The relevant sections are named accordingly.
+
+  \subsection{Sprinter Introduction}
+  \label{sub:Sprinter Introduction}
+    In summary, the sprinting robot was to make use of a digital 3-axis gyroscope in an attempt to sprint 5m as fast as possible within a f ixed-width lane (maintain fixed heading).  The robot was also specified to start the sprint when green light from a set of three lights was detected, signaling the beginning of the race. \\
+
+    The locomotion design was constrained to the use of legs, making use of a mechanical linkage-type system to convert rotational motion from the provided motors into linear motion to move forward.  Other restrictions included the dimensions of the entire robot and out-of-pocket components budget.
+
+  \subsection{Launcher Introduction}
+  \label{sub:Launcher Introduction}
+    The second stage of the project required the robot to first navigate along a line (autonomously) into a box and then throw a weighted ping-pong ball as far as possible. The launching mechanism was limited to the use of a lever system, driven by a DC motor provided.  The rest of the restrictions follow from the Sprinter as well. \\
+
+  The development of both robots followed the same design process whereby 3 conceptual designs were proposed and one final design (or a combination of ideas from more than one) was developed upon further after having drawn up a pros and cons comparison.  The final design was, at this stage, separated into the electronic and mechanical aspects.  As such, they are discussed separately.  Mechanical designs were modelled using 3D CAD (either SolidWorks or AutoDesk Inventor) and electronics were drawn up in Altium Designer.
+
+%----------------------------------------------------------------------------------------
+% SPRINTER DESIGN CONCEPTS
+%----------------------------------------------------------------------------------------
+
+\clearpage
+\part{Sprinter}
+\label{part:sprinter}
+
+\section{Sprinter Design Concepts}
+\label{sec:Sprinter Design Concepts}
+  \subsection{Design Concept 1}
+  \label{sub:Design Concept 1}
+    \begin{figure}[H]
+    \label{fig:3dConcept1}
+      \begin{center}
+        \includegraphics[width=0.8\columnwidth]{DesignConcept1RenderCropped}
+        \caption{3D Render of Sprinter Design Concept 1}
+      \end{center}
+    \end{figure}
+
+    The first sprinter design concept is one which incorporates the Klann Linkage system in the leg design. This allows direct conversion of rotary motion from the motors to linear motion in the legs. The body design, which is somewhat complex, is octagonal in shape, with the angled panels fastened using internal brackets bolted onto the inside. This design is aesthetically appealing however, may make it difficult to access the internal components once the design is completed.  Also, the body restricts the height of the gearing system within. The leg system is a standard Klann Linkage with 8 legs. The legs are connected in pairs, situated on each side of the body, which are run by the same gear (i.e. each motor controls one side each of the leg system).  The main advantage of the extra 4 legs is to provide improved stability. Definitive of the Klann Linkage system, each stride lasts for 180 degrees of each revolution, and so having two legs per revolution, the leg group is able to provide at least one leg for the full revolution. This means there will be 4 legs on the ground at all times during the robot's motion. Although not shown in the rendering, the gearing system would have the final output on the outside of the main body, with the gears placed between the rotating disks. This prevents physical interference at any point during the leg cycles.\\
+
+    The rendering is not necessarily to scale or proportion.  Due to restrictions in volume and dimensions, the legs would be shorter and body closer to the ground.
+
+  \subsection{Design Concept 2}
+  \label{sub:Design Concept 2}
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.8\columnwidth]{DesignConcept2RenderCropped}
+        \caption{3D Render of Design Concept 2}
+        \label{fig:3dConcept2}
+      \end{center}
+    \end{figure}
+
+    The second design concept is somewhat similar to the previous one, but with one important difference: the left and right leg pairings are driven by a single, central driving gear. The main body of the robot is also similar to the previous design, but with an open rear to make it easier to access internal components. The front of the main body acts primarily as a visor to help protect the components to some extent during the motion. This is also an attempt to minimize weight, but compromises the aesthetic appeal as all the components will be visible. The same 8-leg Klann Linkage system is employed here as well. The gearing system and motor placement will be the same as the previous concept, as the ratios and general internal configuration will be the same.
+
+  \subsection{Design Concept 3}
+  \label{sub:Design Concept 3}
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.8\columnwidth]{DesignConcept3RenderCropped}
+        \caption{3D Render of Design Concept 3}
+        \label{fig:3dConcept3}
+      \end{center}
+    \end{figure}
+
+    The third and final design again employs the Klann Linkage system. The primary difference is that the legs are now placed closer towards the front and back of the main body rather than on the sides. The general body shape is box-like as this will be most efficient to accommodate this particular leg system. The motor and gear placement would also be different: they would be placed on the front and back, with the circuitry and control system placed more centrally. The 8-piece Klann Linkage legs would be most stable in this orientation and allow greater body width. This implementation, however, will result in an overall loss in body length.
+
+%----------------------------------------------------------------------------------------
+% SPRINTER FINAL CONCEPT
+%----------------------------------------------------------------------------------------
+\section{Sprinter Final Concept}
+\label{sec:Sprinter Final Concept}
+  The following table (Table \ref{tab:comparison1}) compares the pros and cons of each design concept in order to analyze the merits and shortfalls of each concept.
+
+  \begin{table}[h]
+  \centering
+  \begin{tabular}{cccccc}
+  \hline
+  \multicolumn{2}{c}{\cellcolor[HTML]{E3E3E3}{\color[HTML]{000000} \textbf{Design Concept 1}}} & \multicolumn{2}{c}{\cellcolor[HTML]{E3E3E3}{\color[HTML]{000000} \textbf{Design Concept 2}}} & \multicolumn{2}{c}{\cellcolor[HTML]{E3E3E3}{\color[HTML]{000000} \textbf{Design Concept 3}}} \\ \hline
+  \multicolumn{1}{c|}{\textbf{Pros}} & \multicolumn{1}{c|}{\textbf{Cons}} & \multicolumn{1}{c|}{\textbf{Pros}} & \multicolumn{1}{c|}{\textbf{Cons}} & \multicolumn{1}{c|}{\textbf{Pros}} & \textbf{Cons} \\ \hline
+  \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Great\\ stability\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}May be\\ heavy\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}High\\ stability\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}More\\ complex\\ mechanism\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Improved\\ longitudinal\\ stability\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Limited\\ longitudinal\\ length\end{tabular} \\ \hline
+  \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Reasonable\\ speed\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Difficult\\ body\\ assembly\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Good\\ maneuverability\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Low\\ protection\\ of parts\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Higher\\ speed\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Difficult\\ part\\ placement\end{tabular} \\ \hline
+  \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Good\\ maneuverability\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Difficult\\ access\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Easier\\ assembly\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Limit\\ lateral\\ space/width\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}More\\ lateral\\ width\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Difficult\\ to assemble\end{tabular} \\ \hline
+  \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Good\\ part\\ orientation\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Limited\\ lateral\\ space/width\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Ease\\ of access\end{tabular}} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \begin{tabular}[c]{@{}c@{}}More\\ machining\\ required\end{tabular} \\ \hline
+  \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}More\\ gears\\ required\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Less\\ gears\\ needed\end{tabular}} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  \\ \hline
+  \end{tabular}
+  \label{tab:comparison1}
+  \caption{Table of pros and cons for each of the three design concepts}
+  \end{table}
+
+  Given the pros and cons of each, a combination of the leg design from concept 1 and the body design from concept 2 was decided upon. This provides a good speed design, a simple but functional body design, as well as good weight distribution with the gears placed at the back, while the battery pack placed is at the front.\\
+
+  Figure~\ref{fig:moduleplanview1}  below shows a conceptual feature plan of the above chosen design:
+
+  \begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=1\columnwidth]{ModulePlanView-Conceptual}
+      \caption{Conceptual feature plan and component placement diagram}
+      \label{fig:moduleplanview1}
+    \end{center}
+  \end{figure}
+
+  \begin{figure}[H]
+    \begin{center}
+      \includegraphics[width=0.8\columnwidth]{KlannLinkageDiagram}
+      \caption{Diagram of the Klann Linkage System}
+      \label{fig:klannLinkage1}
+    \end{center}
+  \end{figure}
+
+  \subsection{Other Design Considerations}
+  \label{sub:Other Design Considerations}
+    The Jansen linkage was another concept that we considered for the legs. Its primary advantage over the Klann linkage is that it is notably faster. It is also more stable when dealing with obstacles. Despite this, however, the linkage system as well as its complex implementation would be considerably more difficult. The increased number of linkages per leg would make assembly as well as dimensioning and optimizing very difficult. This is the primary reason why we decided not to consider it for our final design.
+
+  \subsection{Potential Improvements}
+  \label{sub:Potential Improvements}
+    One possible design improvement would be to implement the use of oval gears instead of circular for the final output gear. By doing this with the correct orientation, the legs would have a longer contact time with the ground as the downward motion would be slower. This would serve to increase the torque of each leg. As well as this, the upward leg motion would be faster, resulting in a shorter stride time and an overall increase in speed because a smaller gear ratio would then be used.\\
+
+    As mentioned above, the legs should be shortened and widened, offering more height to the body, lower center of gravity for stability and extra strength in the legs.
+
+%----------------------------------------------------------------------------------------
+% SPRINTER PRELIMINARY CALCULATIONS
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Sprinter Preliminary Calculations}
+\label{sec:Sprinter Preliminary Calculations}
+  \subsection{Gear Ratio}
+  \label{sub:Gear Ratio}
+    The gear ratio is entirely dependent of the minimum torque that would be required per leg in order to move the robot forward. As per the specifications, the output rpm of the motors is too high to directly drive the legs whilst providing enough torque to overcome the inertia of the body. An initial calculation for the minimum torque would be enough to determine the best gear ratio.\\
+
+    \begin{equation}
+      \text{Torque} = \text{force}\times\text{distance}
+    \end{equation}
+
+    The weight of the overall design, as well as its perpendicular distance from the legs in contact with the ground would easily determine the minimum torque needed in order to drive the robot. \\
+
+    Mass of Robot = 510g \\
+    Distance from Leg = 7.5 cm
+
+    \begin{equation*}
+      \begin{split}
+        \therefore \text{Torque} &= \frac{510\left(7.5\right)}{2}\\
+                                 &\approx 1913 \text{g}\cdot\text{cm}
+      \end{split}
+    \end{equation*}
+
+    Given that the ratio of the input and output torque would be the same as the gear ratio, the final gear ratio would therefore be:
+
+    \begin{equation*}
+      \begin{split}
+        \text{Ratio} &= \frac{1913}{220} \\
+                     &\approx 9
+      \end{split}
+    \end{equation*}
+
+    The gear arrangement can be seen in Fig. 3.1.
+
+  \subsection{Weight Budget}
+  \label{sub:Weight Budget}
+    \begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|}
+    \hline
+    \rowcolor[HTML]{D9D9D9}
+    \textbf{Item/Material}                                                        & \textbf{Mass (g)} \\ \hline
+    Gears/sprockets                                                               & 50                \\ \hline
+    Nuts and Bolts                                                                & 30                \\ \hline
+    Legs (Perspex and Wood)                                                       & 100               \\ \hline
+    Pins                                                                          & 20                \\ \hline
+    Rubber Feet                                                                   & 10                \\ \hline
+    \begin{tabular}[c]{@{}c@{}}Body/Casing \\ (Perspex and Wood)\end{tabular}     & 135               \\ \hline
+    \begin{tabular}[c]{@{}c@{}}PCB (including components\\ and wire)\end{tabular} & 175               \\ \hline
+    Battery                                                                       & 20                \\ \hline
+    \rowcolor[HTML]{D9FFA4}
+    \multicolumn{1}{|r|}{\cellcolor[HTML]{D9FFA4}\textbf{TOTAL}}                  & 510               \\ \hline
+    \end{tabular}
+
+    \label{tab:weightBudget1}
+    \caption{Table showing a budget of the weight of the robot by individual components/materials}
+    \end{table}
+
+%----------------------------------------------------------------------------------------
+% SPRINTER MECHANICAL DESIGN
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Sprinter Mechanical Design}
+\label{sec:Sprinter Mechanical Design}
+
+%----------------------------------------------------------------------------------------
+% SPRINTER ELECTRONIC DESIGN
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Sprinter Electronic Design}
+\label{sec:Sprinter Electronic Design}
+  % Intro
+  The robot was to use its two 6V DC motors for controlled, autonomous, forwards motion in a straight line. Given the project constraints, this was to be achieved using an STM32F051C6 microcontroller and a 3-axis MEMS\footnote{MicroElectroMechanical System} gyroscope, an L3GD20. The robot was to start this motion when a green light is detected positioned behind the robot. A complete electronic system was developed to provide this functionality and implemented as described below.
+
+  \subsection{Primary System Components}
+  \label{sub:Primary System Components}
+    \subsubsection{The STM32F051C6 Microcontroller}
+    \label{subs:The STM32F051C6 Microcontroller}
+      The STM32F051C6 microcontroller is a 32-bit, 48 Mhz entry level microcontroller\textsuperscript{\cite{stm32f051c6Datasheet}} with a host of peripherals for communication and other digital and analog interaction.
+
+      \begin{figure}[H]
+        \begin{center}
+          \includegraphics[width=0.3\columnwidth]{STM32}
+          \caption{The STM32F051C6 product graphic}
+          \label{fig:STM32}
+        \end{center}
+      \end{figure}
+
+      This microcontroller was used to process sensory data including temperature, buttons for user input, light sensor readings and data from the gyroscope and calculate motor speeds to drive the robot forwards on the race track between the outer boundaries. More detail about the software implemented on the microcontroller is provided in Section \ref{sec:Sprinter Control and Software}.
+
+    \subsubsection{The L3GD20 Gyroscope}
+    \label{subs:The L3GD20 Gyroscope}
+      The L3GD20, also manufactured by ST Microelectronics, was implemented using a carrier board\footnote{L3GD20 carrier board - \url{https://www.pololu.com/product/2125}} shown in Figure~\ref{fig:l3gd20Pic1}. The device communicated using SPI and was programmable for different modes of operation, filters, power modes and more.
+
+      \begin{figure}[H]
+        \begin{center}
+          \includegraphics[width=0.35\columnwidth]{l3gd20Pic1}
+          \caption{The L3GD20 3-axis gyroscope and carrier board}
+          \label{fig:l3gd20Pic1}
+        \end{center}
+      \end{figure}
+
+    \subsubsection{L293DNE}
+    \label{subs:L293DNE}
+      The L293DNE is a quadruple half-H motor driver IC\footnote{L293DNE Motor Driver - \url{http://www.ti.com/lit/ds/symlink/l293.pdf}} which was used to drive the two 6V DC motors. Using this IC, it was possible to vary the speed of the motor using a PWM signal and it also provided isolation between the high and low current areas in the system. The drivers had a continuous current output of 600mA and a maximum peak current output of 1.2A across a voltage range of 4.5V to 36V. The PDIP (NE) package used included protection diodes for inductive transient suppression as a result of the inductive loads of the DC motors.
+
+      \begin{figure}[H]
+        \begin{center}
+          \includegraphics[width=0.35\columnwidth]{L293DNEPic1}
+          \caption{The L293DNE Quad half-H Motor Driver IC}
+          \label{fig:L293DNEPic1}
+        \end{center}
+      \end{figure}
+
+
+  \subsection{System Overview}
+  \label{sub:System Overview}
+    The above components, along with other peripheral components, made up the electronic system for the robot. It was decided that the system be divided into two sections, the ``ControllerBoard'' and the ``PowerBoard'', so that the high current circuitry could be safely isolated from the sensitive low current components such as the microcontroller and gyroscope. This is often necessary especially when serial communication lines are present in the system.\\
+
+    Figure~\ref{fig:sprinterElectronicSystemBlockDiagram} below shows a high level block diagram of the electronic system including both the Controller and Power sections.  This was later to be designed and drawn out in Altium Designer for PCB manufacture.
+
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.9\columnwidth]{sprinterElectronicSystemBlockDiagram}
+        \caption{High level block diagram of the sprinter electronic system}
+        \label{fig:sprinterElectronicSystemBlockDiagram}
+      \end{center}
+    \end{figure}
+
+    The system as well as the motors were to run off a 3-cell LiPo\footnote{Lithium Polymer} battery which had to be regulated for most of the system components. The microcontroller required 3.3V as well as L3GD20 and these sources had to be stable for robust operation. The L293DNE required 5V for logic operation as it isolates this functionality from the power throughput to the motors. The LM35 temperature sensor, as in Figure~\ref{fig:sprinterElectronicSystemBlockDiagram} required a 5V source as well. An WS78L05\footnote{5V Linear Volatge Reagulator - \url{http://www.ti.com/lit/ds/symlink/lm78l05.pdf}} was used for regulation from battery voltage to 5V and after that a MCP17023302\footnote{3V3 Linear Voltage Regulator - \url{http://cdn-reichelt.de/documents/datenblatt/A200/MCP1702_MIC.pdf}} was used to bring the 5V down to 3.3V.\\
+
+    The L293DNE motor driver enabled bidirectional motion for both motors using each of its four half-H-bridges. Each of these had a signal pin, a power output pin and a ground pin. The signal pin was connected to one of the STM32F0's PWM output pin for speed variation. Each pair of half-H-bridges were enabled and disabled using the EN pin, of which the IC has two, using a GPIO digital output pin on the microcontroller. A small ceramic capacitor was placed across each of the motors (not shown in the schamtics further on) to further minimise the effects of the inductive load.\\
+
+    The microcontroller was supplied with the required 3.3V at all of its four supply pins with decoupling at the 3V3 regulator as well as at each 3V3 pin. It was required that the microcontroller operate at its full CPU clock speed of 48MHz and so an 8MHz crystal oscillator was connected to the oscillator pins on the microcontroller which it then scaled up to the maximum speed in an internal phase lock loop.\\
+
+    The L3GD20 makes use of an SPI serial connection involving CLK (clock source), SDA (master out, slave in), SDO (master in, slave out) and GND lines with the microcontroller acting as the master device and the gyroscope as the slave. Through testing, the gyro showed evidence of thermal drift and other inaccuracies and for that reason, an LM35\footnote{Precision Centigrade Thermal Sensor - \url{http://www.ti.com/lit/ds/symlink/lm35.pdf}} was implemented together with one of the microcontroller's ADCs. The LM35 required 5V which was available from the regulator on board.\\
+
+    The light sensor, which was to sense green light only, leveraged the capacitive nature of a green LED which was connected in reverse bias from a microcontroller GPIO pin down to ground. The GPIO pin was configured to output 3.3V for a short period of time and then switched to a digital input to allow build up of charge in the LED to drain through the microcontroller. The time taken for the LED to drain and the voltage to drop below the digital input low threshold was timed internally. The greater the amount of green light which was incident on the LED, the less capacitive the LED in reverse bias was, and hence the quicker it took to discharge. This process is detailed in <>.\\
+    % TODO Add in the link here.
+
+    Three pushbuttons and two LEDs were added to the system to allow for user input and some program indication as well as another LED for power indication.\\
+
+    Two USB Type-B ports were included as optional extras. One of the ports was used for debugging via the ST-Link V2 on chip debugger board, and the other used for serial communication between the microcontroller and a PC. The serial connection was made via a USB-UART converter, the MCP2200\footnote{USB 2.0 to UART Protocol Converter - \url{http://ww1.microchip.com/downloads/en/DeviceDoc/22228B.pdf}} which was connected to two of the USART pins on the microcontroller.
+
+  % System design and circuit schematics
+  \subsection{System Design}
+  \label{sub:System Design}
+    The schematics for the system concept in Figure~\ref{fig:sprinterElectronicSystemBlockDiagram} were then drawn in Altium Designer. This included both the PowerBoard and the ControllerBoard with the required headers and connectors for interaction and for the debugger and MCP2200 board. Figure~\ref{fig:ControllerBoardSchematic} and Figure~\ref{fig:PowerBoardSchematic} below show the schematic of both of the boards in the system.
+
+    \begin{figure}[H]
+      \begin{center}
+        \makebox[\textwidth][c]{\includegraphics[width=1.5\textwidth, angle=90]{ControllerBoardSchematic}}
+        \caption{Schematic of the ControllerBoard}
+        \label{fig:ControllerBoardSchematic}
+      \end{center}
+    \end{figure}
+
+    \begin{figure}[H]
+      \begin{center}
+        \makebox[\textwidth][c]{\includegraphics[width=1.5\textwidth, angle=90]{PowerBoardSchematic}}
+        \caption{Schematic of the PowerBoard}
+        \label{fig:PowerBoardSchematic}
+      \end{center}
+    \end{figure}
+
+    In Figure~\ref{fig:ControllerBoardSchematic}, P1 allows the user to select which source of power to use (either 5V supply from a USB connection or battery supply). If the battery supply is chosen, the WS708L05 (U5) will regulate the supply to 5V which will then be regulated further by U2. When USB power is being used, the external connection is completely isolated.\\
+
+    Headers were included for connectivity between this board and the PowerBoard via P8, the L3GD20 via P5, the MCP2200 via P2 and the green light sensing LED via P6. P3 and P4 female headers served as a breakout of all the microcontroller pins in case an extra component or extra functionality was needed.\\
+
+    R2 is a 10K pull-down resistor to keep the BOOT0 pin low for normal microcontroller operation. S2 shorts the reset pin (NRST) to ground in case the microcontroller needs to be reset.\\
+
+    In Figure~\ref{fig:PowerBoardSchematic}, the opposite end of the connection between the two boards is P1 with P5 being an XT60 connector for the battery, P4 being a power connection for the ControllerBoard and P2 and P3 connectors for the two motors.
+
+  % PCB design and manufacture
+  \subsection{PCB Design and Manufacture}
+  \label{sub:PCB Design and Manufacture}
+    It was decided that the circuits be implemented on printed circuit boards for a more professional finish. Veroboard was not used due to the complexity of the system as well as robustness requirements and space constraints. Altium Designer was used for the PCB layout process and components were obtained from the Altium community vaults. The PCBs were single sided and manufactured using the ``press-n-peel'' method with copper clad board, press-n-peel laser printer paper and etching acid. The PCB copper layout (shown below) was output from Altium in pdf format and printed onto the press-n-peel paper. The paper was then placed on the clean copper clad board and heated for a short period using an iron. The paper was then lifted and the inked areas were left on the board. The board was then placed in the etching fluid and all excess copper was removed, leaving only the tracks. The holes were drilled by hand using a drill press and the components soldered to the board. Lacquer spray was used to insulate the bottom (solder-side) of the PCB and to prevent corrosion.\\
+
+    The PCB layout of the ControllerBoard is shown in Figure~\ref{fig:ControllerBoardPCB} and of the PowerBoard below that in Figure~\ref{fig:PowerBoardPCBRev1}.
+
+    \begin{figure}[H]
+      \begin{center}
+        \makebox[\textwidth][c]{\includegraphics[width=1.5\textwidth]{ControllerBoardPCB}}
+        \caption{PCB layout output of the ControllerBoard}
+        \label{fig:ControllerBoardPCB}
+      \end{center}
+    \end{figure}
+
+    \begin{figure}[H]
+      \begin{center}
+        \makebox[\textwidth][c]{\includegraphics[width=1\textwidth]{PowerBoardPCBRev1}}
+        \caption{PCB layout output of the PowerBoard}
+        \label{fig:PowerBoardPCBRev1}
+      \end{center}
+    \end{figure}
+
+    Since the boards were only single-sided, the top layer tracks (red) signify jumper wires that were needed due to the complexity of the board and the track width constraints for press-n-peel manufacture.\\
+
+    Once completed, the PCBs were successful and minimal alterations were needed.
+%----------------------------------------------------------------------------------------
+% SPRINTER CONTROL AND SOFTWARE
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Sprinter Control and Software}
+\label{sec:Sprinter Control and Software}
+  The software system for the microcontroller on the ControllerBoard was written in C. The hardware abstraction that was used was the Standard Peripheral Library written by the ST MCD Development Team and the development environment included Eclipse Luna together with the GNU ARM Eclipse Plugin\footnote{GNU ARM Eclipse Plugin - \url{http://gnuarmeclipse.github.io/}} and the GNU ARM Embedded Toolchain. The system ran in a single threaded mode of operation with a main ``super-loop'' which made calls to various libraries written specifically for the system. The libraries were split up by peripheral and below is a list and description of the functioning of these peripherals with their associated libraries. The code can be found in the github repository at \url{https://github.com/WoodyWoodsta/EEE3061WDesignProject/tree/master/Code/single-thread}\footnote{Made public only after the project was completed.}
+
+  \begin{itemize}
+    \item \textbf{ADC Temperature Sensor Library} (\texttt{adcTempSense\_lib.c})\\
+    The ADC Temperature Sensor Library initialised and made use of the ADC on the STM32F00 to capture analog data from the LM35 thermal sensor. The LM35, as discussed, measured the temperature to allow the microcontroller to compensate for the drift in the L3GD20 readings as a result of temperature fluctuations. The ADC was configured in 12 bit, right-aligned, continuous mode and mapped to the DMA controller to create a circular peripheral to memory DMA so that memory handling was not required. The ADC was also calibrated with each call to the library initialisation for accurate referencing.\\
+
+    The library provided the ability to collect and convert the ADC readings, at any particular moment, to milli-degrees Celsius by taking an average of 20 consecutive ADC readings.
+
+    \item \textbf{LED Library} (\texttt{ledGPIOB\_lib.c})\\
+    The LED Library simply provided initialisation and control of the two LEDs present on the board, as well as extra strips of blue LEDs for aesthetics which were varied in brightness using PWM from one of the timers on the microcontroller.
+
+    \item \textbf{LED Light Sensor Library} (\texttt{ledLightSensor\_lib.c})\\
+    The LED Light Sensor Library used the reverse bias LED, as described earlier, to capacitively sense for green light. The library initialised the pin for the LED as a general purpose output pin and configured a basic timer so that it operated at a very high frequency used to time how long the LED took to discharge. The sensing sequence is shown below in Figure~\ref{fig:lightSenseFlowDiagram}.
+
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.6\columnwidth]{lightSenseFlowDiagram}
+        \caption{Flow diagram showing the light sensing sequence}
+        \label{fig:lightSenseFlowDiagram}
+      \end{center}
+    \end{figure}
+
+    \item \textbf{Pushbutton Library} (\texttt{pbGPIOA\_lib.c})\\
+    The Pushbutton Library initialised two pins to be inputs, which were connected to two pushbuttons to ground. This required internal pullup resistors. The pushbuttons did not need to be used very often (in fact, the second push button was not even implemented) and so no external line interrupts were configured for these.
+
+    \item \textbf{Motor Library} (\texttt{pwmMotor\_lib.c})\\
+    The Motor Library handled the PWM outputs to the L293DNE motor driver IC on the PowerBoard which drove the motors and varying speeds. The library initialised four PWM outputs (one for each motor and direction), as well as two general purpose output pins for enabling each pair of outputs on the motor driver.\\
+
+    The library provided the ability to set the speed and direction of each of the motors and do so in a gradual manner for large speed changes, so as to not kick the motors too hard and possibly damage the gearbox.
+
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.7\columnwidth]{motorSpeedFlowDiagram}
+        \caption{Flow diagram showing the motor speed changing sequence}
+        \label{fig:motorSpeedFlowDiagram}
+      \end{center}
+    \end{figure}
+
+    \item \textbf{Gyro Library} (\texttt{spiGyro\_lib.c})\\
+    The Gyro library interfaced with the l3GD20 digital gyroscope to measure angular velocity. The communication protocol that the gyro required was SPI, as mentioned earlier, and so the library initialised one of the SPI controllers on the STM32F0. The connection was configured as in two line, full duplex, 8 bit mode with the first bit being the most significant bit, to satisfy the requirements of the gyro device. The CS (chip select) pin was simply a digital output. A timer was also configured for integrating the velocity output of the gyro to acquire angular position.\\
+
+    On a frame level, the protocol of sending data to the gyroscope involved concatenating the address of the destination register on the L3GD20 with the data to be set at that address in one packet. The library function \texttt{gyr\_writeSPIgyro()} did this and sent the data using an HAL 16 bit SPI send method. After a small delay, the expected data was received and returned.\\
+
+    The library provided the ability to start the gyro with a calibration sequence included. Calibration of the gyro was needed since the device showed slight inaccuracies with varying temperatures. The library offered three types of calibrations to be performed, a full calibration, an interval calibration and a zero calibration. When the gyro was started up, a ``full calibration'' was performed where the degrees per second per bit was calculated using the nominal value take from the resolution (250 dps, 500 dps or 2000 dps) and offset by the rated error given the temperature at that moment take from the device datasheet. Then the bias was found by taking a predetermined number of readings and averaging those. This required the device to remain stationary. The running angles were then set to zero. After a set period, the gyro was calibrated using the library's ``interval calibration'' which simply updated the degrees per second per bit based on anew temperature reading. An attempt was made to update the bias during this calculation as well but this proved to be error-prone and thus removed. When required, the gyro running angles could be set to zero using the ``zero calibration''.\\
+
+    The angle was calculated by multiplying the gyro reading (angluar velocity) by the time since the last update to the angle was made which was taken from a hardware timer on the microcontroller, and adding this to the running angle (Euler integration). Provided the time difference between running this procedure was small, this provided accurate results.
+
+    \item \textbf{Serial Library} (\texttt{serialTerminal\_lib.c})\\
+    The Serial Library initialised the USART peripheral on the microcontroller to be used with the MCP2200 to provide serial communication between it and a PC. The library also implemented a custom definition of \texttt{printf()} which made it easy to quickly send formatted strings out via the port. The library was adapted from James Gowan's serial library for the same IC found in this repo: \url{https://github.com/jgowans/stm32f0_devel/tree/master/jgowans-sample-projects/usart}.\\
+
+    The serial communication was mainly used for easy debugging, since the semihosting trace facilities that the ST-Link V2 offered were very slow and not ideal. Some telemetry was also pushed to Matlab and plotted on graphs for visual feedback, specifically the gyro outputs.
+  \end{itemize}
+
+  \subsection{Control Principle}
+  \label{sub:Control Principle}
+    The robot, with the aid of the L3GD20, was to maintain a fixed heading whilst running as fast as possible towards the finish line. A PID controller loop was implemented to achieve this and involved differentiating and integrating the difference between the heading measured at the start and the current heading (the error). These two values were then multiplied by their specific gains, added to the error itself, multiplied by its gain, and then subtracted from the maximum speed of the appropriate motor. The diagram below (Figure~\ref{fig:gyroControlLoopDiagram}) shows this loop.
+
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.7\columnwidth]{gyroControlLoopDiagram}
+        \caption{Flow diagram showing the PID control loop}
+        \label{fig:gyroControlLoopDiagram}
+      \end{center}
+    \end{figure}
+
+    After testing, it was observed that the robot as a system was far too complex (given the time constraints) to properly configure the PI portion of the controller, so these gains were made zero. Just the gain part of the controller sufficed.
+
+  \subsection{Software Structure}
+  \label{sub:Software Structure}
+    The system software was written in C to be loaded and run on the microcontroller. The application was single-threaded and structured in a ``super-loop'' style configuration through all that was required, save for interrupt routines for pushbutton handling. Execution started with initialisations and went on to start the gyro, set up running variables and finally into the loop. The application flow diagram, with function details, can be seen below in <>:
+
+%----------------------------------------------------------------------------------------
+% SPRINTER BUILD, TESTING AND CALIBRATION
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Sprinter Build, Testing and Calibration}
+\label{sec:Sprinter Build, Testing and Calibration}
+
+%----------------------------------------------------------------------------------------
+% SPRINTER RESULTS AND CONCLUSIONS
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Sprinter Results and Conclusions}
+\label{sec:Sprinter Results and Conclusions}
+
+
+%========================================================================================
+%----------------------------------------------------------------------------------------
+% LAUNCHER DESIGN CONCEPTS
+%----------------------------------------------------------------------------------------
+\clearpage
+\part{Launcher}
+\label{part:launcher}
+
+\section{Launcher Design Concepts}
+\label{sec:Launcher Design Concepts}
+  \subsection{Design Concept 1}
+  \label{sub:Design Concept 1}
+
+  \subsection{Design Concept 2}
+  \label{sub:Design Concept 2}
+
+  \subsection{Design Concept 3}
+  \label{sub:Design Concept 3}
+
+%----------------------------------------------------------------------------------------
+% LAUNCHER FINAL CONCEPT
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Launcher Final Concept}
+\label{sec:Launcher Final Concept}
+
+%----------------------------------------------------------------------------------------
+% LAUNCHER PRELIMINARY CALCULATIONS
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Launcher Preliminary Calculations}
+\label{sec:Launcher Preliminary Calculations}
+
+%----------------------------------------------------------------------------------------
+% LAUNCHER MECHANICAL DESIGN
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Launcher Mechanical Design}
+\label{sec:Launcher Mechanical Design}
+
+%----------------------------------------------------------------------------------------
+% LAUNCHER ELECTRONIC DESIGN
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Launcher Electronic Design}
+\label{sec:Launcher Electronic Design}
+  
+
+%----------------------------------------------------------------------------------------
+% LAUNCHER CONTROL AND SOFTWARE
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Launcher Control and Software}
+\label{sec:Launcher Control and Software}
+  \subsection{Control Principles}
+  \label{sub:Control Principles}
+  \subsection{Software Structure}
+  \label{sub:Software Structure}
+
+
+%----------------------------------------------------------------------------------------
+% LAUNCHER BUILD, TESTING AND CALIBRATION
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Launcher Build, Testing and Calibration}
+\label{sec:Launcher Build, Testing and Calibration}
+
+%----------------------------------------------------------------------------------------
+% LAUNCHER RESULTS AND CONCLUSIONS
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Launcher Results and Conclusions}
+\label{sec:Launcher Results and Conclusions}
+
+%----------------------------------------------------------------------------------------
+% FINAL CONCLUSION
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{Final Conclusion}
+\label{sec:Final Conclusion}
+
+%----------------------------------------------------------------------------------------
+% BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+\clearpage
+\printbibliography
+
+
+%----------------------------------------------------------------------------------------
+% APPENDICES
+%----------------------------------------------------------------------------------------
+\clearpage
+\section{APPENDIX}
+\label{sec:APPENDIX}
+
+
+\end{document}
+%----------------------------------------------------------------------------------------
+% INSTRUCTIONS AND TEMPLATE COMPONENTS
+%----------------------------------------------------------------------------------------
+
+% Set space - \vspace{length}
+% Horizontal line - \hrule
+% Pagebreak - \clearpage or \newpage - they seem to do the same thing
+
+% Normal equation:
+% \begin{equation}
+%   p = \frac{p_g - k}{m}
+% \end{equation}
+
+% Aligned equation:
+% \begin{equation}
+%   \begin{split}
+%     \rho_5  & = -\frac{\left(1575-1900\right)}{g\left(105\e{-3}-70\e{-3}\right)}\\
+%             & = 946.56 \text{ kg/m\(^{-3}\)}\\
+%     \rho_6  & = -\frac{\left(1900-2150\right)}{g\left(70\e{-3}-42\e{-3}\right)}\\
+%             & = 910.15 \text{ kg/m\(^{-3}\)}\\
+%   \end{split}
+% \end{equation}
+
+% Table: Can get from the table site!
+% \begin{table}[h]
+% \centering
+% \begin{tabular}{cccc}
+% \multicolumn{4}{c}{\cellcolor[HTML]{EFEFEF}DATA MEASUREMENTS} \\ \hline
+% \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Known Weight \\ Pressure (Psi)\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Known Weight\\ Pressure (Bar)\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Gauge Pressure\\ (Psi)\end{tabular}} & \begin{tabular}[c]{@{}c@{}}Gauge Pressure\\ (Bar)\end{tabular} \\ \hline
+% \multicolumn{1}{c|}{22} & \multicolumn{1}{c|}{1.52} & \multicolumn{1}{c|}{9.43} & 0.65 \\
+% \multicolumn{1}{c|}{\textbf{27}} & \multicolumn{1}{c|}{\textbf{1.86}} & \multicolumn{1}{c|}{\textbf{13.78}} & \textbf{0.95} \\
+% \multicolumn{1}{c|}{32} & \multicolumn{1}{c|}{2.21} & \multicolumn{1}{c|}{17.40} & 1.20 \\
+% \multicolumn{1}{c|}{37} & \multicolumn{1}{c|}{2.55} & \multicolumn{1}{c|}{21.76} & 1.50 \\
+% \multicolumn{1}{c|}{42} & \multicolumn{1}{c|}{2.90} & \multicolumn{1}{c|}{26.11} & 1.80 \\
+% \multicolumn{1}{c|}{47} & \multicolumn{1}{c|}{3.24} & \multicolumn{1}{c|}{29.01} & 2.00 \\
+% \multicolumn{1}{c|}{\textbf{52}} & \multicolumn{1}{c|}{\textbf{3.59}} & \multicolumn{1}{c|}{\textbf{33.36}} & \textbf{2.30} \\
+% \multicolumn{1}{c|}{57} & \multicolumn{1}{c|}{3.93} & \multicolumn{1}{c|}{37.71} & 2.60 \\ \hline
+% \end{tabular}
+% \caption{Dead weight tester and gauge measurements}
+% \label{gaugeMeasurements}
+% \end{table}
+
+% Picture:
+% \begin{figure}[H]
+%   \begin{center}
+%     \includegraphics[width=0.4\columnwidth]{MEC2022SLab1Exp1}
+%     \caption{Apparatus}
+%     \label{liquidDiagram}
+%   \end{center}
+% \end{figure}
+
+% Graph:
+% \begin{figure}[H]
+%   \centering
+%   \begin{tikzpicture}
+%     \begin{axis}[
+%       xlabel=Known Weight (Psi),
+%       ylabel=Reading (Psi),
+%       grid=major]
+%     \addplot[color=red, smooth] coordinates {
+%       (22,9.43)
+%       (27,13.78)
+%     };
+%     \addlegendentry{Gauge}
+
+%     \addplot[color=blue, dashed, smooth] coordinates {
+%       (22,22)
+%       (27,27)
+%     };
+%     \addlegendentry{Known weight}
+
+%     \end{axis}
+%   \end{tikzpicture}
+%   \caption{Dead weight tester and gauge measurements}
+%   \label{gaugePlot}
+% \end{figure}
+
+% Indented Text: (bit of a hacky way to do it)
+% \begin{quote}
+% where \(p_g\) is the gauge reading, \(m\) is the error coefficient, \(p\) is the known (``correct'') pressure and \(k\) is the error constant
+% \end{quote}
+
+% Code Snippet:
+% \begin{minted}{c}
+%   void main(void) {
+%     init_leds();
+%
+%     while (TRUE) {
+%       __asm("nop");
+%     }
+%   }
+% \end{minted}
+
+% Bibliography:
+% \begin{thebibliography}{99}
+%   \bibitem{itemname}
+%   Author,
+%   Date.
+%   \emph{Title}.
+%   Edition.
+%   Press.
+%   \url{http://web.iitd.ac.in/~shouri/eel201/tuts/diode_switch.pdf}
+% \end{thebibliography}

@@ -60,6 +60,12 @@ typedef enum {
   COMM_STATE_MANUAL
 } commState_t;
 
+// The state of the remote (android app)
+typedef enum {
+  CONN_DISCONNECTED,
+  CONN_CONNECTED
+} connectState_t;
+
 // State of the indicator LED
 typedef enum {
   LED_STATE_OFF,
@@ -75,6 +81,21 @@ typedef enum {
   MTR_STATE_STANDBY,
   MTR_STATE_RUNNING
 } motorState_t;
+
+// States of the launcher controllers (PWMs)
+typedef enum {
+  LNCH_STATE_OFF,
+  LNCH_STATE_WAIT_FOR_BALL,
+  LNCH_STATE_RUNNING,
+  LNCH_STATE_LAUNCHED
+} launcherState_t;
+
+// Control methods
+typedef enum {
+  MTR_CTRL_BANG_BANG,
+  MTR_CTRL_BANG_BANG_SMOOTH,
+  MTR_CTRL_SMOOTH
+} motorControlState_t;
 
 // H-Bridge states
 typedef enum {
@@ -107,7 +128,9 @@ typedef enum {
 typedef enum {
   MTR_SIG_START_TRACKING = 1,
   MTR_SIG_STANDBY,
-  MTR_SIG_STOP_TRACKING
+  MTR_SIG_STOP_TRACKING,
+  MTR_SIG_START_LAUNCHER,
+  MTR_SIG_STOP_LAUNCHER
 } motorSignals_t;
 
 // Global motor control data
@@ -118,10 +141,19 @@ typedef struct {
   motorDir_t rightMotorDir;
   float leftMotorSpeed;
   float rightMotorSpeed;
+  motorControlState_t controlState;
   hBridgeState_t hBridgeState;
+  hBridgeState_t launcherHBridgeState;
 } motorData_struct;
 
 // == Type Declarations - Other Line Sensor ==
+
+// Positions of the line being sensed
+typedef enum {
+  REED_DEFAULT,
+  REED_FIRST_STAGE,
+  REED_SECOND_STAGE
+} reedStatus_t;
 
 // Positions of the line being sensed
 typedef enum {
@@ -143,6 +175,8 @@ typedef enum {
 // Global line sensor data
 typedef struct {
   linePos_t linePos;
+  uint8_t boxPos; // 1 or 0 for the box
+  reedStatus_t prevReedState; // Used to keep track of the launcher spinner
   uint8_t lightSensorCal; // Used to check if the light sensor has been calibrated
   uint32_t lightSensorThreshold; // The threshold calculated during the calibration
 } lineSensorData_struct;
@@ -167,7 +201,9 @@ typedef struct {
 typedef struct {
   commState_t commState;
   genericStates_t wifiState; // Task level peripheral state flag (for task level locking)
+  connectState_t connectState;
   motorState_t motorState;
+  launcherState_t launcherState;
   lineSensorState_t lineSensorState;
   lightSensorState_t lightSensorState;
   ledState_t ledState;
@@ -187,7 +223,7 @@ extern osThreadId bossTaskHandle;
 extern osThreadId USARTInTaskHandle;
 extern osThreadId USARTOutTaskHandle;
 extern osThreadId motorTaskHandle;
-extern osThreadId lineSensorTaskHandle;
+extern osThreadId sensorTaskHandle;
 extern osThreadId userIOTaskHandle;
 
 extern osTimerId ledTimerHandle;
@@ -214,7 +250,7 @@ void StartUSARTInTask(void const * argument);
 void StartUSARTInBufferTask(void const * argument);
 void StartUSARTOutTask(void const * argument);
 void StartMotorTask(void const * argument);
-void StartLineSensorTask(void const * argument);
+void StartSensorTask(void const * argument);
 void StartUserIOTask(void const * argument);
 
 void ledTimerCallback(void const * argument);

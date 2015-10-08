@@ -35,6 +35,10 @@
 #include "cmsis_os.h"
 #include "userTasks_task.h"
 
+// == Defines ==
+#define TRUE          1
+#define FALSE         0
+
 /* Private variables ---------------------------------------------------------*/
 
 // == Message Pools and Queues ==
@@ -96,6 +100,9 @@ int main(void) {
     j++;
   }
 
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+  __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_3, 100);
+
   // Initialise global flags
   globalFlags.states.commState = COMM_STATE_AUTO;
   globalFlags.states.wifiState = GEN_STATE_READY;
@@ -108,19 +115,13 @@ int main(void) {
   globalFlags.motorData.leftMotorDir = MTR_DIR_DISABLED;
   globalFlags.motorData.leftMotorSpeed = 0;
   globalFlags.motorData.rightMotorSpeed = 0;
+  globalFlags.motorData.controlState = MTR_CTRL_BANG_BANG;
+  globalFlags.states.launcherState = LNCH_STATE_OFF;
 
   globalFlags.lineSensorData.linePos = LINE_POS_CENTER; // Initial condition is for the robot to be centered
+  globalFlags.lineSensorData.boxPos = FALSE;
+  globalFlags.lineSensorData.prevReedState = REED_DEFAULT;
   globalFlags.states.lightSensorState = LIGHT_STATE_OFF;
-
-
-
-  /* USER CODE BEGIN RTOS_MUTEX */
-  /* add mutexes, ... */
-  /* USER CODE END RTOS_MUTEX */
-
-  /* USER CODE BEGIN RTOS_SEMAPHORES */
-  /* add semaphores, ... */
-  /* USER CODE END RTOS_SEMAPHORES */
 
   /* Create the timer(s) */
   /* Definition and creation of ledTimer */
@@ -144,8 +145,8 @@ int main(void) {
   osThreadDef(motorTask, StartMotorTask, osPriorityNormal, 0, 64);
   motorTaskHandle = osThreadCreate(osThread(motorTask), NULL);
 
-  osThreadDef(lineSensorTask, StartLineSensorTask, osPriorityNormal, 0, 64);
-  lineSensorTaskHandle = osThreadCreate(osThread(lineSensorTask), NULL);
+  osThreadDef(sensorTask, StartSensorTask, osPriorityNormal, 0, 64);
+  sensorTaskHandle = osThreadCreate(osThread(sensorTask), NULL);
 
   osThreadDef(userIOTask, StartUserIOTask, osPriorityNormal, 0, 128);
   userIOTaskHandle = osThreadCreate(osThread(userIOTask), NULL);
