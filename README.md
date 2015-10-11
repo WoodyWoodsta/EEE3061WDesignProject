@@ -1,5 +1,8 @@
-# Mechatronics Design Project
+# EEE3061W Mechatronics Design Project
 
-#### Place for all the micro code for our robot!
+Both single-thread and RTOS projects as well as other goodies for the biathletic robot as part of the Mechatronics Design project. 
 
-**Google Drive Folder:** https://drive.google.com/open?id=0B5pQBWLETDBkfnZTZUxXWjFZRWx6WWlHUzdSbHVndWlrRGNfVlNfZXkwbDhEUjFYd0ZITjQ&authuser=0 
+*Includes:*
+- 1st Semester C Project (Single thread)
+- 2nd Semester C Project (FreeRTOS + CMSIS RTOS API + STM32Cube)
+- All Altium Schematics and PCB Layouts
