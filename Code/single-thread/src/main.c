@@ -12,8 +12,6 @@
  * Traces can be output using trace_puts() for strings or trace_printf() for
  * formatted strings
  *
- * OpenOCD Config: -f interface/stlink-v2.cfg -f target/stm32f0x_stlink.cfg
- *
  * MAIN EXECUTION OUTLINE
  *
  * Initialisations
