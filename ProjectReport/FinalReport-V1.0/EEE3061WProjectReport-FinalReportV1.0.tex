@@ -336,7 +336,7 @@
 \section{Sprinter Electronic Design}
 \label{sec:Sprinter Electronic Design}
   % Intro
-  The robot was to use its two 6V DC motors for controlled, autonomous, forwards motion in a straight line. Given the project constraints, this was to be achieved using an STM32F051C6 microcontroller and a 3-axis MEMS\footnote{MicroElectroMechanical System} gyroscope, an L3GD20. The robot was to start this motion when a green light is detected positioned behind the robot. A complete electronic system was developed to provide this functionality and implemented as described below.
+  The robot was to use its two 6V DC motors for controlled, autonomous, forwards motion in a straight line. Given the project constraints, this was to be achieved using an STM32F051C6 microcontroller and a 3-axis MEMS\footnote{MicroElectroMechanical System} gyroscope, an L3GD20. The robot was to start this motion when a green light was detected positioned behind the robot. A complete electronic system was developed to provide this functionality and implemented as described below.
 
   \subsection{Primary System Components}
   \label{sub:Primary System Components}
@@ -401,7 +401,7 @@
 
     The L3GD20 makes use of an SPI serial connection involving CLK (clock source), SDA (master out, slave in), SDO (master in, slave out) and GND lines with the microcontroller acting as the master device and the gyroscope as the slave. Through testing, the gyro showed evidence of thermal drift and other inaccuracies and for that reason, an LM35\footnote{Precision Centigrade Thermal Sensor - \url{http://www.ti.com/lit/ds/symlink/lm35.pdf}} was implemented together with one of the microcontroller's ADCs. The LM35 required 5V which was available from the regulator on board.\\
 
-    The light sensor, which was to sense green light only, leveraged the capacitive nature of a green LED which was connected in reverse bias from a microcontroller GPIO pin down to ground. The GPIO pin was configured to output 3.3V for a short period of time and then switched to a digital input to allow build up of charge in the LED to drain through the microcontroller. The time taken for the LED to drain and the voltage to drop below the digital input low threshold was timed internally. The greater the amount of green light which was incident on the LED, the less capacitive the LED in reverse bias was, and hence the quicker it took to discharge. This process is detailed in <>.\\
+    The light sensor, which was to sense green light only, leveraged the capacitive nature of a green LED which was connected in reverse bias from a microcontroller GPIO pin down to ground. The GPIO pin was configured to output 3.3V for a short period of time and then switched to a digital input to allow build up of charge in the LED to drain through the microcontroller. The time taken for the LED to drain and the voltage to drop below the digital input low threshold was timed internally. The greater the amount of green light which was incident on the LED, the less capacitive the LED in reverse bias was, and hence the quicker it took to discharge. This process is detailed in Figure~\ref{fig:lightSenseFlowDiagram}.\\
     % TODO Add in the link here.
 
     Three pushbuttons and two LEDs were added to the system to allow for user input and some program indication as well as another LED for power indication.\\
@@ -538,7 +538,16 @@
 
   \subsection{Software Structure}
   \label{sub:Software Structure}
-    The system software was written in C to be loaded and run on the microcontroller. The application was single-threaded and structured in a ``super-loop'' style configuration through all that was required, save for interrupt routines for pushbutton handling. Execution started with initialisations and went on to start the gyro, set up running variables and finally into the loop. The application flow diagram, with function details, can be seen below in <>:
+    The system software was written in C to be loaded and run on the microcontroller. The application was single-threaded, making use of the Standard Peripheral Library as a hardware abstraction layer, and structured in a ``super-loop'' style configuration through all that was required, save for interrupt routines for pushbutton handling. Execution started with initialisations and went on to start the gyro, set up running variables and finally into the loop. The application flow diagram, with functional details, can be seen below in Figure~\ref{fig:mainSTExecutionDiagram}:
+
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.8\columnwidth]{mainSTExecutionDiagram}
+        \caption{Flow diagram of the main execution of the program}
+        \label{fig:mainSTExecutionDiagram}
+      \end{center}
+    \end{figure}
+
 
 %----------------------------------------------------------------------------------------
 % SPRINTER BUILD, TESTING AND CALIBRATION
@@ -553,7 +562,7 @@
 \clearpage
 \section{Sprinter Results and Conclusions}
 \label{sec:Sprinter Results and Conclusions}
-
+  The sprinter version of this robot successfully travelled in a straight line down the track aided by the digital gyroscope. The software ran well the legs were able to cope with the battery and PCBs included. % TODO Possibly add more here
 
 %========================================================================================
 %----------------------------------------------------------------------------------------
@@ -601,7 +610,30 @@
 \clearpage
 \section{Launcher Electronic Design}
 \label{sec:Launcher Electronic Design}
-  
+  From an electrical standpoint, this version of the robot was to still use the two 6V DC motors to move but was allowed another motor for the launcher. The robot continued to use the same capacitive LED light sensing as before, however, it did not need the digital gyroscope as the need to travel straight was no longer requires.
+
+  \subsection{Primary System Components}
+  \label{sub:Primary System Components}
+    Together with the original primary components (STM32F051C6 and L293DNE), the only additions to the system were general components not worth pointing out specifically. Support for the addition of the gyroscope was maintained, but not actually used. As an optional extra, an ESP8266\footnote{ESP8266 Wireless Transceiver Module - https://www.sparkfun.com/products/13678} wifi module was included for telemetry and control.
+
+  \subsection{System Overview}
+  \label{sub:System Overview}
+    Again, the system was divided into multiple sections, this time including the ``ControllerBoard'', ``PowerBoard'' and ``SensorBoard''. The circuitry for the sensors was kept separate in case of PCB design errors.\\
+
+    Figure~\ref{fig:launcherElectronicSystemBlockDiagram} shows the updated high level block diagram for the newer system including Controller, Power and Sensor sections.
+
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[width=0.9\columnwidth]{launcherElectronicSystemBlockDiagram}
+        \caption{High level block diagram of the launcher electronic system}
+        \label{fig:launcherElectronicSystemBlockDiagram}
+      \end{center}
+    \end{figure}
+
+    The addition of another L293DNE motor driver was required due to the extra motor needed for the launcher. Additional PWM outputs were set up on the microcontroller for the additional driver.\\
+
+    The line sensor was required for this version of the robot as it was to be able to sense a line on the ground and follow it. It was decided that the sensors be made entirely analog, with a digital signal line representing each sensor as an interface between the sensing electronics and the microcontroller. Each sensor comprised of an IR (infra-red) LED and IR transistor together with a driving circuit for the LED and a receiving circuit for the transistor. The IR LED was driven with a square wave of predetermined frequency and the same frequency waveform was expected 
+
 
 %----------------------------------------------------------------------------------------
 % LAUNCHER CONTROL AND SOFTWARE
