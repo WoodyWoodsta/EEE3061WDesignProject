@@ -17,7 +17,7 @@ CMAKE_FORCE_CXX_COMPILER(arm-none-eabi-g++ GNU)
 set(CMAKE_EXECUTABLE_SUFFIX ".elf")
 
 # Compiler flags
-set(ARM_FLAGS "-mcpu=cortex-m0 -mthumb -Os")
+set(ARM_FLAGS "-mcpu=cortex-m0 -mthumb -Og")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ARM_FLAGS} -std=gnu++11 -fabi-version=0 -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fno-threadsafe-statics -ffunction-sections -g")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu11 ${ARM_FLAGS} -ffunction-sections -fmessage-length=0 -fsigned-char -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra -g")
@@ -99,7 +99,13 @@ set(SOURCE_FILES
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-# search for programs in the build host directories
+# Print executable size
+add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND arm-none-eabi-size --format=berkeley ${PROJECT_NAME}.elf)
+
+# Search for programs in the build host directories
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM	NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY	ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE	ONLY)
